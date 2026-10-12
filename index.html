@@ -616,58 +616,59 @@
       });
   }
 
-  function renderDetail(o) {
-    const isSold = String(o.status).includes("تم البيع");
+ function renderDetail(o) {
+  const isSold = String(o.status).includes("تم البيع");
 
-    let html = "";
+  let html = "";
 
-    if (o.imageUrl && o.imageUrl.startsWith("http")) {
-    }
-    html += `<img src="${escapeHtml(o.imageUrl)}" class="detail-image" onerror="this.style.display='none'">`;
-    html += `
-      <h2 style="text-align:center; color:#FF7F50; margin-bottom:16px;">📋 تفاصيل الطلب</h2>
-
-      <div class="detail-row">
-        <span class="lbl">🏪 اسم السوبرماركت</span>
-        <span class="val">${escapeHtml(o.name || '-')}</span>
-      </div>
-
-      <div class="detail-row">
-        <span class="lbl">📞 رقم الهاتف</span>
-        <a href="tel:${escapeHtml(o.phone || '')}" class="val" style="color:#FF7F50; text-decoration:none;">${escapeHtml(o.phone || '-')}</a>
-      </div>
-
-      <div class="detail-row">
-        <span class="lbl">📍 العنوان</span>
-        <span class="val">${escapeHtml(o.address || '-')}</span>
-      </div>
-
-      <div class="detail-row">
-        <span class="lbl">📂 الفئة</span>
-        <span class="val">${escapeHtml(o.type || '-')}</span>
-      </div>
-
-      <div class="detail-row">
-        <span class="lbl">📝 التفاصيل</span>
-        <span class="val">${escapeHtml(o.details || '-')}</span>
-      </div>
-
-      <div class="detail-row">
-        <span class="lbl">🔢 الكمية</span>
-        <span class="val">${escapeHtml(o.quantity || '-')}</span>
-      </div>
-    `;
-
-    if (isSold) {
-      html += <div class="msg ok" style="display:block; text-align:center; margin-top:16px;">✅ تم بيع هذا الطلب</div>;
-    } else {
-      html += <button class="btn btn-sold" onclick="markAsSold()" id="soldBtn">✅ تم بيع الطلب</button>;
-    }
-
-    html += <button class="btn btn-white" style="margin-top:16px;" onclick="loadOrders()">← رجوع للطلبات</button>;
-
-    document.getElementById("detailContent").innerHTML = html;
+  if (o.imageUrl && o.imageUrl.startsWith("http")) {
+    html += <img src="${escapeHtml(o.imageUrl)}" class="detail-image" onerror="this.style.display='none'">;
   }
+
+  html += `
+    <h2 style="text-align:center; color:#FF7F50; margin-bottom:16px;">📋 تفاصيل الطلب</h2>
+
+    <div class="detail-row">
+      <span class="lbl">🏪 اسم السوبرماركت</span>
+      <span class="val">${escapeHtml(o.name || '-')}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="lbl">📞 رقم الهاتف</span>
+      <a href="tel:${escapeHtml(o.phone || '')}" class="val" style="color:#FF7F50; text-decoration:none;">${escapeHtml(o.phone || '-')}</a>
+    </div>
+
+    <div class="detail-row">
+      <span class="lbl">📍 العنوان</span>
+      <span class="val">${escapeHtml(o.address || '-')}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="lbl">📂 الفئة</span>
+      <span class="val">${escapeHtml(o.type || '-')}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="lbl">📝 التفاصيل</span>
+      <span class="val">${escapeHtml(o.details || '-')}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="lbl">🔢 الكمية</span>
+      <span class="val">${escapeHtml(o.quantity || '-')}</span>
+    </div>
+  `;
+
+  if (isSold) {
+    html += <div class="msg ok" style="display:block; text-align:center; margin-top:16px;">✅ تم بيع هذا الطلب</div>;
+  } else {
+    html += <button class="btn btn-sold" onclick="markAsSold()" id="soldBtn">✅ تم بيع الطلب</button>;
+  }
+
+  html += <button class="btn btn-white" style="margin-top:16px;" onclick="loadOrders()">← رجوع للطلبات</button>;
+
+  document.getElementById("detailContent").innerHTML = html;
+}
 
   // ═══════════════════════════════════════════════
   // زر "تم بيع الطلب"
