@@ -1,0 +1,867 @@
+﻿<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#40E0D0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Net - مندوب إلكتروني">
+<link rel="manifest" href="manifest.json">
+<title>Net - مندوب إلكتروني</title>
+<style>
+  :root {
+    --turquoise: #40E0D0;
+    --peach: #FF7F50;
+    --white: #FFFFFF;
+    --dark: #333333;
+    --gray: #666666;
+  }
+
+  * { margin:0; padding;:0; box-sizing:border-box color; font-family: system-ui, -apple-system, ':Segoe UI', Tahoma, var(--dark Arial, sans-serif; }
+
+  body {
+    background: var(--turquoise);
+    min-height: 100vh;
+    direction: rtl;
+    color: var(--dark);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .header {
+    background: linear-gradient(135deg, var(--turquoise), #20B2AA);
+    color: var(--white);
+    padding: 20px 16px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: background 0.3s;
+  }
+  .header .logo { font-size: 26px; font-weight: 800; letter-spacing: 1px; color: var(--peach); }
+  .header .brand { font-size: 13px; opacity: 0.95; margin-top: 4px; }
+  .header.header-peach {
+    background: linear-gradient(135deg, var(--peach), #e06a3f);
+  }
+  .header.header-peach .logo { color: var(--white); }
+
+  .screen { display: none; padding: 20px 14px; min-height: calc(100vh - 90px); }
+  .screen.active { display: block; }
+
+  .card {
+    background: var(--white);
+    border-radius: 18px;
+    padding: 24px 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    margin-bottom: 16px;
+  }
+
+  .welcome { text-align: center; color: var(--white); margin-bottom: 24px; }
+  .welcome h1 { font-size: 24px; margin-bottom: 8px; }
+  .welcome p { font-size: 15px; opacity: 0.95; }
+
+  .main-btn {
+    display: block;
+    width: 100%;
+    background: var(--white);
+    color: var(--peach);
+    border: 3px solid var(--peach);
+    border-radius: 18px;
+    padding: 24px;
+    font-size: 20px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-bottom: 14px;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(255,127,80,0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .main-btn:hover, .main-btn:active {
+    transform: scale(0.98);
+    box-shadow: 0 3px 10px rgba(255,127,80,0.4);
+  }
+  .main-btn .icon { font-size: 40px; display: block; margin-bottom: 8px; }
+  .main-btn .sub { font-size: 13px; font-weight: normal; color: var(--gray); margin-top: 4px; }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    text-align: right;
+    margin: 8px 0;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-family: inherit;
+    background: var(--white);
+    color: var(--dark);
+    transition: border-color 0.2s;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--peach);
+  }
+
+  label {
+    display: block;
+    font-weight: bold;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    color: var(--dark);
+    font-size: 15px;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--peach);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    font-family: inherit;
+    transition: transform 0.15s, background 0.2s;
+  }
+  .btn:hover { background: #e06a3f; }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled { background: #ccc; cursor: not-allowed; }
+  .btn-turquoise { background: var(--turquoise); color: var(--dark); }
+  .btn-turquoise:hover { background: #20B2AA; }
+  .btn-white { background: var(--white); color: var(--peach); border: 2px solid var(--peach); }
+
+  .order-card {
+    background: var(--turquoise);
+    color: var(--white);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .order-card:hover, .order-card:active {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  }
+  .order-card.sold { opacity: 0.6; }
+  .order-card .order-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+  .order-card .order-info { font-size: 14px; margin-bottom: 4px; opacity: 0.95; }
+  .order-card .order-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 8px;
+  }
+  .order-card .status-new { background: var(--white); color: var(--turquoise); }
+  .order-card .status-sold { background: var(--peach); color: var(--white); }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px dashed #ddd;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-row .lbl { font-weight: bold; color: var(--gray); font-size: 14px; }
+  .detail-row .val { font-weight: bold); font-size: 16px; text-align: left; }
+
+  .detail-image {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 12px;
+    margin: 12px 0;
+    background: #f5f5f5;
+  }
+
+  .btn-sold {
+    background: var(--peach);
+    color: var(--white);
+    font-size: 18px;
+    margin-top: 20px;
+  }
+  .btn-sold:disabled { background: #ccc; }
+
+  .msg {
+    margin-top: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 15px;
+    display: none;
+  }
+  .msg.ok { background: #d4edda; color: #075E54; display: block; }
+  .msg.err { background: #f8d7da; color: #721c24; display: block; }
+  .msg.info { background: #e7f3ff; color: #004085; display: block; }
+
+  .loading {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    color: var(--white);
+    font-weight: bold;
+  }
+  .loading-dark { color: var(--dark); }
+  .spinner {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top: 3px solid var(--white);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    vertical-align: middle;
+    margin-left: 8px;
+  }
+  .spinner-dark {
+    border-color: rgba(0,0,0,0.1);
+    border-top-color: var(--peach);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .footer {
+    text-align: center;
+    padding: 20px;
+    color: var(--white);
+    font-size: 13px;
+    opacity: 0.9;
+  }
+  .footer .admin { font-weight: bold; margin-top: 6px; }
+
+  .file-input-wrapper {
+    position: relative;
+    margin: 8px 0;
+  }
+  .file-input-wrapper input[type="file"] {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    padding: 0;
+    margin: 0;
+  }
+  .file-input-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: var(--white);
+    border: 2px dashed var(--peach);
+    border-radius: 12px;
+    color: var(--peach);
+    font-weight: bold;
+    text-align: center;
+    font-size: 15px;
+  }
+  .preview-img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 12px;
+    margin-top: 12px;
+  }
+
+  .orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--white);
+    margin-bottom: 16px;
+    padding: 0 4px;
+  }
+  .orders-header h2 { font-size: 20px; }
+  .orders-header .count {
+    background: rgba(255,255,255,0.2);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+  }
+
+  .refresh-btn {
+    background: transparent;
+    border: none;
+    color: var(--white);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 8px;
+    vertical-align: middle;
+  }
+
+  .welcome-icon {
+    font-size: 70px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body><!-- ═══════════════════════════════════════════════
+     الهيدر
+═══════════════════════════════════════════════ -->
+<div class="header" id="header">
+  <div class="logo">Net</div>
+  <div class="brand">مندوب إلكتروني</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     الشاشة 1: الرئيسية
+═══════════════════════════════════════════════ -->
+<div class="screen active" id="screen-home">
+  <div class="welcome">
+    <div class="welcome-icon">🛒</div>
+    <h1>أهلاً بك</h1>
+    <p>كل ما تحتاجه في السوبر ماركت<br>في مكان واحد</p>
+  </div>
+
+  <button class="main-btn" onclick="showLogin()">
+    <span class="icon">🏪</span>
+    أنا تاجر
+    <div class="sub">للاطلاع على الطلبات</div>
+  </button>
+
+  <button class="main-btn" onclick="showOrderForm()">
+    <span class="icon">🛒</span>
+    أنا صاحب سوق
+    <div class="sub">لإرسال طلب جديد</div>
+  </button>
+
+  <div class="footer">
+    <div>Net - مندوب إلكتروني</div>
+    <div class="admin">الإدارة: 07710669750</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     الشاشة 2: تسجيل دخول التاجر
+═══════════════════════════════════════════════ -->
+<div class="screen" id="screen-login">
+  <div class="card">
+    <h2 style="text-align:center; margin-bottom:8px;">🔐 تأكيد هوية التاجر</h2>
+    <p style="text-align:center; color:#666; font-size:14px; margin-bottom:16px;">
+      أدخل رقم هاتفك للاطلاع على الطلبات
+    </p>
+
+    <input id="loginPhone" type="tel" placeholder="07xxxxxxxxx" autocomplete="tel">
+    <button class="btn" onclick="login()" id="loginBtn">دخول</button>
+
+    <div class="msg" id="loginMsg"></div>
+
+    <button class="btn btn-white" style="margin-top:16px;" onclick="showHome()">← رجوع</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     الشاشة 3: قائمة الطلبات (للتاجر)
+═══════════════════════════════════════════════ -->
+<div class="screen" id="screen-orders">
+  <div class="orders-header">
+    <h2>📋 الطلبات</h2>
+    <div>
+      <span class="count" id="ordersCount">0</span>
+      <button class="refresh-btn" onclick="loadOrders()">🔄</button>
+    </div>
+  </div>
+
+  <div class="loading" id="ordersLoading">
+    جارٍ التحميل... <span class="spinner"></span>
+  </div>
+
+  <div id="ordersList"></div>
+
+  <button class="btn btn-white" style="margin-top:20px;" onclick="logout()">🚪 تسجيل الخروج</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     الشاشة 4: تفاصيل الطلب
+═══════════════════════════════════════════════ -->
+<div class="screen" id="screen-detail">
+  <div class="card" id="detailContent"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     الشاشة 5: استمارة الطلب (لصاحب السوق)
+═══════════════════════════════════════════════ -->
+<div class="screen" id="screen-form">
+  <div class="card">
+    <h2 style="text-align:center; margin-bottom:16px;">🛒 طلب جديد</h2>
+
+    <label>📝 اسم السوبرماركت</label>
+    <input id="fName" type="text" placeholder="مثال: المهيمن">
+
+    <label>📞 رقم الهاتف</label>
+    <input id="fPhone" type="tel" placeholder="07xxxxxxxxx">
+
+    <label>📂 نوع المنتج</label>
+    <select id="fType">
+      <option value="">— اختر الفئة —</option>
+      <option>مواد غذائية جافة</option>
+      <option>لحوم واسماك ودجاج</option>
+      <option>البان واجبان</option>
+      <option>مشروبات وعصائر</option>
+      <option>معلبات</option>
+      <option>حلويات وبسكويت</option>
+      <option>مكسرات وكرزات</option>
+      <option>بهارات وتوابل</option>
+      <option>منظفات</option>
+      <option>مستحضرات تجميل</option>
+      <option>مستلزمات منزلية</option>
+      <option>مواد تغليف وسفري</option>
+      <option>خيارات اخرى</option>
+    </select>
+
+    <label>🖼️ صورة المنتج (إلزامية)</label>
+    <div class="file-input-wrapper">
+      <div class="file-input-btn" id="fileLabel">📷 اضغط لاختيار صورة</div>
+      <input type="file" id="fImage" accept="image/*" onchange="handleImage(event)">
+    </div>
+    <img id="imagePreview" class="preview-img" style="display:none;">
+
+    <label>📍 العنوان الكامل</label>
+    <input id="fAddress" type="text" placeholder="مثال: بغداد - الزعفرانية">
+
+    <label>🔢 الكمية المطلوبة</label>
+    <input id="fQuantity" type="text" placeholder="مثال: 400">
+
+    <label>📝 تفاصيل المنتج</label>
+    <textarea id="fDetails" rows="4" placeholder="اكتب تفاصيل إضافية هنا..."></textarea>
+
+    <button class="btn" onclick="submitOrder()" id="submitBtn">✅ إرسال الطلب</button>
+
+    <div class="msg" id="formMsg"></div>
+
+    <button class="btn btn-white" style="margin-top:16px;" onclick="showHome()">← رجوع</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     الشاشة 6: شكراً
+═══════════════════════════════════════════════ -->
+<div class="screen" id="screen-thanks">
+  <div class="card" style="text-align:center;">
+    <div style="font-size:70px; margin-bottom:16px;">✅</div>
+    <h2 style="color:#075E54; margin-bottom:12px;">تم إرسال طلبك</h2>
+    <p style="color:#666; line-height:1.8;">
+      سيتم إرسال طلبك إلى التجار المشتركين.<br>
+      ستصلك مكالماتهم على رقمك قريبًا.
+    </p>
+
+    <button class="btn" style="margin-top:20px;" onclick="showOrderForm()">➕ طلب جديد</button>
+    <button class="btn btn-white" onclick="showHome()">🏠 العودة للرئيسية</button>
+  </div>
+</div>
+
+<script>
+  // ═══════════════════════════════════════════════
+  // ⚙️ الإعدادات
+  // ═══════════════════════════════════════════════
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbywYbx042JiZXrmaC5XKLkhqMiY5QuhQKMsJiXYScaZiaAP3FlollvFr_KXSCI5wVTFQA/exec";
+
+  let currentUser = null;
+  let currentOrder = null;
+  let currentImageBase64 = null;
+  let currentImageType = null;
+
+  // ═══════════════════════════════════════════════
+  // تسجيل Service Worker
+  // ═══════════════════════════════════════════════
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(err => console.log("SW error:", err));
+  }
+
+  // ═══════════════════════════════════════════════
+  // أدوات مساعدة
+  // ═══════════════════════════════════════════════
+  function escapeHtml(text) {
+    if (text === null || text === undefined) return '';
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // ═══════════════════════════════════════════════
+  // التنقل بين الشاشات
+  // ═══════════════════════════════════════════════
+  function showScreen(id) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    window.scrollTo(0, 0);
+
+    const header = document.getElementById("header");
+    if (id === "screen-orders" || id === "screen-detail") {
+      header.classList.add("header-peach");
+    } else {
+      header.classList.remove("header-peach");
+    }
+  }
+
+  function showHome() {
+    showScreen("screen-home");
+  }
+
+  function showLogin() {
+    showScreen("screen-login");
+    const saved = localStorage.getItem("net_user");
+    if (saved) {
+      try {
+        currentUser = JSON.parse(saved);
+        document.getElementById("loginPhone").value = currentUser.phone;
+      } catch(e) {}
+    }
+  }
+
+  function showOrderForm() {
+    showScreen("screen-form");
+  }// ═══════════════════════════════════════════════
+  // تسجيل الدخول (التاجر)
+  // ═══════════════════════════════════════════════
+  function login() {
+    const phone = document.getElementById("loginPhone").value.trim();
+    const msg = document.getElementById("loginMsg");
+    const btn = document.getElementById("loginBtn");
+
+    if (!phone || phone.replace(/\D/g, "").length < 10) {
+      msg.className = "msg err";
+      msg.textContent = "الرجاء إدخال رقم هاتف صحيح.";
+      return;
+    }
+
+    btn.disabled = true;
+    msg.className = "msg info";
+    msg.textContent = "جارٍ التحقق...";
+
+    fetch(WEB_APP_URL + "?action=checkUser&phone=" + encodeURIComponent(phone))
+      .then(r => r.json())
+      .then(data => {
+        btn.disabled = false;
+
+        if (!data.ok) {
+          msg.className = "msg err";
+          msg.textContent = data.msg || "رقمك غير مسجل";
+          return;
+        }
+
+        currentUser = {
+          phone: data.trader.phone,
+          store: data.trader.store,
+          area: data.trader.area
+        };
+        localStorage.setItem("net_user", JSON.stringify(currentUser));
+
+        msg.className = "msg ok";
+        msg.textContent = "✅ مرحباً " + (currentUser.store || "");
+
+        setTimeout(() => loadOrders(), 500);
+      })
+      .catch(err => {
+        btn.disabled = false;
+        msg.className = "msg err";
+        msg.textContent = "خطأ في الاتصال. تحقق من الإنترنت.";
+        console.error(err);
+      });
+  }
+
+  function logout() {
+    if (!confirm("هل تريد تسجيل الخروج؟")) return;
+    currentUser = null;
+    localStorage.removeItem("net_user");
+    document.getElementById("loginPhone").value = "";
+    showHome();
+  }
+
+  // ═══════════════════════════════════════════════
+  // تحميل قائمة الطلبات
+  // ═══════════════════════════════════════════════
+  function loadOrders() {
+    if (!currentUser) { showLogin(); return; }
+
+    showScreen("screen-orders");
+    document.getElementById("ordersLoading").style.display = "block";
+    document.getElementById("ordersList").innerHTML = "";
+
+    fetch(WEB_APP_URL + "?action=orders&phone=" + encodeURIComponent(currentUser.phone))
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById("ordersLoading").style.display = "none";
+
+        if (!data.ok) {
+          document.getElementById("ordersList").innerHTML =
+            '<div class="msg err" style="display:block;">' + (data.msg || "خطأ") + '</div>';
+          return;
+        }
+
+        const orders = data.orders || [];
+        document.getElementById("ordersCount").textContent = orders.length;
+
+        if (orders.length === 0) {
+          document.getElementById("ordersList").innerHTML =
+            '<div class="card" style="text-align:center; color:#666; padding:30px;">لا توجد طلبات جديدة حالياً</div>';
+          return;
+        }
+
+        let html = "";
+        orders.forEach(o => {
+          const isSold = String(o.status).includes("تم البيع");
+          html += `
+            <div class="order-card ${isSold ? 'sold' : ''}" onclick="openDetail(${o.row})">
+              <div class="order-title">🏪 ${escapeHtml(o.name || 'غير محدد')}</div>
+              <div class="order-info">📂 ${escapeHtml(o.type || '-')}</div>
+              <div class="order-info">🔢 الكمية: ${escapeHtml(o.quantity || '-')}</div>
+              <div class="order-info">📍 ${escapeHtml(o.address || '-')}</div>
+              ${isSold
+                ? '<span class="order-status status-sold">✅ تم البيع</span>'
+                : '<span class="order-status status-new">🆕 جديد</span>'}
+            </div>
+          `;
+        });
+
+        document.getElementById("ordersList").innerHTML = html;
+      })
+      .catch(err => {
+        document.getElementById("ordersLoading").style.display = "none";
+        document.getElementById("ordersList").innerHTML =
+          '<div class="msg err" style="display:block;">خطأ في الاتصال</div>';
+        console.error(err);
+      });
+  }
+
+  // ═══════════════════════════════════════════════
+  // تفاصيل الطلب
+  // ═══════════════════════════════════════════════
+  function openDetail(rowId) {
+    if (!currentUser) return;
+
+    showScreen("screen-detail");
+    document.getElementById("detailContent").innerHTML =
+      '<div class="loading loading-dark" style="display:block;">جارٍ التحميل... <span class="spinner spinner-dark"></span></div>';
+
+    fetch(WEB_APP_URL + "?action=orderDetails&row=" + rowId + "&phone=" + encodeURIComponent(currentUser.phone))
+      .then(r => r.json())
+      .then(data => {
+        if (!data.ok) {
+          document.getElementById("detailContent").innerHTML =
+            '<div class="msg err" style="display:block;">' + (data.msg || "خطأ") + '</div>';
+          return;
+        }
+
+        currentOrder = data.order;
+        renderDetail(currentOrder);
+      })
+      .catch(err => {
+        document.getElementById("detailContent").innerHTML =
+          '<div class="msg err" style="display:block;">خطأ في الاتصال</div>';
+        console.error(err);
+      });
+  }
+
+  function renderDetail(o) {
+    const isSold = String(o.status).includes("تم البيع");
+
+    let html = "";
+
+    if (o.imageUrl && o.imageUrl.startsWith("http")) {
+      html += <img src="${escapeHtml(o.imageUrl)}" class="detail-image" onerror="this.style.display='none'">;
+    }
+
+    html += `
+      <h2 style="text-align:center; color:#FF7F50; margin-bottom:16px;">📋 تفاصيل الطلب</h2>
+
+      <div class="detail-row">
+        <span class="lbl">🏪 اسم السوبرماركت</span>
+        <span class="val">${escapeHtml(o.name || '-')}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="lbl">📞 رقم الهاتف</span>
+        <a href="tel:${escapeHtml(o.phone || '')}" class="val" style="color:#FF7F50; text-decoration:none;">${escapeHtml(o.phone || '-')}</a>
+      </div>
+
+      <div class="detail-row">
+        <span class="lbl">📍 العنوان</span>
+        <span class="val">${escapeHtml(o.address || '-')}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="lbl">📂 الفئة</span>
+        <span class="val">${escapeHtml(o.type || '-')}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="lbl">📝 التفاصيل</span>
+        <span class="val">${escapeHtml(o.details || '-')}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="lbl">🔢 الكمية</span>
+        <span class="val">${escapeHtml(o.quantity || '-')}</span>
+      </div>
+    `;
+
+    if (isSold) {
+      html += <div class="msg ok" style="display:block; text-align:center; margin-top:16px;">✅ تم بيع هذا الطلب</div>;
+    } else {
+      html += <button class="btn btn-sold" onclick="markAsSold()" id="soldBtn">✅ تم بيع الطلب</button>;
+    }
+
+    html += <button class="btn btn-white" style="margin-top:16px;" onclick="loadOrders()">← رجوع للطلبات</button>;
+
+    document.getElementById("detailContent").innerHTML = html;
+  }
+
+  // ═══════════════════════════════════════════════
+  // زر "تم بيع الطلب"
+  // ═══════════════════════════════════════════════
+  function markAsSold() {
+    if (!currentUser || !currentOrder) return;
+    if (!confirm("هل أنت متأكد أنك بعت هذا الطلب للزبون؟")) return;
+
+    const btn = document.getElementById("soldBtn");
+    if (btn) { btn.disabled = true; btn.textContent = "جارٍ التسجيل..."; }
+
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "markAsSold",
+        row: currentOrder.row,
+        phone: currentUser.phone
+      })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok) {
+        alert("✅ " + data.msg);
+        loadOrders();
+      } else {
+        alert("❌ " + (data.msg || "خطأ"));
+        if (btn) { btn.disabled = false; btn.textContent = "✅ تم بيع الطلب"; }
+      }
+    })
+    .catch(err => {
+      alert("❌ خطأ في الاتصال");
+      if (btn) { btn.disabled = false; btn.textContent = "✅ تم بيع الطلب"; }
+      console.error(err);
+    });
+  }
+
+  // ═══════════════════════════════════════════════
+  // صورة المنتج
+  // ═══════════════════════════════════════════════
+  function handleImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("⚠️ الصورة كبيرة جداً. الحد الأقصى 5 ميجابايت.");
+      event.target.value = "";
+      return;
+    }
+
+    currentImageType = file.type;
+    document.getElementById("fileLabel").textContent = "✅ " + file.name;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const preview = document.getElementById("imagePreview");
+      preview.src = e.target.result;
+      preview.style.display = "block";
+      currentImageBase64 = e.target.result.split(",")[1];
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ═══════════════════════════════════════════════
+  // إرسال الطلب (صاحب السوق)
+  // ═══════════════════════════════════════════════
+  function submitOrder() {
+    const name     = document.getElementById("fName").value.trim();
+    const phone    = document.getElementById("fPhone").value.trim();
+    const type     = document.getElementById("fType").value;
+    const address  = document.getElementById("fAddress").value.trim();
+    const quantity = document.getElementById("fQuantity").value.trim();
+    const details  = document.getElementById("fDetails").value.trim();
+    const msg      = document.getElementById("formMsg");
+    const btn      = document.getElementById("submitBtn");
+
+    if (!name)  { msg.className = "msg err"; msg.textContent = "الرجاء إدخال اسم السوبرماركت."; return; }
+    if (!phone || phone.replace(/\D/g, "").length < 10) { msg.className = "msg err"; msg.textContent = "الرجاء إدخال رقم هاتف صحيح."; return; }
+    if (!type)  { msg.className = "msg err"; msg.textContent = "الرجاء اختيار الفئة."; return; }
+    if (!currentImageBase64) { msg.className = "msg err"; msg.textContent = "الرجاء رفع صورة المنتج."; return; }
+
+    btn.disabled = true;
+    msg.className = "msg info";
+    msg.textContent = "جارٍ إرسال الطلب...";
+
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "submitOrder",
+        name: name,
+        phone: phone,
+        type: type,
+        address: address,
+        quantity: quantity,
+        details: details,
+        image: {
+          base64: currentImageBase64,
+          mimeType: currentImageType,
+          name: "order_" + Date.now() + ".jpg"
+        }
+      })
+    })
+    .then(r => r.json())
+    .then(data => {
+      btn.disabled = false;
+
+      if (data.ok) {
+        // إعادة تعيين النموذج
+        document.getElementById("fName").value = "";
+        document.getElementById("fPhone").value = "";
+        document.getElementById("fType").value = "";
+        document.getElementById("fAddress").value = "";
+        document.getElementById("fQuantity").value = "";
+        document.getElementById("fDetails").value = "";
+        document.getElementById("fImage").value = "";
+        document.getElementById("fileLabel").textContent = "📷 اضغط لاختيار صورة";
+        document.getElementById("imagePreview").style.display = "none";
+        currentImageBase64 = null;
+
+        msg.className = "msg ok";
+        msg.textContent = "✅ تم الإرسال";
+
+        setTimeout(() => showScreen("screen-thanks"), 800);
+      } else {
+        msg.className = "msg err";
+        msg.textContent = "❌ " + (data.msg || "خطأ في الإرسال");
+      }
+    })
+    .catch(err => {
+      btn.disabled = false;
+      msg.className = "msg err";
+      msg.textContent = "❌ خطأ في الاتصال";
+      console.error(err);
+    });
+  }
+
+  // ═══════════════════════════════════════════════
+  // عند فتح التطبيق
+  // ═══════════════════════════════════════════════
+  window.addEventListener("load", () => {
+    const saved = localStorage.getItem("net_user");
+    if (saved) {
+      try {
+        currentUser = JSON.parse(saved);
+      } catch(e) {}
+    }
+  });
+</script>
+</body>
+</html>
