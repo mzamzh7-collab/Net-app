@@ -1,11 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#40E0D0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Net - مندوب إلكتروني">
 <link rel="manifest" href="manifest.json">
 <title>Net - مندوب إلكتروني</title>
@@ -17,9 +16,7 @@
     --dark: #333333;
     --gray: #666666;
   }
-
-  * { margin:0; padding;:0; box-sizing:border-box color; font-family: system-ui, -apple-system, ':Segoe UI', Tahoma, var(--dark Arial, sans-serif; }
-
+  * { margin:0; padding:0; box-sizing:border-box; font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, Arial, sans-serif; }
   body {
     background: var(--turquoise);
     min-height: 100vh;
@@ -27,7 +24,6 @@
     color: var(--dark);
     -webkit-tap-highlight-color: transparent;
   }
-
   .header {
     background: linear-gradient(135deg, var(--turquoise), #20B2AA);
     color: var(--white);
@@ -45,10 +41,8 @@
     background: linear-gradient(135deg, var(--peach), #e06a3f);
   }
   .header.header-peach .logo { color: var(--white); }
-
   .screen { display: none; padding: 20px 14px; min-height: calc(100vh - 90px); }
   .screen.active { display: block; }
-
   .card {
     background: var(--white);
     border-radius: 18px;
@@ -56,11 +50,10 @@
     box-shadow: 0 6px 20px rgba(0,0,0,0.1);
     margin-bottom: 16px;
   }
-
   .welcome { text-align: center; color: var(--white); margin-bottom: 24px; }
   .welcome h1 { font-size: 24px; margin-bottom: 8px; }
-  .welcome p { font-size: 15px; opacity: 0.95; }
-
+  .welcome p { font-size: 15px; opacity: 0.95; line-height: 1.7; }
+  .welcome-icon { font-size: 70px; text-align: center; margin-bottom: 20px; }
   .main-btn {
     display: block;
     width: 100%;
@@ -76,6 +69,7 @@
     text-align: center;
     box-shadow: 0 6px 20px rgba(255,127,80,0.3);
     transition: transform 0.15s, box-shadow 0.15s;
+    font-family: inherit;
   }
   .main-btn:hover, .main-btn:active {
     transform: scale(0.98);
@@ -83,7 +77,6 @@
   }
   .main-btn .icon { font-size: 40px; display: block; margin-bottom: 8px; }
   .main-btn .sub { font-size: 13px; font-weight: normal; color: var(--gray); margin-top: 4px; }
-
   input, select, textarea {
     width: 100%;
     padding: 14px;
@@ -101,7 +94,6 @@
     outline: none;
     border-color: var(--peach);
   }
-
   label {
     display: block;
     font-weight: bold;
@@ -110,7 +102,6 @@
     color: var(--dark);
     font-size: 15px;
   }
-
   .btn {
     width: 100%;
     padding: 15px;
@@ -128,10 +119,7 @@
   .btn:hover { background: #e06a3f; }
   .btn:active { transform: scale(0.98); }
   .btn:disabled { background: #ccc; cursor: not-allowed; }
-  .btn-turquoise { background: var(--turquoise); color: var(--dark); }
-  .btn-turquoise:hover { background: #20B2AA; }
   .btn-white { background: var(--white); color: var(--peach); border: 2px solid var(--peach); }
-
   .order-card {
     background: var(--turquoise);
     color: var(--white);
@@ -159,7 +147,6 @@
   }
   .order-card .status-new { background: var(--white); color: var(--turquoise); }
   .order-card .status-sold { background: var(--peach); color: var(--white); }
-
   .detail-row {
     display: flex;
     justify-content: space-between;
@@ -169,8 +156,7 @@
   }
   .detail-row:last-child { border-bottom: none; }
   .detail-row .lbl { font-weight: bold; color: var(--gray); font-size: 14px; }
-  .detail-row .val { font-weight: bold); font-size: 16px; text-align: left; }
-
+  .detail-row .val { font-weight: bold; color: var(--dark); font-size: 16px; text-align: left; }
   .detail-image {
     width: 100%;
     max-height: 300px;
@@ -179,7 +165,6 @@
     margin: 12px 0;
     background: #f5f5f5;
   }
-
   .btn-sold {
     background: var(--peach);
     color: var(--white);
@@ -187,7 +172,6 @@
     margin-top: 20px;
   }
   .btn-sold:disabled { background: #ccc; }
-
   .msg {
     margin-top: 12px;
     padding: 14px;
@@ -199,7 +183,6 @@
   .msg.ok { background: #d4edda; color: #075E54; display: block; }
   .msg.err { background: #f8d7da; color: #721c24; display: block; }
   .msg.info { background: #e7f3ff; color: #004085; display: block; }
-
   .loading {
     display: none;
     text-align: center;
@@ -219,12 +202,7 @@
     vertical-align: middle;
     margin-left: 8px;
   }
-  .spinner-dark {
-    border-color: rgba(0,0,0,0.1);
-    border-top-color: var(--peach);
-  }
   @keyframes spin { to { transform: rotate(360deg); } }
-
   .footer {
     text-align: center;
     padding: 20px;
@@ -233,7 +211,6 @@
     opacity: 0.9;
   }
   .footer .admin { font-weight: bold; margin-top: 6px; }
-
   .file-input-wrapper {
     position: relative;
     margin: 8px 0;
@@ -268,7 +245,6 @@
     border-radius: 12px;
     margin-top: 12px;
   }
-
   .orders-header {
     display: flex;
     justify-content: space-between;
@@ -284,7 +260,6 @@
     border-radius: 20px;
     font-size: 14px;
   }
-
   .refresh-btn {
     background: transparent;
     border: none;
@@ -294,25 +269,17 @@
     padding: 8px;
     vertical-align: middle;
   }
-
-  .welcome-icon {
-    font-size: 70px;
-    text-align: center;
-    margin-bottom: 20px;
-  }
 </style>
 </head>
-<body><!-- ═══════════════════════════════════════════════
-     الهيدر
-═══════════════════════════════════════════════ -->
+<body>
+
+<!-- ═══════ الهيدر ═══════ -->
 <div class="header" id="header">
   <div class="logo">Net</div>
   <div class="brand">مندوب إلكتروني</div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     الشاشة 1: الرئيسية
-═══════════════════════════════════════════════ -->
+<!-- ═══════ الشاشة 1: الرئيسية ═══════ -->
 <div class="screen active" id="screen-home">
   <div class="welcome">
     <div class="welcome-icon">🛒</div>
@@ -338,28 +305,21 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     الشاشة 2: تسجيل دخول التاجر
-═══════════════════════════════════════════════ -->
+<!-- ═══════ الشاشة 2: تسجيل دخول التاجر ═══════ -->
 <div class="screen" id="screen-login">
   <div class="card">
     <h2 style="text-align:center; margin-bottom:8px;">🔐 تأكيد هوية التاجر</h2>
     <p style="text-align:center; color:#666; font-size:14px; margin-bottom:16px;">
       أدخل رقم هاتفك للاطلاع على الطلبات
     </p>
-
     <input id="loginPhone" type="tel" placeholder="07xxxxxxxxx" autocomplete="tel">
     <button class="btn" onclick="login()" id="loginBtn">دخول</button>
-
     <div class="msg" id="loginMsg"></div>
-
     <button class="btn btn-white" style="margin-top:16px;" onclick="showHome()">← رجوع</button>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     الشاشة 3: قائمة الطلبات (للتاجر)
-═══════════════════════════════════════════════ -->
+<!-- ═══════ الشاشة 3: قائمة الطلبات ═══════ -->
 <div class="screen" id="screen-orders">
   <div class="orders-header">
     <h2>📋 الطلبات</h2>
@@ -378,16 +338,12 @@
   <button class="btn btn-white" style="margin-top:20px;" onclick="logout()">🚪 تسجيل الخروج</button>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     الشاشة 4: تفاصيل الطلب
-═══════════════════════════════════════════════ -->
+<!-- ═══════ الشاشة 4: تفاصيل الطلب ═══════ -->
 <div class="screen" id="screen-detail">
   <div class="card" id="detailContent"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     الشاشة 5: استمارة الطلب (لصاحب السوق)
-═══════════════════════════════════════════════ -->
+<!-- ═══════ الشاشة 5: استمارة الطلب ═══════ -->
 <div class="screen" id="screen-form">
   <div class="card">
     <h2 style="text-align:center; margin-bottom:16px;">🛒 طلب جديد</h2>
@@ -440,9 +396,7 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     الشاشة 6: شكراً
-═══════════════════════════════════════════════ -->
+<!-- ═══════ الشاشة 6: شكراً ═══════ -->
 <div class="screen" id="screen-thanks">
   <div class="card" style="text-align:center;">
     <div style="font-size:70px; margin-bottom:16px;">✅</div>
@@ -451,15 +405,14 @@
       سيتم إرسال طلبك إلى التجار المشتركين.<br>
       ستصلك مكالماتهم على رقمك قريبًا.
     </p>
-
     <button class="btn" style="margin-top:20px;" onclick="showOrderForm()">➕ طلب جديد</button>
     <button class="btn btn-white" onclick="showHome()">🏠 العودة للرئيسية</button>
   </div>
 </div>
-
+</body>
 <script>
   // ═══════════════════════════════════════════════
-  // ⚙️ الإعدادات
+  // ⚙️ الإعدادات — لا تعدّل هذا الرابط
   // ═══════════════════════════════════════════════
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbywYbx042JiZXrmaC5XKLkhqMiY5QuhQKMsJiXYScaZiaAP3FlollvFr_KXSCI5wVTFQA/exec";
 
@@ -521,7 +474,9 @@
 
   function showOrderForm() {
     showScreen("screen-form");
-  }// ═══════════════════════════════════════════════
+  }
+
+  // ═══════════════════════════════════════════════
   // تسجيل الدخول (التاجر)
   // ═══════════════════════════════════════════════
   function login() {
@@ -576,9 +531,7 @@
     localStorage.removeItem("net_user");
     document.getElementById("loginPhone").value = "";
     showHome();
-  }
-
-  // ═══════════════════════════════════════════════
+  }// ═══════════════════════════════════════════════
   // تحميل قائمة الطلبات
   // ═══════════════════════════════════════════════
   function loadOrders() {
@@ -822,7 +775,6 @@
       btn.disabled = false;
 
       if (data.ok) {
-        // إعادة تعيين النموذج
         document.getElementById("fName").value = "";
         document.getElementById("fPhone").value = "";
         document.getElementById("fType").value = "";
@@ -863,5 +815,6 @@
     }
   });
 </script>
+
 </body>
 </html>
