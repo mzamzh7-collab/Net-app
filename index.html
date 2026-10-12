@@ -274,13 +274,11 @@
 </head>
 <body>
 
-<!-- ═══════ الهيدر ═══════ -->
 <div class="header" id="header">
   <div class="logo">Net</div>
   <div class="brand">مندوب إلكتروني</div>
 </div>
 
-<!-- ═══════ الشاشة 1: الرئيسية ═══════ -->
 <div class="screen active" id="screen-home">
   <div class="welcome">
     <div class="welcome-icon">🛒</div>
@@ -306,7 +304,6 @@
   </div>
 </div>
 
-<!-- ═══════ الشاشة 2: تسجيل دخول التاجر ═══════ -->
 <div class="screen" id="screen-login">
   <div class="card">
     <h2 style="text-align:center; margin-bottom:8px;">🔐 تأكيد هوية التاجر</h2>
@@ -320,7 +317,6 @@
   </div>
 </div>
 
-<!-- ═══════ الشاشة 3: قائمة الطلبات ═══════ -->
 <div class="screen" id="screen-orders">
   <div class="orders-header">
     <h2>📋 الطلبات</h2>
@@ -339,12 +335,10 @@
   <button class="btn btn-white" style="margin-top:20px;" onclick="logout()">🚪 تسجيل الخروج</button>
 </div>
 
-<!-- ═══════ الشاشة 4: تفاصيل الطلب ═══════ -->
 <div class="screen" id="screen-detail">
   <div class="card" id="detailContent"></div>
 </div>
 
-<!-- ═══════ الشاشة 5: استمارة الطلب ═══════ -->
 <div class="screen" id="screen-form">
   <div class="card">
     <h2 style="text-align:center; margin-bottom:16px;">🛒 طلب جديد</h2>
@@ -397,7 +391,6 @@
   </div>
 </div>
 
-<!-- ═══════ الشاشة 6: شكراً ═══════ -->
 <div class="screen" id="screen-thanks">
   <div class="card" style="text-align:center;">
     <div style="font-size:70px; margin-bottom:16px;">✅</div>
@@ -412,26 +405,17 @@
 </div>
 
 <script>
-  // ═══════════════════════════════════════════════
-  // ⚙️ الإعدادات — لا تعدّل هذا الرابط
-  // ═══════════════════════════════════════════════
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbywYbx042JiZXrmaC5XKLkhqMiY5QuhQKMsJiXYScaZiaAP3FlollvFr_KXSCI5wVTFQA/exec";
+  var WEB_APP_URL = "https://script.google.com/macros/s/AKfycbywYbx042JiZXrmaC5XKLkhqMiY5QuhQKMsJiXYScaZiaAP3FlollvFr_KXSCI5wVTFQA/exec";
 
-  let currentUser = null;
-  let currentOrder = null;
-  let currentImageBase64 = null;
-  let currentImageType = null;
+  var currentUser = null;
+  var currentOrder = null;
+  var currentImageBase64 = null;
+  var currentImageType = null;
 
-  // ═══════════════════════════════════════════════
-  // تسجيل Service Worker
-  // ═══════════════════════════════════════════════
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js").catch(err => console.log("SW error:", err));
+    navigator.serviceWorker.register("sw.js").catch(function(err) { console.log("SW error:", err); });
   }
 
-  // ═══════════════════════════════════════════════
-  // أدوات مساعدة
-  // ═══════════════════════════════════════════════
   function escapeHtml(text) {
     if (text === null || text === undefined) return '';
     return String(text)
@@ -442,15 +426,15 @@
       .replace(/'/g, '&#039;');
   }
 
-  // ═══════════════════════════════════════════════
-  // التنقل بين الشاشات
-  // ═══════════════════════════════════════════════
   function showScreen(id) {
-    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    var screens = document.querySelectorAll(".screen");
+    for (var i = 0; i < screens.length; i++) {
+      screens[i].classList.remove("active");
+    }
     document.getElementById(id).classList.add("active");
     window.scrollTo(0, 0);
 
-    const header = document.getElementById("header");
+    var header = document.getElementById("header");
     if (id === "screen-orders" || id === "screen-detail") {
       header.classList.add("header-peach");
     } else {
@@ -464,7 +448,7 @@
 
   function showLogin() {
     showScreen("screen-login");
-    const saved = localStorage.getItem("net_user");
+    var saved = localStorage.getItem("net_user");
     if (saved) {
       try {
         currentUser = JSON.parse(saved);
@@ -477,13 +461,10 @@
     showScreen("screen-form");
   }
 
-  // ═══════════════════════════════════════════════
-  // تسجيل الدخول (التاجر)
-  // ═══════════════════════════════════════════════
   function login() {
-    const phone = document.getElementById("loginPhone").value.trim();
-    const msg = document.getElementById("loginMsg");
-    const btn = document.getElementById("loginBtn");
+    var phone = document.getElementById("loginPhone").value.trim();
+    var msg = document.getElementById("loginMsg");
+    var btn = document.getElementById("loginBtn");
 
     if (!phone || phone.replace(/\D/g, "").length < 10) {
       msg.className = "msg err";
@@ -496,8 +477,8 @@
     msg.textContent = "جارٍ التحقق...";
 
     fetch(WEB_APP_URL + "?action=checkUser&phone=" + encodeURIComponent(phone))
-      .then(r => r.json())
-      .then(data => {
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
         btn.disabled = false;
 
         if (!data.ok) {
@@ -516,9 +497,9 @@
         msg.className = "msg ok";
         msg.textContent = "✅ مرحباً " + (currentUser.store || "");
 
-        setTimeout(() => loadOrders(), 500);
+        setTimeout(function() { loadOrders(); }, 500);
       })
-      .catch(err => {
+      .catch(function(err) {
         btn.disabled = false;
         msg.className = "msg err";
         msg.textContent = "خطأ في الاتصال. تحقق من الإنترنت.";
@@ -534,9 +515,6 @@
     showHome();
   }
 
-  // ═══════════════════════════════════════════════
-  // تحميل قائمة الطلبات
-  // ═══════════════════════════════════════════════
   function loadOrders() {
     if (!currentUser) { showLogin(); return; }
 
@@ -545,8 +523,8 @@
     document.getElementById("ordersList").innerHTML = "";
 
     fetch(WEB_APP_URL + "?action=orders&phone=" + encodeURIComponent(currentUser.phone))
-      .then(r => r.json())
-      .then(data => {
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
         document.getElementById("ordersLoading").style.display = "none";
 
         if (!data.ok) {
@@ -555,7 +533,7 @@
           return;
         }
 
-        const orders = data.orders || [];
+        var orders = data.orders || [];
         document.getElementById("ordersCount").textContent = orders.length;
 
         if (orders.length === 0) {
@@ -564,25 +542,25 @@
           return;
         }
 
-        let html = "";
-        orders.forEach(o => {
-          const isSold = String(o.status).includes("تم البيع");
-          html += `
-            <div class="order-card ${isSold ? 'sold' : ''}" onclick="openDetail(${o.row})">
-              <div class="order-title">🏪 ${escapeHtml(o.name || 'غير محدد')}</div>
-              <div class="order-info">📂 ${escapeHtml(o.type || '-')}</div>
-              <div class="order-info">🔢 الكمية: ${escapeHtml(o.quantity || '-')}</div>
-              <div class="order-info">📍 ${escapeHtml(o.address || '-')}</div>
-              ${isSold
-                ? '<span class="order-status status-sold">✅ تم البيع</span>'
-                : '<span class="order-status status-new">🆕 جديد</span>'}
-            </div>
-          `;
+        var html = "";
+        orders.forEach(function(o) {
+          var isSold = String(o.status).includes("تم البيع");
+          html += '<div class="order-card ' + (isSold ? 'sold' : '') + '" onclick="openDetail(' + o.row + ')">';
+          html += '<div class="order-title">🏪 ' + escapeHtml(o.name || 'غير محدد') + '</div>';
+          html += '<div class="order-info">📂 ' + escapeHtml(o.type || '-') + '</div>';
+          html += '<div class="order-info">🔢 الكمية: ' + escapeHtml(o.quantity || '-') + '</div>';
+          html += '<div class="order-info">📍 ' + escapeHtml(o.address || '-') + '</div>';
+          if (isSold) {
+            html += '<span class="order-status status-sold">✅ تم البيع</span>';
+          } else {
+            html += '<span class="order-status status-new">🆕 جديد</span>';
+          }
+          html += '</div>';
         });
 
         document.getElementById("ordersList").innerHTML = html;
       })
-      .catch(err => {
+      .catch(function(err) {
         document.getElementById("ordersLoading").style.display = "none";
         document.getElementById("ordersList").innerHTML =
           '<div class="msg err" style="display:block;">خطأ في الاتصال</div>';
@@ -590,9 +568,6 @@
       });
   }
 
-  // ═══════════════════════════════════════════════
-  // تفاصيل الطلب
-  // ═══════════════════════════════════════════════
   function openDetail(rowId) {
     if (!currentUser) return;
 
@@ -601,8 +576,8 @@
       '<div class="loading loading-dark" style="display:block;">جارٍ التحميل... <span class="spinner spinner-dark"></span></div>';
 
     fetch(WEB_APP_URL + "?action=orderDetails&row=" + rowId + "&phone=" + encodeURIComponent(currentUser.phone))
-      .then(r => r.json())
-      .then(data => {
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
         if (!data.ok) {
           document.getElementById("detailContent").innerHTML =
             '<div class="msg err" style="display:block;">' + (data.msg || "خطأ") + '</div>';
@@ -612,7 +587,7 @@
         currentOrder = data.order;
         renderDetail(currentOrder);
       })
-      .catch(err => {
+      .catch(function(err) {
         document.getElementById("detailContent").innerHTML =
           '<div class="msg err" style="display:block;">خطأ في الاتصال</div>';
         console.error(err);
@@ -620,65 +595,62 @@
   }
 
   function renderDetail(o) {
-    const isSold = String(o.status).includes("تم البيع");
+    var isSold = String(o.status).includes("تم البيع");
 
-    let html = "";
+    var html = "";
 
     if (o.imageUrl && o.imageUrl.startsWith("http")) {
-     html += '<img src="' + escapeHtml(o.imageUrl) + '" class="detail-image">';
-    html += `
-      <h2 style="text-align:center; color:#FF7F50; margin-bottom:16px;">📋 تفاصيل الطلب</h2>
-
-      <div class="detail-row">
-        <span class="lbl">🏪 اسم السوبرماركت</span>
-        <span class="val">${escapeHtml(o.name || '-')}</span>
-      </div>
-
-      <div class="detail-row">
-        <span class="lbl">📞 رقم الهاتف</span>
-        <a href="tel:${escapeHtml(o.phone || '')}" class="val" style="color:#FF7F50; text-decoration:none;">${escapeHtml(o.phone || '-')}</a>
-      </div>
-
-      <div class="detail-row">
-        <span class="lbl">📍 العنوان</span>
-        <span class="val">${escapeHtml(o.address || '-')}</span>
-      </div>
-
-      <div class="detail-row">
-        <span class="lbl">📂 الفئة</span>
-        <span class="val">${escapeHtml(o.type || '-')}</span>
-      </div>
-
-      <div class="detail-row">
-        <span class="lbl">📝 التفاصيل</span>
-        <span class="val">${escapeHtml(o.details || '-')}</span>
-      </div>
-
-      <div class="detail-row">
-        <span class="lbl">🔢 الكمية</span>
-        <span class="val">${escapeHtml(o.quantity || '-')}</span>
-      </div>
-    `;
-
-    if (isSold) {
-      html += <div class="msg ok" style="display:block; text-align:center; margin-top:16px;">✅ تم بيع هذا الطلب</div>;
-    } else {
-      html += <button class="btn btn-sold" onclick="markAsSold()" id="soldBtn">✅ تم بيع الطلب</button>;
+      html += '<img src="' + escapeHtml(o.imageUrl) + '" class="detail-image">';
     }
 
-    html += <button class="btn btn-white" style="margin-top:16px;" onclick="loadOrders()">← رجوع للطلبات</button>;
+    html += '<h2 style="text-align:center; color:#FF7F50; margin-bottom:16px;">📋 تفاصيل الطلب</h2>';
+
+    html += '<div class="detail-row">';
+    html += '<span class="lbl">🏪 اسم السوبرماركت</span>';
+    html += '<span class="val">' + escapeHtml(o.name || '-') + '</span>';
+    html += '</div>';
+
+    html += '<div class="detail-row">';
+    html += '<span class="lbl">📞 رقم الهاتف</span>';
+    html += '<a href="tel:' + escapeHtml(o.phone || '') + '" class="val" style="color:#FF7F50; text-decoration:none;">' + escapeHtml(o.phone || '-') + '</a>';
+    html += '</div>';
+
+    html += '<div class="detail-row">';
+    html += '<span class="lbl">📍 العنوان</span>';
+    html += '<span class="val">' + escapeHtml(o.address || '-') + '</span>';
+    html += '</div>';
+
+    html += '<div class="detail-row">';
+    html += '<span class="lbl">📂 الفئة</span>';
+    html += '<span class="val">' + escapeHtml(o.type || '-') + '</span>';
+    html += '</div>';
+
+    html += '<div class="detail-row">';
+    html += '<span class="lbl">📝 التفاصيل</span>';
+    html += '<span class="val">' + escapeHtml(o.details || '-') + '</span>';
+    html += '</div>';
+
+    html += '<div class="detail-row">';
+    html += '<span class="lbl">🔢 الكمية</span>';
+    html += '<span class="val">' + escapeHtml(o.quantity || '-') + '</span>';
+    html += '</div>';
+
+    if (isSold) {
+      html += '<div class="msg ok" style="display:block; text-align:center; margin-top:16px;">✅ تم بيع هذا الطلب</div>';
+    } else {
+      html += '<button class="btn btn-sold" onclick="markAsSold()" id="soldBtn">✅ تم بيع الطلب</button>';
+    }
+
+    html += '<button class="btn btn-white" style="margin-top:16px;" onclick="loadOrders()">← رجوع للطلبات</button>';
 
     document.getElementById("detailContent").innerHTML = html;
   }
 
-  // ═══════════════════════════════════════════════
-  // زر "تم بيع الطلب"
-  // ═══════════════════════════════════════════════
   function markAsSold() {
     if (!currentUser || !currentOrder) return;
     if (!confirm("هل أنت متأكد أنك بعت هذا الطلب للزبون؟")) return;
 
-    const btn = document.getElementById("soldBtn");
+    var btn = document.getElementById("soldBtn");
     if (btn) { btn.disabled = true; btn.textContent = "جارٍ التسجيل..."; }
 
     fetch(WEB_APP_URL, {
@@ -689,8 +661,8 @@
         phone: currentUser.phone
       })
     })
-    .then(r => r.json())
-    .then(data => {
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
       if (data.ok) {
         alert("✅ " + data.msg);
         loadOrders();
@@ -699,18 +671,15 @@
         if (btn) { btn.disabled = false; btn.textContent = "✅ تم بيع الطلب"; }
       }
     })
-    .catch(err => {
+    .catch(function(err) {
       alert("❌ خطأ في الاتصال");
       if (btn) { btn.disabled = false; btn.textContent = "✅ تم بيع الطلب"; }
       console.error(err);
     });
   }
 
-  // ═══════════════════════════════════════════════
-  // صورة المنتج
-  // ═══════════════════════════════════════════════
   function handleImage(event) {
-    const file = event.target.files[0];
+    var file = event.target.files[0];
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
@@ -722,9 +691,9 @@
     currentImageType = file.type;
     document.getElementById("fileLabel").textContent = "✅ " + file.name;
 
-    const reader = new FileReader();
+    var reader = new FileReader();
     reader.onload = function(e) {
-      const preview = document.getElementById("imagePreview");
+      var preview = document.getElementById("imagePreview");
       preview.src = e.target.result;
       preview.style.display = "block";
       currentImageBase64 = e.target.result.split(",")[1];
@@ -732,18 +701,15 @@
     reader.readAsDataURL(file);
   }
 
-  // ═══════════════════════════════════════════════
-  // إرسال الطلب (صاحب السوق)
-  // ═══════════════════════════════════════════════
   function submitOrder() {
-    const name     = document.getElementById("fName").value.trim();
-    const phone    = document.getElementById("fPhone").value.trim();
-    const type     = document.getElementById("fType").value;
-    const address  = document.getElementById("fAddress").value.trim();
-    const quantity = document.getElementById("fQuantity").value.trim();
-    const details  = document.getElementById("fDetails").value.trim();
-    const msg      = document.getElementById("formMsg");
-    const btn      = document.getElementById("submitBtn");
+    var name     = document.getElementById("fName").value.trim();
+    var phone    = document.getElementById("fPhone").value.trim();
+    var type     = document.getElementById("fType").value;
+    var address  = document.getElementById("fAddress").value.trim();
+    var quantity = document.getElementById("fQuantity").value.trim();
+    var details  = document.getElementById("fDetails").value.trim();
+    var msg      = document.getElementById("formMsg");
+    var btn      = document.getElementById("submitBtn");
 
     if (!name)  { msg.className = "msg err"; msg.textContent = "الرجاء إدخال اسم السوبرماركت."; return; }
     if (!phone || phone.replace(/\D/g, "").length < 10) { msg.className = "msg err"; msg.textContent = "الرجاء إدخال رقم هاتف صحيح."; return; }
@@ -771,8 +737,8 @@
         }
       })
     })
-    .then(r => r.json())
-    .then(data => {
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
       btn.disabled = false;
 
       if (data.ok) {
@@ -790,13 +756,13 @@
         msg.className = "msg ok";
         msg.textContent = "✅ تم الإرسال";
 
-        setTimeout(() => showScreen("screen-thanks"), 800);
+        setTimeout(function() { showScreen("screen-thanks"); }, 800);
       } else {
         msg.className = "msg err";
         msg.textContent = "❌ " + (data.msg || "خطأ في الإرسال");
       }
     })
-    .catch(err => {
+    .catch(function(err) {
       btn.disabled = false;
       msg.className = "msg err";
       msg.textContent = "❌ خطأ في الاتصال";
@@ -804,11 +770,8 @@
     });
   }
 
-  // ═══════════════════════════════════════════════
-  // عند فتح التطبيق
-  // ═══════════════════════════════════════════════
-  window.addEventListener("load", () => {
-    const saved = localStorage.getItem("net_user");
+  window.addEventListener("load", function() {
+    var saved = localStorage.getItem("net_user");
     if (saved) {
       try {
         currentUser = JSON.parse(saved);
