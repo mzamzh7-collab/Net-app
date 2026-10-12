@@ -622,9 +622,8 @@
     let html = "";
 
     if (o.imageUrl && o.imageUrl.startsWith("http")) {
-      html += <img src="${escapeHtml(o.imageUrl)}" class="detail-image" onerror="this.style.display='none'">;
     }
-
+    html += `<img src="${escapeHtml(o.imageUrl)}" class="detail-image" onerror="this.style.display='none'">`;
     html += `
       <h2 style="text-align:center; color:#FF7F50; margin-bottom:16px;">📋 تفاصيل الطلب</h2>
 
