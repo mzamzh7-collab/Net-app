@@ -515,55 +515,51 @@
     showHome();
   }
 
-  function loadOrders() {
+function loadOrders() {
     if (!currentUser) { showLogin(); return; }
-
     showScreen("screen-orders");
     document.getElementById("ordersLoading").style.display = "block";
     document.getElementById("ordersList").innerHTML = "";
 
     fetch(WEB_APP_URL + "?action=orders&phone=" + encodeURIComponent(currentUser.phone))
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
+      .then(r => r.json())
+      .then(data => {
         document.getElementById("ordersLoading").style.display = "none";
-
         if (!data.ok) {
-          document.getElementById("ordersList").innerHTML =
-            '<div class="msg err" style="display:block;">' + (data.msg || "خطأ") + '</div>';
+          document.getElementById("ordersList").innerHTML = '<div class="msg err" style="display:block;">' + (data.msg || "خطأ") + '</div>';
           return;
         }
-
-        var orders = data.orders || [];
+        const orders = data.orders || [];
         document.getElementById("ordersCount").textContent = orders.length;
-
         if (orders.length === 0) {
-          document.getElementById("ordersList").innerHTML =
-            '<div class="card" style="text-align:center; color:#666; padding:30px;">لا توجد طلبات جديدة حالياً</div>';
+          document.getElementById("ordersList").innerHTML = '<div class="card" style="text-align:center; color:#666; padding:30px;">لا توجد طلبات جديدة حالياً</div>';
           return;
         }
-
-        var html = "";
-        orders.forEach(function(o) {
-          var isSold = String(o.status).includes("تم البيع");
-          html += '<div class="order-card ' + (isSold ? 'sold' : '') + '" onclick="openDetail(' + o.row + ')">';
+        let html = "";
+        orders.forEach(o => {
+          const isSold = String(o.status).includes("تم البيع");
+          const soldClass = isSold ? 'sold' : '';
+          const statusHtml = isSold ? '<span class="order-status status-sold">✅ تم البيع</span>' : '<span class="order-status status-new">🆕 جديد</span>';
+          
+          let imageHtml = '';
+          if (o.imageUrl && o.imageUrl.startsWith('http')) {
+            imageHtml = '<img src="' + escapeHtml(o.imageUrl) + '" class="order-thumb" onerror="this.style.display=\'none\'">';
+          }
+          
+          html += '<div class="order-card ' + soldClass + '" onclick="openDetail(' + o.row + ')">';
+          html += imageHtml;
           html += '<div class="order-title">🏪 ' + escapeHtml(o.name || 'غير محدد') + '</div>';
           html += '<div class="order-info">📂 ' + escapeHtml(o.type || '-') + '</div>';
           html += '<div class="order-info">🔢 الكمية: ' + escapeHtml(o.quantity || '-') + '</div>';
           html += '<div class="order-info">📍 ' + escapeHtml(o.address || '-') + '</div>';
-          if (isSold) {
-            html += '<span class="order-status status-sold">✅ تم البيع</span>';
-          } else {
-            html += '<span class="order-status status-new">🆕 جديد</span>';
-          }
+          html += statusHtml;
           html += '</div>';
         });
-
         document.getElementById("ordersList").innerHTML = html;
       })
-      .catch(function(err) {
+      .catch(err => {
         document.getElementById("ordersLoading").style.display = "none";
-        document.getElementById("ordersList").innerHTML =
-          '<div class="msg err" style="display:block;">خطأ في الاتصال</div>';
+        document.getElementById("ordersList").innerHTML = '<div class="msg err" style="display:block;">خطأ في الاتصال</div>';
         console.error(err);
       });
   }
