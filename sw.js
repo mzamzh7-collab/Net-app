@@ -1,24 +1,57 @@
-﻿const CACHE = "net-app-v1";
+const CACHE_VERSION = "net-app-v3";
 const FILES = ["./", "./index.html", "./manifest.json"];
 
-self.addEventListener("install", e => {
+// ═══ التثبيت ═══
+self.addEventListener("install", function(e) {
   e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(FILES))
+    caches.open(CACHE_VERSION).then(function(cache) {
+      return cache.addAll(FILES);
+    }).then(function() {
+      return self.skipWaiting();
+    })
   );
-  self.skipWaiting();
 });
 
-self.addEventListener("activate", e => {
+// ═══ التنشيط: حذف الـ Cache القديم ═══
+self.addEventListener("activate", function(e) {
   e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    )
+    caches.keys().then(function(keys) {
+      return Promise.all(
+        keys.filter(function(k) { return k !== CACHE_VERSION; })
+            .map(function(k) { return caches.delete(k); })
+      );
+    }).then(function() {
+      return self.clients.claim();
+    })
   );
-  self.clients.claim();
 });
 
-self.addEventListener("fetch", e => {
-  e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request))
-  );
+// ═══ الجلب: الشبكة أولاً، ثم الـ Cache ═══
+self.addEventListener("fetch", function(e) {
+  if (e.request.url.startsWith(self.location.origin)) {
+    e.respondWith(
+      fetch(e.request).then(function(response) {
+        var responseClone = response.clone();
+        caches.open(CACHE_VERSION).then(function(cache) {
+          cache.put(e.request, responseClone);
+        });
+        return response;
+      }).catch(function() {
+        return caches.match(e.request);
+      })
+    );
+  } else {
+    e.respondWith(
+      fetch(e.request).catch(function() {
+        return caches.match(e.request);
+      })
+    );
+  }
+});
+
+// ═══ رسالة من التطبيق ═══
+self.addEventListener("message", function(e) {
+  if (e.data === "skipWaiting") {
+    self.skipWaiting();
+  }
 });
