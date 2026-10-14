@@ -655,97 +655,179 @@
       });
   }
 
-  function logout() {
+function logout() {
     if (!confirm("هل تريد تسجيل الخروج؟")) return;
+
+    // مسح Cache المستخدم
+    if (currentUser) {
+      var keys = Object.keys(localStorage);
+      keys.forEach(function(key) {
+        if (key.indexOf("net_orders_") === 0 || key.indexOf("net_order_") === 0) {
+          localStorage.removeItem(key);
+        }
+      });
+    }
+
     currentUser = null;
     localStorage.removeItem("net_user");
     document.getElementById("loginPhone").value = "";
     showHome();
   }
-
   // ═══════════════════════════════════════════════
   // قائمة الطلبات
+  // ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+  // قائمة الطلبات (مع Cache + تحديث صامت)
   // ═══════════════════════════════════════════════
   function loadOrders() {
     if (!currentUser) { showLogin(); return; }
     showScreen("screen-orders");
-    document.getElementById("ordersLoading").style.display = "block";
-    document.getElementById("ordersList").innerHTML = "";
 
+    var ordersList = document.getElementById("ordersList");
+    var ordersCount = document.getElementById("ordersCount");
+    var ordersLoading = document.getElementById("ordersLoading");
+
+    // ═══ 1. عرض المخزّن فورًا ═══
+    var cacheKey = "net_orders_" + currentUser.phone;
+    var cached = localStorage.getItem(cacheKey);
+    var hasCache = false;
+
+    if (cached) {
+      try {
+        var cachedOrders = JSON.parse(cached);
+        if (cachedOrders && cachedOrders.length > 0) {
+          ordersCount.textContent = cachedOrders.length;
+          ordersList.innerHTML = buildOrdersHtml(cachedOrders);
+          ordersLoading.style.display = "none";
+          hasCache = true;
+        }
+      } catch (e) {}
+    }
+
+    // إذا لا يوجد Cache، أظهر التحميل
+    if (!hasCache) {
+      ordersLoading.style.display = "block";
+      ordersList.innerHTML = "";
+    }
+
+    // ═══ 2. جلب البيانات الجديدة (تحديث صامت) ═══
     fetch(WEB_APP_URL + "?action=orders&phone=" + encodeURIComponent(currentUser.phone))
       .then(function(r) { return r.json(); })
       .then(function(data) {
-        document.getElementById("ordersLoading").style.display = "none";
+        ordersLoading.style.display = "none";
+
         if (!data.ok) {
-          document.getElementById("ordersList").innerHTML = '<div class="msg err" style="display:block;">' + (data.msg || "خطأ") + '</div>';
-          return;
-        }
-        var orders = data.orders || [];
-        document.getElementById("ordersCount").textContent = orders.length;
-        if (orders.length === 0) {
-          document.getElementById("ordersList").innerHTML = '<div class="card" style="text-align:center; color:#666; padding:30px;">لا توجد طلبات جديدة حالياً</div>';
-          return;
-        }
-
-        var html = "";
-        orders.forEach(function(o) {
-          var isSold = String(o.status).indexOf("تم البيع") !== -1;
-          var soldClass = isSold ? 'sold' : '';
-          var statusHtml = isSold ? '<span class="order-status status-sold">✅ تم البيع</span>' : '<span class="order-status status-new">🆕 جديد</span>';
-
-          // صورة أول منتج
-          var imageHtml = '';
-          if (o.items && o.items.length > 0 && o.items[0].img && o.items[0].img.indexOf('http') === 0) {
-            imageHtml = '<img src="' + escapeHtml(o.items[0].img) + '" class="order-thumb" onerror="this.style.display=\'none\'">';
+          if (!hasCache) {
+            ordersList.innerHTML = '<div class="msg err" style="display:block;">' + (data.msg || "خطأ") + '</div>';
           }
+          return;
+        }
 
-          var itemsCount = o.itemsCount || (o.items ? o.items.length : 0);
+        var orders = data.orders || [];
+        ordersCount.textContent = orders.length;
 
-          html += '<div class="order-card ' + soldClass + '" onclick="openDetail(' + o.row + ')">';
-          html += imageHtml;
-          html += '<div class="order-title">🏪 ' + escapeHtml(o.name || 'غير محدد') + '</div>';
-          if (o.category) html += '<div class="order-info">📂 ' + escapeHtml(o.category) + '</div>';
-          html += '<div class="order-info">📦 عدد المنتجات: ' + itemsCount + '</div>';
-          html += '<div class="order-info">📍 ' + escapeHtml(o.address || '-') + '</div>';
-          html += statusHtml;
-          html += '</div>';
-        });
-        document.getElementById("ordersList").innerHTML = html;
+        // حفظ في Cache
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(orders));
+        } catch (e) {}
+
+        // تحديث العرض
+        if (orders.length === 0) {
+          ordersList.innerHTML = '<div class="card" style="text-align:center; color:#666; padding:30px;">لا توجد طلبات جديدة حالياً</div>';
+          return;
+        }
+
+        ordersList.innerHTML = buildOrdersHtml(orders);
       })
       .catch(function(err) {
-        document.getElementById("ordersLoading").style.display = "none";
-        document.getElementById("ordersList").innerHTML = '<div class="msg err" style="display:block;">خطأ في الاتصال</div>';
+        ordersLoading.style.display = "none";
+        if (!hasCache) {
+          ordersList.innerHTML = '<div class="msg err" style="display:block;">خطأ في الاتصال</div>';
+        }
         console.error(err);
       });
   }
 
+  // ═══ دالة مساعدة: بناء HTML للطلبات ═══
+  function buildOrdersHtml(orders) {
+    var html = "";
+    orders.forEach(function(o) {
+      var isSold = String(o.status).indexOf("تم البيع") !== -1;
+      var soldClass = isSold ? 'sold' : '';
+      var statusHtml = isSold ? '<span class="order-status status-sold">✅ تم البيع</span>' : '<span class="order-status status-new">🆕 جديد</span>';
+
+      var imageHtml = '';
+      if (o.items && o.items.length > 0 && o.items[0].img && o.items[0].img.indexOf('http') === 0) {
+        imageHtml = '<img src="' + escapeHtml(o.items[0].img) + '" class="order-thumb" onerror="this.style.display=\'none\'">';
+      }
+
+      var itemsCount = o.itemsCount || (o.items ? o.items.length : 0);
+
+      html += '<div class="order-card ' + soldClass + '" onclick="openDetail(' + o.row + ')">';
+      html += imageHtml;
+      html += '<div class="order-title">🏪 ' + escapeHtml(o.name || 'غير محدد') + '</div>';
+      if (o.category) html += '<div class="order-info">📂 ' + escapeHtml(o.category) + '</div>';
+      html += '<div class="order-info">📦 عدد المنتجات: ' + itemsCount + '</div>';
+      html += '<div class="order-info">📍 ' + escapeHtml(o.address || '-') + '</div>';
+      html += statusHtml;
+      html += '</div>';
+    });
+    return html;
+  }
   // ═══════════════════════════════════════════════
   // تفاصيل الطلب
+  // ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+  // تفاصيل الطلب (مع Cache + تحديث صامت)
   // ═══════════════════════════════════════════════
   function openDetail(rowId) {
     if (!currentUser) return;
     showScreen("screen-detail");
-    document.getElementById("detailContent").innerHTML =
-      '<div class="loading loading-dark" style="display:block;">جارٍ التحميل... <span class="spinner spinner-dark"></span></div>';
 
+    var detailContent = document.getElementById("detailContent");
+    var cacheKey = "net_order_" + rowId + "_" + currentUser.phone;
+    var cached = localStorage.getItem(cacheKey);
+    var hasCache = false;
+
+    // ═══ 1. عرض المخزّن فورًا ═══
+    if (cached) {
+      try {
+        var cachedOrder = JSON.parse(cached);
+        renderDetail(cachedOrder);
+        hasCache = true;
+      } catch (e) {}
+    }
+
+    if (!hasCache) {
+      detailContent.innerHTML = '<div class="loading loading-dark" style="display:block;">جارٍ التحميل... <span class="spinner spinner-dark"></span></div>';
+    }
+
+    // ═══ 2. جلب البيانات الجديدة (تحديث صامت) ═══
     fetch(WEB_APP_URL + "?action=orderDetails&row=" + rowId + "&phone=" + encodeURIComponent(currentUser.phone))
       .then(function(r) { return r.json(); })
       .then(function(data) {
         if (!data.ok) {
-          document.getElementById("detailContent").innerHTML =
-            '<div class="msg err" style="display:block;">' + (data.msg || "خطأ") + '</div>';
+          if (!hasCache) {
+            detailContent.innerHTML = '<div class="msg err" style="display:block;">' + (data.msg || "خطأ") + '</div>';
+          }
           return;
         }
+
         currentOrder = data.order;
-        renderDetail(currentOrder);
+
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(data.order));
+        } catch (e) {}
+
+        renderDetail(data.order);
       })
       .catch(function(err) {
-        document.getElementById("detailContent").innerHTML =
-          '<div class="msg err" style="display:block;">خطأ في الاتصال</div>';
+        if (!hasCache) {
+          detailContent.innerHTML = '<div class="msg err" style="display:block;">خطأ في الاتصال</div>';
+        }
         console.error(err);
       });
   }
-
   function renderDetail(o) {
     var isSold = String(o.status).indexOf("تم البيع") !== -1;
 
