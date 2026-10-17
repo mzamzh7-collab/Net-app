@@ -44,20 +44,10 @@
             overflow: hidden;
         }
 
-        /* شاشة الترحيب */
-        #step-welcome {
-            display: block;
-        }
-        
-        /* شاشة إدخال الرقم */
-        #step-phone {
-            display: none;
-        }
-
-        /* شاشة إدخال كود التحقق */
-        #step-otp {
-            display: none;
-        }
+        /* إخفاء الشاشات في البداية */
+        #step-welcome { display: block; }
+        #step-phone { display: none; }
+        #step-otp { display: none; }
 
         .logo {
             font-size: 40px;
@@ -93,7 +83,7 @@
             text-align: center;
             margin-bottom: 20px;
             transition: border-color 0.3s;
-            direction: ltr; /* لجعل الأرقام تكتب من اليسار */
+            direction: ltr;
         }
 
         input:focus {
@@ -114,35 +104,14 @@
             transition: background-color 0.3s, transform 0.1s;
         }
 
-        button:hover {
-            background-color: #0056b3;
-        }
+        button:hover { background-color: #0056b3; }
+        button:active { transform: scale(0.98); }
 
-        button:active {
-            transform: scale(0.98);
-        }
-
-        .btn-peach {
-            background-color: var(--peach);
-        }
-
-        .btn-peach:hover {
-            background-color: #e67e5a;
-        }
-
-        .hidden {
-            display: none !important;
-        }
+        .btn-peach { background-color: var(--peach); }
+        .btn-peach:hover { background-color: #e67e5a; }
 
         .error-msg {
             color: red;
-            font-size: 14px;
-            margin-bottom: 15px;
-            display: none;
-        }
-
-        .success-msg {
-            color: green;
             font-size: 14px;
             margin-bottom: 15px;
             display: none;
@@ -183,16 +152,15 @@
         <!-- 3. شاشة إدخال كود التحقق OTP -->
         <div id="step-otp">
             <h2>كود التحقق</h2>
-            <p class="description">أدخل الكود المكون من 6 أرقام الذي تم إرساله إلى هاتفك.</p>
+            <p class="description">أدخل الكود المكون من 6 أرقام.</p>
             <p class="error-msg" id="otp-error">الكود غير صحيح.</p>
             <input type="number" id="otp-input" placeholder="------" maxlength="6">
             <button onclick="verifyOTP()" class="btn-peach" id="btn-verify-otp">تحقق ودخول</button>
             
-            <!-- مؤقت إعادة الإرسال -->
             <div id="recaptcha-container"></div>
             <a class="link" id="resend-link" onclick="sendOTP()" style="display:none;">إعادة إرسال الكود</a>
             <span class="link" id="timer-text" style="display:none;">يمكنك الإعادة بعد <span id="timer">60</span> ثانية</span>
-            
+            <br>
             <a class="link" onclick="showStep('step-phone')">تغيير رقم الهاتف</a>
         </div>
 
@@ -200,11 +168,9 @@
 
     <!-- سكربت Firebase -->
     <script type="module">
-        // استيراد دوال Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-        // إعدادات Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDrVVzXE_hd-5HTC1CZoVOU7zGNx7TDQQ",
             authDomain: "net-732c9.firebaseapp.com",
@@ -214,47 +180,36 @@
             appId: "1:928563175887:web:57a9102491dcb8a96572ba"
         };
 
-        // تهيئة Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        auth.languageCode = 'ar'; // لغة رسالة الـ SMS
+        auth.languageCode = 'ar';
 
         let confirmationResult = null;
         let recaptchaVerifier = null;
         let phoneNumberToVerify = "";
 
-        // دوال التنقل بين الشاشات (يجب أن تكون عامة لتستدعيها أزرار HTML)
         window.showStep = function(stepId) {
             document.getElementById('step-welcome').style.display = 'none';
             document.getElementById('step-phone').style.display = 'none';
             document.getElementById('step-otp').style.display = 'none';
-            
             document.getElementById(stepId).style.display = 'block';
-
-            // إخفاء رسائل الخطأ عند التنقل
             document.getElementById('phone-error').style.display = 'none';
             document.getElementById('otp-error').style.display = 'none';
         };
 
-        // دالة إعداد reCAPTCHA (مطلوب من Firebase لمنع الاحتيال)
         window.setupRecaptcha = function() {
             if (!recaptchaVerifier) {
                 recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                    'size': 'invisible',
-                    'callback': (response) => {
-                        // reCAPTCHA solved
-                    }
+                    'size': 'invisible'
                 });
             }
         };
 
-        // دالة إرسال كود الـ OTP
         window.sendOTP = async function() {
             const phoneInput = document.getElementById('phone-input').value.trim();
             const errorMsg = document.getElementById('phone-error');
             const btn = document.getElementById('btn-send-otp');
 
-            // التحقق من صحة الرقم (يبدأ بـ 07 وطوله 11)
             if (!phoneInput.startsWith('07') || phoneInput.length !== 11) {
                 errorMsg.style.display = 'block';
                 errorMsg.innerText = "الرجاء إدخال رقم صحيح يبدأ بـ 07 ويتكون من 11 رقماً.";
@@ -265,31 +220,33 @@
             btn.innerText = "جاري الإرسال...";
             btn.disabled = true;
 
-            // تحويل الرقم للصيغة الدولية (964...)
             phoneNumberToVerify = "+964" + phoneInput.substring(1);
+
+            // 🔥 تخطي جوجل لرقم الاختبار
+            if (phoneNumberToVerify === "+9647710669750") {
+                showStep('step-otp');
+                startTimer();
+                btn.innerText = "إرسال الكود";
+                btn.disabled = false;
+                return; 
+            }
 
             try {
                 setupRecaptcha();
                 const appVerifier = recaptchaVerifier;
-                
-                // إرسال الكود عبر Firebase
                 confirmationResult = await signInWithPhoneNumber(auth, phoneNumberToVerify, appVerifier);
-                
-                // الانتقال لشاشة الـ OTP
                 showStep('step-otp');
                 startTimer();
-                
             } catch (error) {
-                console.error("خطأ في إرسال الكود:", error);
+                console.error("خطأ:", error);
                 errorMsg.style.display = 'block';
-                errorMsg.innerText = "حدث خطأ. قد يكون الرقم غير صحيح أو تم تجاوز الحد المسموح. حاول لاحقاً.";
+                errorMsg.innerText = "حدث خطأ في إرسال الرسالة. حاول لاحقاً.";
             } finally {
                 btn.innerText = "إرسال الكود";
                 btn.disabled = false;
             }
         };
 
-        // دالة التحقق من الكود
         window.verifyOTP = async function() {
             const otpInput = document.getElementById('otp-input').value.trim();
             const errorMsg = document.getElementById('otp-error');
@@ -305,32 +262,34 @@
             btn.innerText = "جاري التحقق...";
             btn.disabled = true;
 
-            try {
-                if (!confirmationResult) {
-                    throw new Error("لم يتم طلب الكود بعد.");
+            // 🔥 التحقق من رقم الاختبار
+            if (phoneNumberToVerify === "+9647710669750") {
+                if (otpInput === "123456") {
+                    alert("✅ تم التحقق بنجاح!\nأهلاً بك في التطبيق.");
+                    // هنا سننتقل للصفحة الرئيسية لاحقاً
+                } else {
+                    errorMsg.style.display = 'block';
+                    errorMsg.innerText = "الكود غير صحيح (تذكر أن الكود هو 123456).";
                 }
+                btn.innerText = "تحقق ودخول";
+                btn.disabled = false;
+                return;
+            }
 
-                // التحقق من الكود عبر Firebase
-                const result = await confirmationResult.confirm(otpInput);
-                const user = result.user;
-                
-                console.log("تم تسجيل الدخول بنجاح:", user.phoneNumber);
-                
-                // TODO: هنا سنضع الكود للانتقال إلى الصفحة الرئيسية (العروض)
+            // التحقق الحقيقي (مستقبلاً)
+            try {
+                if (!confirmationResult) throw new Error("لم يتم طلب الكود بعد.");
+                await confirmationResult.confirm(otpInput);
                 alert("✅ تم التحقق بنجاح!\nأهلاً بك في التطبيق.");
-                
-                // سنقوم بإضافة كود الانتقال للصفحة الرئيسية في الخطوة القادمة
-
             } catch (error) {
-                console.error("خطأ في التحقق:", error);
+                console.error("خطأ:", error);
                 errorMsg.style.display = 'block';
-                errorMsg.innerText = "الكود غير صحيح أو انتهت صلاحيته. حاول مرة أخرى.";
+                errorMsg.innerText = "الكود غير صحيح أو انتهت صلاحيته.";
                 btn.innerText = "تحقق ودخول";
                 btn.disabled = false;
             }
         };
 
-        // مؤقت إعادة إرسال الكود
         window.startTimer = function() {
             let timeLeft = 60;
             const timerText = document.getElementById('timer-text');
@@ -344,7 +303,6 @@
             const interval = setInterval(() => {
                 timeLeft--;
                 timerSpan.innerText = timeLeft;
-
                 if (timeLeft <= 0) {
                     clearInterval(interval);
                     timerText.style.display = 'none';
