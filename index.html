@@ -37,8 +37,8 @@
   .profile-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--turquoise); background: #eee; }
   .edit-icon-wrapper { position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; z-index: 10; cursor: pointer; }
   .edit-icon { background: var(--peach); color: white; width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; font-size: 14px; pointer-events: none; }
-  .edit-icon-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; margin {: 0; padding:  background0; }
-  .settings-list { list-style:: none; padding: 0; rgba }
+  .edit-icon-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; margin: 0; padding: 0; }
+  .settings-list { list-style: none; padding: 0; }
   .settings-list li { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 16px; font-weight: bold; }
   .settings-list li:last-child { border-bottom: none; }
   .settings-list li:hover { background: #f9f9f9; }
@@ -62,7 +62,7 @@
   .preview-img { width: 100%; max-height: 150px; object-fit: contain; border-radius: 12px; margin-top: 8px; display: none; background: #eee; }
   .orders-header { display: flex; justify-content: space-between; align-items: center; color: var(--white); margin-bottom: 16px; padding: 0 4px; }
   .orders-header h2 { font-size: 20px; }
-  .orders-header .count(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 14px; }
+  .orders-header .count { background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 14px; }
   .refresh-btn { background: transparent; border: none; color: var(--white); font-size: 24px; cursor: pointer; padding: 8px; vertical-align: middle; }
   .trader-order-card { background: var(--turquoise); color: var(--white); border-radius: 16px; padding: 18px; margin-bottom: 14px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.15); transition: transform 0.15s; }
   .trader-order-card:hover { transform: translateY(-2px); }
@@ -98,6 +98,7 @@
 </style>
 </head>
 <body>
+
   <div id="auth-container" style="display: none;">
     <div class="screen" id="step-phone">
       <div class="card" style="margin-top:50px;">
@@ -333,6 +334,7 @@
       <div class="nav-icon"><i class="fa-solid fa-house"></i></div>الرئيسية
     </div>
   </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
@@ -359,14 +361,7 @@
     let currentStatus = 'pending';
     let currentAdminTab = 'traders';
     
-    // ═══════════════════════════════════════════════
-    // قائمة أرقام المديرين العامين (يمكنك إضافة حتى 3 أرقام)
-    // ═══════════════════════════════════════════════
-    const MAIN_ADMIN_PHONES = [
-      "+9647710669750", // المدير الأول (أنت)
-      // "+9647700000000", // ضع رقم المدير الثاني هنا
-      // "+9647701111111"  // ضع رقم المدير الثالث هنا
-    ];
+    const MAIN_ADMIN_PHONES = [ "+9647710669750" ];
 
     if(localStorage.getItem('net_cart')) {
       try { cart = JSON.parse(localStorage.getItem('net_cart')) || []; } catch(e) { cart = []; }
@@ -397,8 +392,7 @@
 
       if(currentUserPhone === "زائر" || !currentUserPhone) return;
 
-      // 1. التحقق من قائمة المديرين العامين
-      if (MAIN_ADMIN_PHONES.includes(currentUserPhone) || currentUserPhone === "07710669750") {
+      if (MAIN_ADMIN_PHONES.includes(currentUserPhone) || currentUserPhone === "+9647710669750") {
         currentRole = 'admin';
         document.getElementById('profile-name').innerText = "المدير العام";
         document.getElementById('profile-status').innerHTML = '<span class="status-badge status-active">مدير عام</span>';
@@ -414,7 +408,6 @@
         return;
       }
 
-      // 2. التحقق من المسوقين الميدانيين
       try {
         const adminDoc = await getDoc(doc(db, "admins", currentUserPhone));
         if (adminDoc.exists()) {
@@ -434,7 +427,6 @@
         }
       } catch(e) { console.log("لا يوجد مسوقين"); }
 
-      // 3. التجار والسوبر ماركت
       try {
         const userDoc = await getDoc(doc(db, "users", currentUserPhone));
         if (userDoc.exists()) {
