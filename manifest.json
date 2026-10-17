@@ -1,26 +1,20 @@
-﻿{
-  "name": "Net - مندوب إلكتروني",
+{
+  "name": "Net",
   "short_name": "Net",
-  "description": "تطبيق مندوب إلكتروني - كل ما تحتاجه في السوبر ماركت",
   "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#40E0D0",
   "theme_color": "#40E0D0",
-  "lang": "ar",
-  "dir": "rtl",
   "icons": [
     {
       "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
