@@ -61,7 +61,6 @@
   .order-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; color: var(--dark); }
   .order-info { font-size: 14px; color: var(--gray); margin-bottom: 4px; }
 
-  /* تنسيقات نموذج الطلب */
   .item-box { background: #f9f9f9; border: 2px solid #ddd; border-radius: 12px; padding: 14px; margin-bottom: 12px; position: relative; }
   .item-box .item-number { display: inline-block; background: var(--peach); color: var(--white); width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: bold; font-size: 14px; margin-bottom: 8px; }
   .item-box .remove-btn { position: absolute; top: 10px; left: 10px; background: #dc3545; color: var(--white); border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 16px; cursor: pointer; font-weight: bold; }
@@ -72,7 +71,6 @@
   .file-input-btn { display: block; width: 100%; padding: 12px; background: var(--white); border: 2px dashed var(--peach); border-radius: 12px; color: var(--peach); font-weight: bold; text-align: center; font-size: 14px; }
   .preview-img { width: 100%; max-height: 150px; object-fit: contain; border-radius: 12px; margin-top: 8px; display: none; background: #eee; }
 
-  /* تنسيقات صفحة التاجر */
   .orders-header { display: flex; justify-content: space-between; align-items: center; color: var(--white); margin-bottom: 16px; padding: 0 4px; }
   .orders-header h2 { font-size: 20px; }
   .orders-header .count { background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 14px; }
@@ -100,19 +98,18 @@
 </head>
 <body>
 
-  <!-- شاشة تسجيل الدخول (OTP) -->
+  <!-- شاشة تسجيل الدخول -->
   <div id="auth-container" style="display: none;">
     <div class="screen" id="step-phone">
       <div class="card" style="margin-top:50px;">
         <h2 style="text-align:center; color:var(--peach);">🔐 تأكيد هوية التاجر</h2>
         <p style="text-align:center; color:#666; font-size:14px; margin-bottom:16px;">أدخل رقم هاتفك للاطلاع على الطلبات</p>
-        
         <input type="tel" id="phone-input" placeholder="07XXXXXXXXX" maxlength="11" style="text-align:center; direction:ltr;">
         <p class="msg err" id="phone-error">الرجاء إدخال رقم صحيح.</p>
         
         <button class="btn" onclick="sendOTP()" id="btn-send-otp">إرسال الكود</button>
         
-        <!-- زر دخول سريع للمدير -->
+        <!-- زر الدخول السريع -->
         <button class="btn btn-white" onclick="quickAdminLogin()" style="margin-top:10px; border-color: var(--turquoise); color: var(--turquoise);">
            دخول سريع كمدير (للتجربة)
         </button>
@@ -137,7 +134,6 @@
     <div class="brand">مندوب إلكتروني</div>
   </div>
 
-  <!-- الصفحة الرئيسية (العروض) -->
   <div class="screen active" id="screen-home">
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showScreen('screen-drivers')"><i class="fa-solid fa-truck"></i> اطلب سائق</button>
@@ -149,14 +145,12 @@
     <div id="offers-list"></div>
   </div>
 
-  <!-- صفحة السائقين -->
   <div class="screen" id="screen-drivers">
     <h2 style="color:var(--white); margin-bottom:15px; text-align:center;">🚚 السائقون المتاحون</h2>
     <div id="drivers-list"></div>
     <button class="btn btn-white" style="margin-top:15px;" onclick="showScreen('screen-home')"><i class="fa-solid fa-arrow-right"></i> رجوع للرئيسية</button>
   </div>
 
-  <!-- صفحة إضافة عرض -->
   <div class="screen" id="screen-form-product">
     <div class="card">
       <h2 style="text-align:center; color:var(--peach); margin-bottom:15px;">➕ إضافة عرض جديد</h2>
@@ -178,7 +172,6 @@
     </div>
   </div>
 
-  <!-- صفحة إنشاء طلب -->
   <div class="screen" id="screen-form">
     <div class="card">
       <h2 style="text-align:center; margin-bottom:16px;">🛒 طلب جديد</h2>
@@ -233,7 +226,6 @@
     </div>
   </div>
 
-  <!-- صفحة شكراً -->
   <div class="screen" id="screen-thanks">
     <div class="card" style="text-align:center;">
       <div style="font-size:70px; margin-bottom:16px;">✅</div>
@@ -244,7 +236,6 @@
     </div>
   </div>
 
-  <!-- صفحة التاجر (عرض الطلبات) -->
   <div class="screen" id="screen-orders">
     <div class="orders-header">
       <h2>📋 الطلبات</h2>
@@ -257,12 +248,10 @@
     <button class="btn btn-white" style="margin-top:20px;" onclick="showScreen('screen-home')">🏠 الرئيسية</button>
   </div>
 
-  <!-- صفحة تفاصيل الطلب -->
   <div class="screen" id="screen-detail">
     <div class="card" id="detailContent"></div>
   </div>
 
-  <!-- صفحة الإعدادات -->
   <div class="screen" id="screen-settings">
     <div class="card profile-container">
       <div class="profile-img-wrapper">
@@ -292,7 +281,6 @@
     <button id="logout-btn" class="hidden btn" style="background:#dc3545; margin-top:10px;" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
   </div>
 
-  <!-- صفحة تعديل الحساب -->
   <div class="screen" id="screen-edit-account">
     <div class="card">
       <h2 style="text-align:center; color:var(--peach); margin-bottom:15px;">👤 تعديل الحساب</h2>
@@ -303,7 +291,6 @@
     </div>
   </div>
 
-  <!-- صفحة إعدادات السائق -->
   <div class="screen" id="screen-driver-settings">
     <div class="card">
       <h2 style="text-align:center; color:var(--turquoise); margin-bottom:15px;">🚚 إعدادات السائق</h2>
@@ -317,7 +304,6 @@
     </div>
   </div>
 
-  <!-- شريط التنقل السفلي -->
   <div class="bottom-nav" id="bottom-nav">
     <div class="nav-item" onclick="showScreen('screen-settings')">
       <div class="nav-icon"><i class="fa-solid fa-gear"></i></div>الإعدادات
@@ -413,7 +399,6 @@
       window.scrollTo(0, 0);
     };
 
-    // دوال العروض والسائقين
     async function loadOffers() {
       const offersList = document.getElementById('offers-list');
       offersList.innerHTML = '<p style="color:white; text-align:center;">جاري التحميل...</p>'; 
@@ -519,7 +504,6 @@
       } finally { btn.disabled = false; }
     };
 
-    // إعدادات السائق
     window.saveDriver = async function() {
       const name = document.getElementById('driver-name').value.trim();
       const area = document.getElementById('driver-area').value.trim();
@@ -547,7 +531,6 @@
       }
     };
 
-    // تعديل الحساب
     window.saveAccount = async function() {
       const newName = document.getElementById('edit-name').value.trim();
       const msg = document.getElementById('account-msg');
@@ -606,7 +589,6 @@
       reader.readAsDataURL(file);
     };
 
-    // إنشاء طلب
     window.showOrderForm = function() {
       showScreen('screen-form');
       if (document.getElementById("itemsContainer").children.length === 0) {
@@ -717,7 +699,6 @@
       }
     };
 
-    // صفحة التاجر
     window.loadOrders = async function() {
       showScreen("screen-orders");
       const ordersList = document.getElementById("ordersList");
@@ -823,7 +804,6 @@
       }
     };
 
-    // تسجيل الدخول
     window.showLogin = function() {
       document.getElementById('auth-container').style.display = 'block';
       document.getElementById('step-phone').classList.add('active');
@@ -841,11 +821,18 @@
       document.getElementById(stepId).classList.add('active');
     };
 
-    // إضافة دالة الدخول السريع للمدير
+    // إصلاح الدخول السريع: إغلاق النافذة وفتح الطلبات مباشرة
     window.quickAdminLogin = function() {
       localStorage.setItem('loggedIn', 'true');
       localStorage.setItem('userPhone', ADMIN_PHONE);
-      window.location.reload();
+      document.getElementById('auth-container').style.display = 'none';
+      document.getElementById('profile-phone').innerText = ADMIN_PHONE;
+      document.getElementById('profile-name').innerText = "المدير (الإدارة)";
+      document.getElementById('login-btn').classList.add('hidden');
+      document.getElementById('logout-btn').classList.remove('hidden');
+      document.getElementById('admin-rate-btn').classList.remove('hidden');
+      document.getElementById('admin-driver-btn').classList.remove('hidden');
+      loadOrders(); // فتح صفحة الطلبات مباشرة
     };
 
     window.sendOTP = async function() {
@@ -883,7 +870,14 @@
         if (otpInput === "123456") { 
             localStorage.setItem('loggedIn', 'true'); 
             localStorage.setItem('userPhone', phoneNumberToVerify);
-            window.location.reload();
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('profile-phone').innerText = phoneNumberToVerify;
+            document.getElementById('profile-name').innerText = "المدير (الإدارة)";
+            document.getElementById('login-btn').classList.add('hidden');
+            document.getElementById('logout-btn').classList.remove('hidden');
+            document.getElementById('admin-rate-btn').classList.remove('hidden');
+            document.getElementById('admin-driver-btn').classList.remove('hidden');
+            loadOrders();
         } 
         else { errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح (استخدم 123456)."; }
         btn.innerText = "تحقق ودخول"; btn.disabled = false; return;
@@ -893,7 +887,11 @@
         await confirmationResult.confirm(otpInput);
         localStorage.setItem('loggedIn', 'true');
         localStorage.setItem('userPhone', phoneNumberToVerify);
-        window.location.reload();
+        document.getElementById('auth-container').style.display = 'none';
+        document.getElementById('profile-phone').innerText = phoneNumberToVerify;
+        document.getElementById('login-btn').classList.add('hidden');
+        document.getElementById('logout-btn').classList.remove('hidden');
+        loadOrders();
       } catch (error) {
         errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح.";
         btn.innerText = "تحقق ودخول"; btn.disabled = false;
