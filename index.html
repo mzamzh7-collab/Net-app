@@ -75,31 +75,15 @@
 </head>
 <body>
 
-  <div id="auth-container">
-    <div class="screen active" id="screen-welcome" style="display:block;">
-      <div class="welcome">
-        <div class="logo" style="font-size:40px; font-weight:bold; color:var(--peach); margin-bottom:5px;">Net</div>
-        <div class="brand" style="font-size:16px; margin-bottom:20px;">مندوب إلكتروني</div>
-        <div class="welcome-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-        <h1>أهلاً بك</h1>
-        <p>كل ما تحتاجه في السوبر ماركت<br>في مكان واحد</p>
-      </div>
-      <button class="main-btn" onclick="showStep('step-phone')">
-        <i class="fa-solid fa-store"></i> أنا تاجر
-        <div class="sub">للاطلاع على الطلبات</div>
-      </button>
-      <button class="main-btn" onclick="showStep('step-phone')">
-        <i class="fa-solid fa-cart-shopping"></i> أنا صاحب سوق
-        <div class="sub">لإرسال طلب جديد</div>
-      </button>
-    </div>
-
+  <!-- شاشات تسجيل الدخول (مخفية افتراضياً) -->
+  <div id="auth-container" style="display: none;">
     <div class="screen" id="step-phone">
       <div class="card" style="margin-top:50px;">
         <h2 style="text-align:center; color:var(--peach);">رقم الهاتف</h2>
         <input type="tel" id="phone-input" placeholder="07XXXXXXXXX" maxlength="11" style="text-align:center; direction:ltr;">
         <p class="msg err" id="phone-error">الرجاء إدخال رقم صحيح.</p>
         <button class="btn" onclick="sendOTP()" id="btn-send-otp">إرسال الكود</button>
+        <button class="btn btn-white" onclick="closeLogin()" style="margin-top:10px;">إلغاء</button>
       </div>
     </div>
 
@@ -119,7 +103,7 @@
     <div class="brand">مندوب إلكتروني</div>
   </div>
 
-  <div class="screen" id="screen-home">
+  <div class="screen active" id="screen-home">
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showScreen('screen-drivers')"><i class="fa-solid fa-truck"></i> اطلب سائق</button>
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" id="home-rate"><i class="fa-solid fa-dollar-sign"></i> سعر الصرف</button>
@@ -187,18 +171,21 @@
         </div>
       </div>
       <div class="profile-name" id="profile-name" style="font-size:20px; font-weight:bold; color:var(--dark);">مستخدم Net</div>
-      <div class="profile-phone" id="profile-phone" style="font-size:16px; color:var(--gray); direction:ltr; margin-top:5px;">077XXXXXXXX</div>
+      <div class="profile-phone" id="profile-phone" style="font-size:16px; color:var(--gray); direction:ltr; margin-top:5px;">زائر</div>
     </div>
 
     <div class="card" style="padding: 0;">
       <ul class="settings-list">
         <li onclick="alert('مخزني')"><span><i class="fa-solid fa-box"></i> مخزني</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
         <li onclick="alert('قوائمي')"><span><i class="fa-solid fa-clipboard-list"></i> قوائمي</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
+        
+        <li id="login-btn" onclick="openLogin()" style="color:var(--peach);"><span><i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
+        
         <li id="admin-rate-btn" class="hidden" onclick="editRate()" style="color:var(--turquoise);"><span><i class="fa-solid fa-dollar-sign"></i> تعديل سعر الصرف</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
         <li id="admin-driver-btn" class="hidden" onclick="alert('إدارة السائقين')" style="color:var(--turquoise);"><span><i class="fa-solid fa-truck"></i> إدارة السائقين</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
       </ul>
     </div>
-    <button class="btn" style="background:#dc3545; margin-top:10px;" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
+    <button id="logout-btn" class="hidden btn" style="background:#dc3545; margin-top:10px;" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
   </div>
 
   <div class="bottom-nav" id="bottom-nav">
@@ -237,30 +224,49 @@
     let phoneNumberToVerify = "";
     const ADMIN_PHONE = "07710669750";
 
+    // تشغيل التطبيق مباشرة على الصفحة الرئيسية
     onAuthStateChanged(auth, (user) => {
+      document.getElementById('main-header').style.display = 'block';
+      document.getElementById('bottom-nav').style.display = 'flex';
+      document.getElementById('screen-home').classList.add('active');
+      
+      const userPhone = localStorage.getItem('userPhone') || "زائر";
+      document.getElementById('profile-phone').innerText = userPhone;
+
+      // إظهار أزرار الإدارة إذا كان مسجل دخول كمدير
       if (localStorage.getItem('loggedIn') === 'true' || user) {
-        showApp();
+        document.getElementById('login-btn').classList.add('hidden');
+        document.getElementById('logout-btn').classList.remove('hidden');
+        
+        if (userPhone === "+9647710669750" || userPhone === ADMIN_PHONE) {
+          document.getElementById('admin-rate-btn').classList.remove('hidden');
+          document.getElementById('admin-driver-btn').classList.remove('hidden');
+          document.getElementById('profile-name').innerText = "المدير (الإدارة)";
+        }
       } else {
-        document.getElementById('auth-container').style.display = 'block';
-        document.getElementById('main-header').style.display = 'none';
-        document.getElementById('bottom-nav').style.display = 'none';
-        showScreenAuth('screen-welcome');
+        document.getElementById('login-btn').classList.remove('hidden');
+        document.getElementById('logout-btn').classList.add('hidden');
       }
+
+      loadOffers();
     });
 
+    window.openLogin = function() {
+      document.getElementById('auth-container').style.display = 'block';
+      document.getElementById('step-phone').classList.add('active');
+    };
+
+    window.closeLogin = function() {
+      document.getElementById('auth-container').style.display = 'none';
+      document.getElementById('step-phone').classList.remove('active');
+      document.getElementById('step-otp').classList.remove('active');
+    };
+
     window.showStep = function(stepId) {
-      document.getElementById('screen-welcome').classList.remove('active');
-      document.getElementById('screen-welcome').style.display = 'none';
       document.getElementById('step-phone').classList.remove('active');
       document.getElementById('step-otp').classList.remove('active');
       document.getElementById(stepId).classList.add('active');
-      document.getElementById(stepId).style.display = 'block';
     };
-
-    function showScreenAuth(id) {
-      document.querySelectorAll("#auth-container .screen").forEach(s => s.classList.remove("active"));
-      document.getElementById(id).classList.add("active");
-    }
 
     window.sendOTP = async function() {
       const phoneInput = document.getElementById('phone-input').value.trim();
@@ -299,7 +305,7 @@
         if (otpInput === "123456") { 
             localStorage.setItem('loggedIn', 'true'); 
             localStorage.setItem('userPhone', phoneNumberToVerify);
-            showApp(); 
+            window.location.reload(); // إعادة تحميل الصفحة لتحديث الحالة
         } 
         else { errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح (استخدم 123456)."; }
         btn.innerText = "تحقق ودخول"; btn.disabled = false; return;
@@ -309,36 +315,11 @@
         await confirmationResult.confirm(otpInput);
         localStorage.setItem('loggedIn', 'true');
         localStorage.setItem('userPhone', phoneNumberToVerify);
-        showApp();
+        window.location.reload();
       } catch (error) {
         errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح.";
         btn.innerText = "تحقق ودخول"; btn.disabled = false;
       }
-    };
-
-    window.showApp = async function() {
-      document.getElementById('auth-container').style.display = 'none';
-      document.getElementById('main-header').style.display = 'block';
-      document.getElementById('bottom-nav').style.display = 'flex';
-      
-      const userPhone = localStorage.getItem('userPhone') || "077XXXXXXXX";
-      document.getElementById('profile-phone').innerText = userPhone;
-
-      if (userPhone === "+9647710669750" || userPhone === ADMIN_PHONE) {
-        document.getElementById('admin-rate-btn').classList.remove('hidden');
-        document.getElementById('admin-driver-btn').classList.remove('hidden');
-        document.getElementById('profile-name').innerText = "المدير (الإدارة)";
-      }
-
-      try {
-          const userDoc = await getDoc(doc(db, "users", userPhone));
-          if(userDoc.exists() && userDoc.data().profileImage) {
-              document.getElementById('profile-img').src = userDoc.data().profileImage;
-          }
-      } catch(e) { console.log("لا توجد صورة محفوظة"); }
-
-      showScreen('screen-home');
-      loadOffers();
     };
 
     window.showScreen = function(id) {
@@ -465,9 +446,11 @@
           document.getElementById('profile-img').src = compressedBase64;
           
           const userPhone = localStorage.getItem('userPhone');
-          setDoc(doc(db, "users", userPhone), { profileImage: compressedBase64 }, { merge: true })
-            .then(() => alert("✅ تم حفظ صورة الحساب بنجاح"))
-            .catch(err => alert("حدث خطأ أثناء الحفظ"));
+          if(userPhone) {
+            setDoc(doc(db, "users", userPhone), { profileImage: compressedBase64 }, { merge: true })
+              .then(() => alert("✅ تم حفظ صورة الحساب بنجاح"))
+              .catch(err => alert("حدث خطأ أثناء الحفظ"));
+          }
         };
         img.src = e.target.result;
       };
