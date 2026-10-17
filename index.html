@@ -20,32 +20,25 @@
   .header { background: linear-gradient(135deg, var(--turquoise), #20B2AA); color: var(--white); padding: 20px 16px; text-align: center; position: sticky; top: 0; z-index: 100; display: none; }
   .header .logo { font-size: 26px; font-weight: 800; color: var(--peach); }
   .header .brand { font-size: 13px; opacity: 0.95; }
+  .header.header-peach { background: linear-gradient(135deg, var(--peach), #e06a3f); }
+  .header.header-peach .logo { color: var(--white); }
 
   .screen { display: none; padding: 20px 14px; min-height: calc(100vh - 90px); }
   .screen.active { display: block; }
 
   .card { background: var(--white); border-radius: 18px; padding: 24px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 16px; }
-  input, select, textarea { width: 100%; padding: 14px; font-size: 16px; text-align: right; margin: 8px 0; border: 2px solid #ddd; border-radius: 12px; }
-  input:focus { outline: none; border-color: var(--peach); }
+  input, select, textarea { width: 100%; padding: 14px; font-size: 16px; text-align: right; margin: 8px 0; border: 2px solid #ddd; border-radius: 12px; font-family: inherit; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--peach); }
   label { display: block; font-weight: bold; margin-top: 12px; font-size: 15px; color: var(--dark); }
   
   .btn { width: 100%; padding: 15px; background: var(--peach); color: var(--white); border: none; border-radius: 12px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 10px; position: relative; z-index: 20; display: flex; align-items: center; justify-content: center; gap: 8px;}
   .btn:disabled { background: #ccc; }
   .btn-white { background: var(--white); color: var(--peach); border: 2px solid var(--peach); }
 
-  .order-card { background: var(--white); border-radius: 16px; padding: 15px; margin-bottom: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
-  .order-image { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
-  .order-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; color: var(--dark); }
-  .order-info { font-size: 14px; color: var(--gray); margin-bottom: 4px; }
-
   .msg { margin-top: 12px; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 15px; display: none; text-align:center;}
   .msg.ok { background: #d4edda; color: #075E54; display: block; }
   .msg.err { background: #f8d7da; color: #721c24; display: block; }
-
-  .file-upload-wrapper { position: relative; overflow: hidden; margin-bottom: 20px; }
-  .file-upload-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10; }
-  .file-upload-btn { display: block; padding: 15px; background: var(--white); border: 2px dashed var(--peach); border-radius: 12px; color: var(--peach); font-weight: bold; text-align: center; }
-  .preview-img { width: 100%; height: 150px; object-fit: contain; border-radius: 10px; margin-top: 10px; display: none; background: #eee; }
+  .msg.info { background: #e7f3ff; color: #004085; display: block; }
 
   .profile-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
   .profile-img-wrapper { position: relative; width: 100px; height: 100px; margin-bottom: 15px; }
@@ -63,19 +56,56 @@
   .nav-icon { font-size: 22px; margin-bottom: 2px; }
   .hidden { display: none !important; }
 
-  /* تنسيق خاص للسائقين */
-  .driver-card { display: flex; flex-direction: column; align-items: center; text-align: center; }
-  .driver-card .order-title { font-size: 20px; margin-bottom: 10px; }
-  .driver-card .order-info { font-size: 16px; margin-bottom: 8px; width: 100%; }
-  .driver-card .btn { width: 80%; margin-top: 15px; }
+  .order-card { background: var(--white); border-radius: 16px; padding: 15px; margin-bottom: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
+  .order-image { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
+  .order-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; color: var(--dark); }
+  .order-info { font-size: 14px; color: var(--gray); margin-bottom: 4px; }
+
+  /* تنسيقات نموذج الطلب (القديمة) */
+  .item-box { background: #f9f9f9; border: 2px solid #ddd; border-radius: 12px; padding: 14px; margin-bottom: 12px; position: relative; }
+  .item-box .item-number { display: inline-block; background: var(--peach); color: var(--white); width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: bold; font-size: 14px; margin-bottom: 8px; }
+  .item-box .remove-btn { position: absolute; top: 10px; left: 10px; background: #dc3545; color: var(--white); border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 16px; cursor: pointer; font-weight: bold; }
+  .item-box label { margin-top: 6px; font-size: 13px; }
+  .item-box input { padding: 10px; font-size: 14px; margin: 4px 0; }
+  .file-input-wrapper { position: relative; margin: 8px 0; }
+  .file-input-wrapper input[type="file"] { opacity: 0; position: absolute; width: 100%; height: 100%; cursor: pointer; top: 0; left: 0; padding: 0; margin: 0; z-index: 10; }
+  .file-input-btn { display: block; width: 100%; padding: 12px; background: var(--white); border: 2px dashed var(--peach); border-radius: 12px; color: var(--peach); font-weight: bold; text-align: center; font-size: 14px; }
+  .preview-img { width: 100%; max-height: 150px; object-fit: contain; border-radius: 12px; margin-top: 8px; display: none; background: #eee; }
+
+  /* تنسيقات صفحة التاجر (الطلبات) */
+  .orders-header { display: flex; justify-content: space-between; align-items: center; color: var(--white); margin-bottom: 16px; padding: 0 4px; }
+  .orders-header h2 { font-size: 20px; }
+  .orders-header .count { background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 14px; }
+  .refresh-btn { background: transparent; border: none; color: var(--white); font-size: 24px; cursor: pointer; padding: 8px; vertical-align: middle; }
+  
+  .trader-order-card { background: var(--turquoise); color: var(--white); border-radius: 16px; padding: 18px; margin-bottom: 14px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.15); transition: transform 0.15s; }
+  .trader-order-card:hover { transform: translateY(-2px); }
+  .trader-order-card.sold { opacity: 0.6; }
+  .trader-order-card .order-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; color: var(--white); }
+  .trader-order-card .order-info { font-size: 14px; margin-bottom: 4px; opacity: 0.95; color: var(--white); }
+  .order-status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-top: 8px; }
+  .status-new { background: var(--white); color: var(--turquoise); }
+  .status-sold { background: var(--peach); color: var(--white); }
+
+  .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed #ddd; }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-row .lbl { font-weight: bold; color: var(--gray); font-size: 14px; }
+  .detail-row .val { font-weight: bold; color: var(--dark); font-size: 16px; text-align: left; }
+  .order-items-list { background: #f9f9f9; border-radius: 12px; padding: 12px; margin: 12px 0; }
+  .order-item-line { padding: 8px 0; border-bottom: 1px dashed #ddd; font-size: 15px; }
+  .order-item-line:last-child { border-bottom: none; }
+  .order-item-line strong { color: var(--peach); }
+  .detail-image { width: 100%; max-height: 150px; object-fit: contain; border-radius: 12px; margin-top: 8px; background: #f5f5f5; }
 </style>
 </head>
 <body>
 
+  <!-- شاشة تسجيل الدخول (للتاجر) -->
   <div id="auth-container" style="display: none;">
     <div class="screen" id="step-phone">
       <div class="card" style="margin-top:50px;">
-        <h2 style="text-align:center; color:var(--peach);">رقم الهاتف</h2>
+        <h2 style="text-align:center; color:var(--peach);">🔐 تأكيد هوية التاجر</h2>
+        <p style="text-align:center; color:#666; font-size:14px; margin-bottom:16px;">أدخل رقم هاتفك للاطلاع على الطلبات</p>
         <input type="tel" id="phone-input" placeholder="07XXXXXXXXX" maxlength="11" style="text-align:center; direction:ltr;">
         <p class="msg err" id="phone-error">الرجاء إدخال رقم صحيح.</p>
         <button class="btn" onclick="sendOTP()" id="btn-send-otp">إرسال الكود</button>
@@ -104,8 +134,8 @@
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showScreen('screen-drivers')"><i class="fa-solid fa-truck"></i> اطلب سائق</button>
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" id="home-rate"><i class="fa-solid fa-dollar-sign"></i> سعر الصرف</button>
-      <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showScreen('screen-form-order')"><i class="fa-solid fa-list"></i> إنشاء قائمة طلب</button>
-      <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="alert('صفحة التاجر')"><i class="fa-solid fa-store"></i> صفحة التاجر</button>
+      <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showOrderForm()"><i class="fa-solid fa-list"></i> إنشاء قائمة طلب</button>
+      <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showLogin()"><i class="fa-solid fa-store"></i> صفحة التاجر</button>
     </div>
     <h3 style="color:var(--white); margin-bottom:10px;">🔥 العروض</h3>
     <div id="offers-list"></div>
@@ -120,12 +150,6 @@
           <div class="order-info"><i class="fa-solid fa-location-dot" style="color:var(--peach);"></i> منطقة: الكاظمية</div>
           <div class="order-info"><i class="fa-solid fa-truck" style="color:var(--peach);"></i> نوع الحمل: حمل (3 طن)</div>
           <a href="tel:07701234567" class="btn"><i class="fa-solid fa-phone"></i> اتصال بالسائق</a>
-        </div>
-        <div class="card driver-card">
-          <div class="order-title">👤 محمد كريم</div>
-          <div class="order-info"><i class="fa-solid fa-location-dot" style="color:var(--peach);"></i> منطقة: المنصور</div>
-          <div class="order-info"><i class="fa-solid fa-truck" style="color:var(--peach);"></i> نوع الحمل: حمل (1 طن)</div>
-          <a href="tel:07709876543" class="btn"><i class="fa-solid fa-phone"></i> اتصال بالسائق</a>
         </div>
     </div>
     <button class="btn btn-white" style="margin-top:15px;" onclick="showScreen('screen-home')"><i class="fa-solid fa-arrow-right"></i> رجوع للرئيسية</button>
@@ -153,40 +177,88 @@
     </div>
   </div>
 
-  <!-- صفحة إنشاء قائمة طلب (من الصفحة الرئيسية) -->
-  <div class="screen" id="screen-form-order">
+  <!-- صفحة إنشاء طلب (تصميمك القديم) -->
+  <div class="screen" id="screen-form">
     <div class="card">
-      <h2 style="text-align:center; color:var(--peach); margin-bottom:16px;">🛒 إنشاء قائمة طلب</h2>
-      <p style="text-align:center; font-size:14px; color:var(--gray); margin-bottom:15px;">اكتب المنتجات التي تحتاجها لتجهيز القائمة</p>
-      
-      <label>اسم السوبرماركت</label><input id="fName" type="text" placeholder="المهيمن">
-      <label>رقم الهاتف</label><input id="fPhone" type="tel" placeholder="07xxxxxxxxx" style="direction:ltr; text-align:center;">
-      <label>العنوان الكامل</label><input id="fAddress" type="text" placeholder="بغداد">
-      
-      <hr style="margin: 20px 0; border: 1px dashed #ddd;">
-      
-      <label>المنتج الأول</label>
-      <div style="display:flex; gap:10px;">
-        <input type="text" id="order-p1" placeholder="اسم المنتج" style="flex:2;">
-        <input type="number" id="order-q1" placeholder="الكمية" style="flex:1;">
+      <h2 style="text-align:center; margin-bottom:16px;">🛒 طلب جديد</h2>
+
+      <label>📝 اسم السوبرماركت</label>
+      <input id="fName" type="text" placeholder="مثال: المهيمن">
+
+      <label>📞 رقم الهاتف</label>
+      <input id="fPhone" type="tel" placeholder="07xxxxxxxxx">
+
+      <label>📍 العنوان الكامل</label>
+      <input id="fAddress" type="text" placeholder="مثال: بغداد - الزعفرانية">
+
+      <label>📂 فئة الطلب (اختياري)</label>
+      <select id="fCategory">
+        <option value="">— اختر الفئة —</option>
+        <option>مواد غذائية جافة</option>
+        <option>لحوم واسماك ودجاج</option>
+        <option>البان واجبان</option>
+        <option>مشروبات وعصائر</option>
+        <option>معلبات</option>
+        <option>حلويات وبسكويت</option>
+        <option>مكسرات وكرزات</option>
+        <option>بهارات وتوابل</option>
+        <option>منظفات</option>
+        <option>مستحضرات تجميل</option>
+        <option>مستلزمات منزلية</option>
+        <option>مواد تغليف وسفري</option>
+        <option>مجمدات</option>
+        <option>مخبوزات</option>
+        <option>صيدلية</option>
+        <option>مستلزمات أطفال</option>
+        <option>مستلزمات حيوانات</option>
+        <option>أدوات ومستلزمات المحال</option>
+        <option>منتجات طبيعية</option>
+        <option>سكائر وتبغ ومعسل</option>
+        <option>أخرى</option>
+      </select>
+
+      <div style="border-top:2px dashed #FF7F50; margin:20px 0; padding-top:15px;">
+        <h3 style="color:#FF7F50; text-align:center; margin-bottom:12px;">📦 المنتجات (حتى 20)</h3>
+        <div id="itemsContainer"></div>
+        <button class="btn btn-white" onclick="addItem()" style="margin-top:10px;">➕ إضافة منتج آخر</button>
       </div>
 
-      <label>المنتج الثاني</label>
-      <div style="display:flex; gap:10px;">
-        <input type="text" id="order-p2" placeholder="اسم المنتج" style="flex:2;">
-        <input type="number" id="order-q2" placeholder="الكمية" style="flex:1;">
-      </div>
-      
-      <label>المنتج الثالث</label>
-      <div style="display:flex; gap:10px;">
-        <input type="text" id="order-p3" placeholder="اسم المنتج" style="flex:2;">
-        <input type="number" id="order-q3" placeholder="الكمية" style="flex:1;">
-      </div>
-      
-      <button class="btn" onclick="submitOrder()" id="submitBtn" style="margin-top:20px;"><i class="fa-solid fa-paper-plane"></i> إرسال القائمة</button>
+      <label>📝 ملاحظات عامة (اختياري)</label>
+      <textarea id="fNotes" rows="3" placeholder="أي ملاحظة إضافية..."></textarea>
+
+      <button class="btn" onclick="submitOrder()" id="submitBtn">✅ إرسال الطلب</button>
       <div class="msg" id="formMsg"></div>
-      <button class="btn btn-white" style="margin-top:10px;" onclick="showScreen('screen-home')"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+      <button class="btn btn-white" style="margin-top:16px;" onclick="showScreen('screen-home')">← رجوع</button>
     </div>
+  </div>
+
+  <!-- صفحة شكراً بعد الطلب -->
+  <div class="screen" id="screen-thanks">
+    <div class="card" style="text-align:center;">
+      <div style="font-size:70px; margin-bottom:16px;">✅</div>
+      <h2 style="color:#075E54; margin-bottom:12px;">تم إرسال طلبك</h2>
+      <p style="color:#666; line-height:1.8;">سيتم إرسال طلبك إلى التجار المشتركين.<br>ستصلك مكالماتهم على رقمك قريبًا.</p>
+      <button class="btn" style="margin-top:20px;" onclick="showOrderForm()">➕ طلب جديد</button>
+      <button class="btn btn-white" onclick="showScreen('screen-home')">🏠 العودة للرئيسية</button>
+    </div>
+  </div>
+
+  <!-- صفحة التاجر (عرض الطلبات) -->
+  <div class="screen" id="screen-orders">
+    <div class="orders-header">
+      <h2>📋 الطلبات</h2>
+      <div>
+        <span class="count" id="ordersCount">0</span>
+        <button class="refresh-btn" onclick="loadOrders()">🔄</button>
+      </div>
+    </div>
+    <div id="ordersList"></div>
+    <button class="btn btn-white" style="margin-top:20px;" onclick="showScreen('screen-home')">🏠 الرئيسية</button>
+  </div>
+
+  <!-- صفحة تفاصيل الطلب -->
+  <div class="screen" id="screen-detail">
+    <div class="card" id="detailContent"></div>
   </div>
 
   <!-- صفحة الإعدادات -->
@@ -208,10 +280,9 @@
         <li onclick="alert('مخزني')"><span><i class="fa-solid fa-box"></i> مخزني</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
         <li onclick="alert('قوائمي')"><span><i class="fa-solid fa-clipboard-list"></i> قوائمي</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
         
-        <li id="login-btn" onclick="openLogin()" style="color:var(--peach);"><span><i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
+        <li id="login-btn" onclick="showLogin()" style="color:var(--peach);"><span><i class="fa-solid fa-right-to-bracket"></i> تسجيل دخول التاجر</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
         
         <li id="admin-rate-btn" class="hidden" onclick="editRate()" style="color:var(--turquoise);"><span><i class="fa-solid fa-dollar-sign"></i> تعديل سعر الصرف</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
-        <li id="admin-driver-btn" class="hidden" onclick="alert('إدارة السائقين')" style="color:var(--turquoise);"><span><i class="fa-solid fa-truck"></i> إدارة السائقين</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
       </ul>
     </div>
     <button id="logout-btn" class="hidden btn" style="background:#dc3545; margin-top:10px;" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
@@ -233,7 +304,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
     import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs, addDoc, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc, doc, getDoc, setDoc, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDrVVzXE_hd-5HTC1CZoVOU7zGNx7TDQQ",
@@ -252,24 +323,30 @@
     let confirmationResult = null;
     let recaptchaVerifier = null;
     let phoneNumberToVerify = "";
-    const ADMIN_PHONE = "07710669750";
+    let itemCounter = 0;
+    let currentUserPhone = null;
+    const ADMIN_PHONE = "+9647710669750";
 
+    // ═══════════════════════════════════════════════
+    // تهيئة التطبيق
+    // ═══════════════════════════════════════════════
     onAuthStateChanged(auth, (user) => {
       document.getElementById('main-header').style.display = 'block';
       document.getElementById('bottom-nav').style.display = 'flex';
       document.getElementById('screen-home').classList.add('active');
       
-      const userPhone = localStorage.getItem('userPhone') || "زائر";
-      document.getElementById('profile-phone').innerText = userPhone;
+      currentUserPhone = localStorage.getItem('userPhone') || "زائر";
+      document.getElementById('profile-phone').innerText = currentUserPhone;
 
       if (localStorage.getItem('loggedIn') === 'true' || user) {
         document.getElementById('login-btn').classList.add('hidden');
         document.getElementById('logout-btn').classList.remove('hidden');
         
-        if (userPhone === "+9647710669750" || userPhone === ADMIN_PHONE) {
+        if (currentUserPhone === ADMIN_PHONE || currentUserPhone === "07710669750") {
           document.getElementById('admin-rate-btn').classList.remove('hidden');
-          document.getElementById('admin-driver-btn').classList.remove('hidden');
           document.getElementById('profile-name').innerText = "المدير (الإدارة)";
+        } else {
+          document.getElementById('profile-name').innerText = "تاجر";
         }
       } else {
         document.getElementById('login-btn').classList.remove('hidden');
@@ -279,77 +356,6 @@
       loadOffers();
     });
 
-    window.openLogin = function() {
-      document.getElementById('auth-container').style.display = 'block';
-      document.getElementById('step-phone').classList.add('active');
-    };
-
-    window.closeLogin = function() {
-      document.getElementById('auth-container').style.display = 'none';
-      document.getElementById('step-phone').classList.remove('active');
-      document.getElementById('step-otp').classList.remove('active');
-    };
-
-    window.showStep = function(stepId) {
-      document.getElementById('step-phone').classList.remove('active');
-      document.getElementById('step-otp').classList.remove('active');
-      document.getElementById(stepId).classList.add('active');
-    };
-
-    window.sendOTP = async function() {
-      const phoneInput = document.getElementById('phone-input').value.trim();
-      const errorMsg = document.getElementById('phone-error');
-      const btn = document.getElementById('btn-send-otp');
-
-      if (!phoneInput.startsWith('07') || phoneInput.length !== 11) { errorMsg.style.display = 'block'; return; }
-      errorMsg.style.display = 'none';
-      btn.innerText = "جاري الإرسال..."; btn.disabled = true;
-
-      phoneNumberToVerify = "+964" + phoneInput.substring(1);
-
-      if (phoneNumberToVerify === "+9647710669750") {
-        showStep('step-otp'); btn.innerText = "إرسال الكود"; btn.disabled = false; return;
-      }
-
-      try {
-        if(!recaptchaVerifier) recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
-        confirmationResult = await signInWithPhoneNumber(auth, phoneNumberToVerify, recaptchaVerifier);
-        showStep('step-otp');
-      } catch (error) {
-        errorMsg.style.display = 'block'; errorMsg.innerText = "حدث خطأ. حاول لاحقاً.";
-      } finally { btn.innerText = "إرسال الكود"; btn.disabled = false; }
-    };
-
-    window.verifyOTP = async function() {
-      const otpInput = document.getElementById('otp-input').value.trim();
-      const errorMsg = document.getElementById('otp-error');
-      const btn = document.getElementById('btn-verify-otp');
-
-      if (otpInput.length !== 6) { errorMsg.style.display = 'block'; return; }
-      errorMsg.style.display = 'none';
-      btn.innerText = "جاري التحقق..."; btn.disabled = true;
-
-      if (phoneNumberToVerify === "+9647710669750") {
-        if (otpInput === "123456") { 
-            localStorage.setItem('loggedIn', 'true'); 
-            localStorage.setItem('userPhone', phoneNumberToVerify);
-            window.location.reload();
-        } 
-        else { errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح (استخدم 123456)."; }
-        btn.innerText = "تحقق ودخول"; btn.disabled = false; return;
-      }
-
-      try {
-        await confirmationResult.confirm(otpInput);
-        localStorage.setItem('loggedIn', 'true');
-        localStorage.setItem('userPhone', phoneNumberToVerify);
-        window.location.reload();
-      } catch (error) {
-        errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح.";
-        btn.innerText = "تحقق ودخول"; btn.disabled = false;
-      }
-    };
-
     window.showScreen = function(id) {
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
       document.getElementById(id).classList.add("active");
@@ -358,9 +364,19 @@
       if(id === 'screen-home') document.querySelectorAll(".nav-item")[2].classList.add("active");
       if(id === 'screen-settings') document.querySelectorAll(".nav-item")[0].classList.add("active");
       
+      const header = document.getElementById("main-header");
+      if(id === 'screen-orders' || id === 'screen-detail') {
+        header.classList.add("header-peach");
+      } else {
+        header.classList.remove("header-peach");
+      }
+      
       window.scrollTo(0, 0);
     };
 
+    // ═══════════════════════════════════════════════
+    // العروض
+    // ═══════════════════════════════════════════════
     async function loadOffers() {
       const offersList = document.getElementById('offers-list');
       offersList.innerHTML = '<p style="color:white; text-align:center;">جاري التحميل...</p>'; 
@@ -445,6 +461,372 @@
       } finally { btn.disabled = false; }
     };
 
+    // ═══════════════════════════════════════════════
+    // صفحة إنشاء الطلب (تصميمك القديم)
+    // ═══════════════════════════════════════════════
+    window.showOrderForm = function() {
+      showScreen('screen-form');
+      if (document.getElementById("itemsContainer").children.length === 0) {
+        addItem();
+      }
+    };
+
+    window.addItem = function() {
+      var container = document.getElementById("itemsContainer");
+      var maxItems = 20;
+      if (container.children.length >= maxItems) {
+        alert("⚠️ الحد الأقصى " + maxItems + " منتجات.");
+        return;
+      }
+      itemCounter++;
+      var itemId = "item_" + itemCounter;
+
+      var html = '';
+      html += '<div class="item-box" id="' + itemId + '">';
+      html += '<button type="button" class="remove-btn" onclick="removeItem(\'' + itemId + '\')">×</button>';
+      html += '<span class="item-number">' + (container.children.length + 1) + '</span>';
+      html += '<label>📝 اسم المنتج</label>';
+      html += '<input type="text" class="item-name" placeholder="مثال: أرز بسمتي">';
+      html += '<label>🔢 الكمية</label>';
+      html += '<input type="text" class="item-qty" placeholder="مثال: 50 كيس">';
+      html += '<label>🖼️ صورة (اختياري)</label>';
+      html += '<div class="file-input-wrapper">';
+      html += '<div class="file-input-btn" id="' + itemId + '_label">📷 اضغط لاختيار صورة</div>';
+      html += '<input type="file" accept="image/*" onchange="handleItemImage(event, \'' + itemId + '\')">';
+      html += '</div>';
+      html += '<img id="' + itemId + '_preview" class="preview-img">';
+      html += '<input type="hidden" class="item-image" id="' + itemId + '_image">';
+      html += '<input type="hidden" class="item-image-type" id="' + itemId + '_type">';
+      html += '</div>';
+
+      container.insertAdjacentHTML('beforeend', html);
+    };
+
+    window.removeItem = function(itemId) {
+      var el = document.getElementById(itemId);
+      if (el) el.remove();
+      renumberItems();
+    };
+
+    function renumberItems() {
+      var container = document.getElementById("itemsContainer");
+      var boxes = container.querySelectorAll(".item-box");
+      for (var i = 0; i < boxes.length; i++) {
+        var num = boxes[i].querySelector(".item-number");
+        if (num) num.textContent = i + 1;
+      }
+    }
+
+    window.handleItemImage = function(event, itemId) {
+      var file = event.target.files[0];
+      if (!file) return;
+
+      if (file.size > 1024 * 1024) {
+        alert("⚠️ الصورة كبيرة جداً. الحد الأقصى 1 ميجابايت.");
+        event.target.value = "";
+        return;
+      }
+
+      document.getElementById(itemId + "_type").value = file.type;
+      document.getElementById(itemId + "_label").textContent = "✅ " + file.name;
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var preview = document.getElementById(itemId + "_preview");
+        preview.src = e.target.result;
+        preview.style.display = "block";
+        document.getElementById(itemId + "_image").value = e.target.result.split(",")[1];
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.submitOrder = async function() {
+      var name     = document.getElementById("fName").value.trim();
+      var phone    = document.getElementById("fPhone").value.trim();
+      var address  = document.getElementById("fAddress").value.trim();
+      var category = document.getElementById("fCategory").value;
+      var notes    = document.getElementById("fNotes").value.trim();
+      var msg      = document.getElementById("formMsg");
+      var btn      = document.getElementById("submitBtn");
+
+      if (!name)  { msg.className = "msg err"; msg.textContent = "الرجاء إدخال اسم السوبرماركت."; return; }
+      if (!phone || phone.replace(/\D/g, "").length < 10) { msg.className = "msg err"; msg.textContent = "الرجاء إدخال رقم هاتف صحيح."; return; }
+      if (!address) { msg.className = "msg err"; msg.textContent = "الرجاء إدخال العنوان."; return; }
+
+      var items = [];
+      var boxes = document.querySelectorAll(".item-box");
+      for (var i = 0; i < boxes.length; i++) {
+        var box = boxes[i];
+        var itemName = box.querySelector(".item-name").value.trim();
+        var itemQty = box.querySelector(".item-qty").value.trim();
+        var itemImage = box.querySelector(".item-image").value;
+
+        if (!itemName) {
+          msg.className = "msg err";
+          msg.textContent = "الرجاء إدخال اسم المنتج رقم " + (i + 1);
+          return;
+        }
+
+        var item = { name: itemName, qty: itemQty };
+        if (itemImage) {
+          item.img = "data:image/jpeg;base64," + itemImage;
+        }
+        items.push(item);
+      }
+
+      if (items.length === 0) {
+        msg.className = "msg err";
+        msg.textContent = "الرجاء إضافة منتج واحد على الأقل.";
+        return;
+      }
+
+      btn.disabled = true;
+      msg.className = "msg info";
+      msg.textContent = "جارٍ إرسال الطلب...";
+
+      try {
+        await addDoc(collection(db, "orders"), {
+          name: name,
+          phone: phone,
+          address: address,
+          category: category,
+          notes: notes,
+          items: items,
+          status: "جديد",
+          createdAt: new Date()
+        });
+
+        btn.disabled = false;
+        document.getElementById("fName").value = "";
+        document.getElementById("fPhone").value = "";
+        document.getElementById("fAddress").value = "";
+        document.getElementById("fCategory").value = "";
+        document.getElementById("fNotes").value = "";
+        document.getElementById("itemsContainer").innerHTML = "";
+        itemCounter = 0;
+
+        msg.className = "msg ok";
+        msg.textContent = "✅ تم الإرسال";
+        setTimeout(function() { showScreen("screen-thanks"); }, 800);
+      } catch(e) {
+        btn.disabled = false;
+        msg.className = "msg err";
+        msg.textContent = "❌ خطأ: " + e.message;
+      }
+    };
+
+    // ═══════════════════════════════════════════════
+    // صفحة التاجر (عرض الطلبات من Firebase)
+    // ═══════════════════════════════════════════════
+    window.loadOrders = async function() {
+      showScreen("screen-orders");
+      const ordersList = document.getElementById("ordersList");
+      const ordersCount = document.getElementById("ordersCount");
+      
+      ordersList.innerHTML = '<p style="color:white; text-align:center;">جاري التحميل...</p>';
+
+      try {
+        const snap = await getDocs(collection(db, "orders"));
+        ordersList.innerHTML = '';
+        
+        if(snap.empty) {
+          ordersList.innerHTML = '<div class="card" style="text-align:center; color:#666; padding:30px;">لا توجد طلبات جديدة حالياً</div>';
+          ordersCount.textContent = "0";
+          return;
+        }
+
+        let count = 0;
+        snap.forEach((doc) => {
+          const o = doc.data();
+          count++;
+          const isSold = o.status === "تم البيع";
+          const soldClass = isSold ? 'sold' : '';
+          const statusHtml = isSold ? '<span class="order-status status-sold">✅ تم البيع</span>' : '<span class="order-status status-new">🆕 جديد</span>';
+          
+          let imgHtml = '';
+          if(o.items && o.items.length > 0 && o.items[0].img) {
+             imgHtml = '<img src="' + o.items[0].img + '" class="order-image" style="height:100px; margin-bottom:10px;" onerror="this.style.display=\'none\'">';
+          }
+
+          ordersList.innerHTML += `
+            <div class="trader-order-card ${soldClass}" onclick="openDetail('${doc.id}')">
+              ${imgHtml}
+              <div class="order-title">🏪 ${o.name || 'غير محدد'}</div>
+              ${o.category ? `<div class="order-info">📂 ${o.category}</div>` : ''}
+              <div class="order-info">📦 عدد المنتجات: ${o.items ? o.items.length : 0}</div>
+              <div class="order-info">📍 ${o.address || '-'}</div>
+              ${statusHtml}
+            </div>
+          `;
+        });
+        ordersCount.textContent = count;
+      } catch(e) {
+        ordersList.innerHTML = '<div class="msg err" style="display:block;">خطأ في التحميل: ' + e.message + '</div>';
+      }
+    };
+
+    window.openDetail = async function(orderId) {
+      showScreen("screen-detail");
+      const detailContent = document.getElementById("detailContent");
+      detailContent.innerHTML = '<div style="text-align:center; padding:20px;">جارٍ التحميل...</div>';
+
+      try {
+        const docRef = doc(db, "orders", orderId);
+        const docSnap = await getDoc(docRef);
+        
+        if(!docSnap.exists()) {
+          detailContent.innerHTML = '<div class="msg err" style="display:block;">الطلب غير موجود</div>';
+          return;
+        }
+
+        const o = docSnap.data();
+        const isSold = o.status === "تم البيع";
+
+        let html = '<h2 style="text-align:center; color:#FF7F50; margin-bottom:16px;">📋 تفاصيل الطلب</h2>';
+        html += '<div class="detail-row"><span class="lbl">🏪 اسم السوبرماركت</span><span class="val">' + (o.name || '-') + '</span></div>';
+        html += '<div class="detail-row"><span class="lbl">📞 رقم الهاتف</span><a href="tel:' + o.phone + '" class="val" style="color:#FF7F50; text-decoration:none;">' + (o.phone || '-') + '</a></div>';
+        html += '<div class="detail-row"><span class="lbl">📍 العنوان</span><span class="val">' + (o.address || '-') + '</span></div>';
+        
+        if(o.category) html += '<div class="detail-row"><span class="lbl">📂 الفئة</span><span class="val">' + o.category + '</span></div>';
+        if(o.notes) html += '<div class="detail-row"><span class="lbl">📝 ملاحظات</span><span class="val">' + o.notes + '</span></div>';
+
+        if (o.items && o.items.length > 0) {
+          html += '<h3 style="color:#FF7F50; margin-top:20px; margin-bottom:8px;">📦 المنتجات (' + o.items.length + '):</h3>';
+          html += '<div class="order-items-list">';
+          o.items.forEach(function(item, idx) {
+            html += '<div class="order-item-line">';
+            html += '<strong>' + (idx + 1) + '. ' + (item.name || '-') + '</strong>';
+            if (item.qty) html += ' — الكمية: ' + item.qty;
+            if (item.img) html += '<br><img src="' + item.img + '" class="detail-image" onerror="this.style.display=\'none\'">';
+            html += '</div>';
+          });
+          html += '</div>';
+        }
+
+        if (isSold) {
+          html += '<div class="msg ok" style="display:block; text-align:center; margin-top:16px;">✅ تم بيع هذا الطلب</div>';
+        } else {
+          html += '<button class="btn btn-sold" onclick="markAsSold(\'' + orderId + '\')" id="soldBtn" style="background:var(--peach); color:white; font-size:18px; margin-top:20px;">✅ تم بيع الطلب</button>';
+        }
+
+        html += '<button class="btn btn-white" style="margin-top:16px;" onclick="loadOrders()">← رجوع للطلبات</button>';
+        detailContent.innerHTML = html;
+
+      } catch(e) {
+        detailContent.innerHTML = '<div class="msg err" style="display:block;">خطأ: ' + e.message + '</div>';
+      }
+    };
+
+    window.markAsSold = async function(orderId) {
+      if (!confirm("هل أنت متأكد أنك بعت هذا الطلب للزبون؟")) return;
+      const btn = document.getElementById("soldBtn");
+      if (btn) { btn.disabled = true; btn.textContent = "جارٍ التسجيل..."; }
+
+      try {
+        await updateDoc(doc(db, "orders", orderId), { status: "تم البيع" });
+        alert("✅ تم تسجيل بيع الطلب بنجاح");
+        loadOrders();
+      } catch(e) {
+        alert("❌ خطأ: " + e.message);
+        if (btn) { btn.disabled = false; btn.textContent = "✅ تم بيع الطلب"; }
+      }
+    };
+
+    // ═══════════════════════════════════════════════
+    // تسجيل الدخول (Firebase OTP)
+    // ═══════════════════════════════════════════════
+    window.showLogin = function() {
+      document.getElementById('auth-container').style.display = 'block';
+      document.getElementById('step-phone').classList.add('active');
+    };
+
+    window.closeLogin = function() {
+      document.getElementById('auth-container').style.display = 'none';
+      document.getElementById('step-phone').classList.remove('active');
+      document.getElementById('step-otp').classList.remove('active');
+    };
+
+    window.showStep = function(stepId) {
+      document.getElementById('step-phone').classList.remove('active');
+      document.getElementById('step-otp').classList.remove('active');
+      document.getElementById(stepId).classList.add('active');
+    };
+
+    window.sendOTP = async function() {
+      const phoneInput = document.getElementById('phone-input').value.trim();
+      const errorMsg = document.getElementById('phone-error');
+      const btn = document.getElementById('btn-send-otp');
+
+      if (!phoneInput.startsWith('07') || phoneInput.length !== 11) { errorMsg.style.display = 'block'; return; }
+      errorMsg.style.display = 'none';
+      btn.innerText = "جاري الإرسال..."; btn.disabled = true;
+
+      phoneNumberToVerify = "+964" + phoneInput.substring(1);
+
+      if (phoneNumberToVerify === "+9647710669750") {
+        showStep('step-otp'); btn.innerText = "إرسال الكود"; btn.disabled = false; return;
+      }
+
+      try {
+        if(!recaptchaVerifier) recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+        confirmationResult = await signInWithPhoneNumber(auth, phoneNumberToVerify, recaptchaVerifier);
+        showStep('step-otp');
+      } catch (error) {
+        errorMsg.style.display = 'block'; errorMsg.innerText = "حدث خطأ. حاول لاحقاً.";
+      } finally { btn.innerText = "إرسال الكود"; btn.disabled = false; }
+    };
+
+    window.verifyOTP = async function() {
+      const otpInput = document.getElementById('otp-input').value.trim();
+      const errorMsg = document.getElementById('otp-error');
+      const btn = document.getElementById('btn-verify-otp');
+
+      if (otpInput.length !== 6) { errorMsg.style.display = 'block'; return; }
+      errorMsg.style.display = 'none';
+      btn.innerText = "جاري التحقق..."; btn.disabled = true;
+
+      if (phoneNumberToVerify === "+9647710669750") {
+        if (otpInput === "123456") { 
+            localStorage.setItem('loggedIn', 'true'); 
+            localStorage.setItem('userPhone', phoneNumberToVerify);
+            closeLogin();
+            loadOrders();
+        } 
+        else { errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح (استخدم 123456)."; }
+        btn.innerText = "تحقق ودخول"; btn.disabled = false; return;
+      }
+
+      try {
+        await confirmationResult.confirm(otpInput);
+        localStorage.setItem('loggedIn', 'true');
+        localStorage.setItem('userPhone', phoneNumberToVerify);
+        closeLogin();
+        loadOrders();
+      } catch (error) {
+        errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح.";
+        btn.innerText = "تحقق ودخول"; btn.disabled = false;
+      }
+    };
+
+    window.logout = function() {
+      if(confirm("هل تريد تسجيل الخروج؟")) {
+        localStorage.removeItem('loggedIn');
+        localStorage.removeItem('userPhone');
+        signOut(auth).then(() => { window.location.reload(); });
+      }
+    };
+
+    window.editRate = async function() {
+      let newRate = prompt("أدخل سعر الصرف الجديد للدولار:", "1320");
+      if (newRate) {
+        try {
+          await setDoc(doc(db, "config", "dollar"), { price: Number(newRate) });
+          document.getElementById('home-rate').innerText = `💵 سعر الصرف: ${newRate}`;
+          alert("✅ تم تحديث سعر الصرف بنجاح");
+        } catch(e) { alert("خطأ في التحديث"); }
+      }
+    };
+
     window.updateProfileImage = function(event) {
       const file = event.target.files[0];
       if(!file) return;
@@ -483,44 +865,6 @@
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
-    };
-
-    window.submitOrder = function() {
-      const name = document.getElementById('fName').value;
-      const phone = document.getElementById('fPhone').value;
-      
-      if(!name || !phone) {
-        document.getElementById('formMsg').className = "msg err";
-        document.getElementById('formMsg').textContent = "الرجاء إدخال اسم السوبرماركت ورقم الهاتف";
-        return;
-      }
-
-      document.getElementById('formMsg').className = "msg ok";
-      document.getElementById('formMsg').textContent = "✅ تم إرسال القائمة بنجاح! سيتواصل معك المندوب قريباً.";
-      
-      setTimeout(() => { 
-        showScreen('screen-home'); 
-        document.getElementById('formMsg').style.display='none';
-      }, 2000);
-    };
-
-    window.editRate = async function() {
-      let newRate = prompt("أدخل سعر الصرف الجديد للدولار:", "1320");
-      if (newRate) {
-        try {
-          await setDoc(doc(db, "config", "dollar"), { price: Number(newRate) });
-          document.getElementById('home-rate').innerText = `💵 سعر الصرف: ${newRate}`;
-          alert("✅ تم تحديث سعر الصرف بنجاح");
-        } catch(e) { alert("خطأ في التحديث"); }
-      }
-    };
-
-    window.logout = function() {
-      if(confirm("هل تريد تسجيل الخروج؟")) {
-        localStorage.removeItem('loggedIn');
-        localStorage.removeItem('userPhone');
-        signOut(auth).then(() => { window.location.reload(); });
-      }
     };
   </script>
 </body>
