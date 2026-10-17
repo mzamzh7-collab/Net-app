@@ -43,7 +43,41 @@
   .profile-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
   .profile-img-wrapper { position: relative; width: 100px; height: 100px; margin-bottom: 15px; }
   .profile-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--turquoise); background: #eee; }
-  .edit-icon { position: absolute; bottom: 0; right: 0; background: var(--peach); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; z-index: 5; }
+  
+  /* إصلاح تشوه أيقونة التعديل */
+  .edit-icon-wrapper {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    z-index: 10;
+    cursor: pointer;
+  }
+  .edit-icon {
+    background: var(--peach);
+    color: white;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    font-size: 14px;
+    pointer-events: none;
+  }
+  .edit-icon-wrapper input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+  }
   
   .settings-list { list-style: none; padding: 0; }
   .settings-list li { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 16px; font-weight: bold; }
@@ -240,9 +274,10 @@
     </div>
   </div>
 
+  <!-- صفحة الطلبات (للتاجر) -->
   <div class="screen" id="screen-orders">
     <div class="orders-header">
-      <h2>📋 الطلبات</h2>
+      <h2>📋 الطلبات الواردة</h2>
       <div>
         <span class="count" id="ordersCount">0</span>
         <button class="refresh-btn" onclick="loadOrders()">🔄</button>
@@ -256,11 +291,26 @@
     <div class="card" id="detailContent"></div>
   </div>
 
+  <!-- صفحة مخزني (للتاجر) -->
+  <div class="screen" id="screen-inventory">
+    <h2 style="color:var(--white); margin-bottom:15px; text-align:center;">📦 مخزني (العروض المنشورة)</h2>
+    <div id="inventoryList"></div>
+    <button class="btn btn-white" style="margin-top:15px;" onclick="showScreen('screen-settings')"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+  </div>
+
+  <!-- صفحة قوائمي (لصاحب السوق) -->
+  <div class="screen" id="screen-my-orders">
+    <h2 style="color:var(--white); margin-bottom:15px; text-align:center;">🧾 قوائمي السابقة</h2>
+    <div id="myOrdersList"></div>
+    <button class="btn btn-white" style="margin-top:15px;" onclick="showScreen('screen-settings')"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+  </div>
+
   <div class="screen" id="screen-settings">
     <div class="card profile-container">
       <div class="profile-img-wrapper">
         <img src="https://via.placeholder.com/100?text=User" class="profile-img" id="profile-img">
-        <div class="file-upload-wrapper" style="position: absolute; bottom: 0; right: 0; width: 35px; height: 35px; margin:0;">
+        <!-- تم إصلاح تشوه أيقونة التعديل هنا -->
+        <div class="edit-icon-wrapper">
             <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
             <input type="file" accept="image/*" onchange="updateProfileImage(event)">
         </div>
@@ -276,8 +326,8 @@
         <li id="admin-driver-btn" class="hidden" onclick="showScreen('screen-driver-settings')" style="color:var(--turquoise);"><span><i class="fa-solid fa-truck"></i> إعدادات السائق</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
         <li id="admin-rate-btn" class="hidden" onclick="editRate()" style="color:var(--turquoise);"><span><i class="fa-solid fa-dollar-sign"></i> تعديل سعر الصرف</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
         
-        <li onclick="alert('مخزني')"><span><i class="fa-solid fa-box"></i> مخزني</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
-        <li onclick="alert('قوائمي')"><span><i class="fa-solid fa-clipboard-list"></i> قوائمي</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
+        <li onclick="loadInventory()"><span><i class="fa-solid fa-box"></i> مخزني</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
+        <li onclick="loadMyOrders()"><span><i class="fa-solid fa-clipboard-list"></i> قوائمي</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
         
         <li id="login-btn" onclick="showLogin()" style="color:var(--peach);"><span><i class="fa-solid fa-right-to-bracket"></i> تسجيل دخول التاجر</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
       </ul>
@@ -323,7 +373,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
     import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs, addDoc, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc, doc, getDoc, setDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDrVVzXE_hd-5HTC1CZoVOU7zGNx7TDQQ",
@@ -400,7 +450,7 @@
       if(id === 'screen-settings') document.querySelectorAll(".nav-item")[0].classList.add("active");
       
       const header = document.getElementById("main-header");
-      if(id === 'screen-orders' || id === 'screen-detail') {
+      if(id === 'screen-orders' || id === 'screen-detail' || id === 'screen-inventory' || id === 'screen-my-orders') {
         header.classList.add("header-peach");
       } else {
         header.classList.remove("header-peach");
@@ -525,7 +575,9 @@
       try {
         await addDoc(collection(db, "products"), {
           name: name, price: price, pieces: pieces, quantity: quantity,
-          imageUrl: imageBase64, createdAt: new Date()
+          imageUrl: imageBase64, 
+          traderPhone: currentUserPhone, // حفظ رقم هاتف التاجر
+          createdAt: new Date()
         });
         
         msg.className="msg ok"; msg.textContent="✅ تم نشر العرض بنجاح";
@@ -736,7 +788,9 @@
 
       try {
         await addDoc(collection(db, "orders"), {
-          name: name, phone: phone, address: address, category: category, notes: notes, items: items, status: "جديد", createdAt: new Date()
+          name: name, phone: phone, address: address, category: category, notes: notes, items: items, status: "جديد", 
+          buyerPhone: currentUserPhone, // حفظ رقم هاتف صاحب السوق
+          createdAt: new Date()
         });
 
         btn.disabled = false;
@@ -759,6 +813,7 @@
       }
     };
 
+    // دالة تحميل الطلبات (للتاجر)
     window.loadOrders = async function() {
       showScreen("screen-orders");
       const ordersList = document.getElementById("ordersList");
@@ -861,6 +916,78 @@
       } catch(e) {
         alert("❌ خطأ: " + e.message);
         if (btn) { btn.disabled = false; btn.textContent = "✅ تم بيع الطلب"; }
+      }
+    };
+
+    // دالة تحميل المخزن (للتاجر فقط - بدون حسابات)
+    window.loadInventory = async function() {
+      showScreen("screen-inventory");
+      const inventoryList = document.getElementById("inventoryList");
+      inventoryList.innerHTML = '<p style="color:white; text-align:center;">جاري التحميل...</p>';
+
+      try {
+        // جلب منتجات هذا التاجر فقط
+        const q = query(collection(db, "products"), where("traderPhone", "==", currentUserPhone));
+        const snap = await getDocs(q);
+        
+        inventoryList.innerHTML = '';
+        if(snap.empty) {
+          inventoryList.innerHTML = '<div class="card" style="text-align:center; color:#666; padding:30px;">لم تقم بنشر أي عروض بعد.</div>';
+          return;
+        }
+
+        snap.forEach((doc) => {
+          const p = doc.data();
+          const imgUrl = p.imageUrl || 'https://via.placeholder.com/300?text=No+Image';
+          
+          inventoryList.innerHTML += `
+            <div class="order-card">
+              <img src="${imgUrl}" class="order-image" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
+              <div class="order-title">📦 ${p.name}</div>
+              <div class="order-info">💰 السعر: ${p.price} دينار</div>
+              <div class="order-info">🔢 الكمية الكلية: ${p.quantity}</div>
+            </div>
+          `;
+        });
+      } catch(e) {
+        inventoryList.innerHTML = '<div class="msg err" style="display:block;">خطأ في التحميل: ' + e.message + '</div>';
+      }
+    };
+
+    // دالة تحميل قوائمي (لصاحب السوق)
+    window.loadMyOrders = async function() {
+      showScreen("screen-my-orders");
+      const myOrdersList = document.getElementById("myOrdersList");
+      myOrdersList.innerHTML = '<p style="color:white; text-align:center;">جاري التحميل...</p>';
+
+      try {
+        // جلب الطلبات التي أرسلها هذا المستخدم فقط
+        const q = query(collection(db, "orders"), where("buyerPhone", "==", currentUserPhone));
+        const snap = await getDocs(q);
+        
+        myOrdersList.innerHTML = '';
+        if(snap.empty) {
+          myOrdersList.innerHTML = '<div class="card" style="text-align:center; color:#666; padding:30px;">لم تقم بإرسال أي طلبات بعد.</div>';
+          return;
+        }
+
+        snap.forEach((doc) => {
+          const o = doc.data();
+          const isSold = o.status === "تم البيع";
+          const soldClass = isSold ? 'sold' : '';
+          const statusHtml = isSold ? '<span class="order-status status-sold">✅ تم الشراء</span>' : '<span class="order-status status-new">⏳ قيد الانتظار</span>';
+          
+          myOrdersList.innerHTML += `
+            <div class="trader-order-card ${soldClass}">
+              <div class="order-title">🏪 ${o.name}</div>
+              <div class="order-info">📦 عدد المنتجات: ${o.items ? o.items.length : 0}</div>
+              <div class="order-info">📅 التاريخ: ${o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleDateString('ar-EG') : '-'}</div>
+              ${statusHtml}
+            </div>
+          `;
+        });
+      } catch(e) {
+        myOrdersList.innerHTML = '<div class="msg err" style="display:block;">خطأ في التحميل: ' + e.message + '</div>';
       }
     };
 
