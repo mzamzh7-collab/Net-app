@@ -143,7 +143,11 @@
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showScreen('screen-drivers')"><i class="fa-solid fa-truck"></i> اطلب سائق</button>
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" id="home-rate"><i class="fa-solid fa-dollar-sign"></i> سعر الصرف</button>
       <button id="btn-create-order" class="btn btn-white hidden" style="padding:10px; font-size:14px; margin:0;" onclick="showOrderForm()"><i class="fa-solid fa-list"></i> إنشاء قائمة طلب</button>
-      <button id="btn-trader-page" class="btn btn-white hidden" style="padding:10px; font-size:14px; margin:0;" onclick="showScreen('screen-orders')"><i class="fa-solid fa-store"></i> صفحة التاجر</button>
+     <!-- ✅ زر إنشاء قائمة (يأخذ السطر كاملاً في المنتصف) -->
+      <button id="btn-create-order" class="btn btn-white hidden" style="padding:15px; font-size:16px; margin:0; grid-column: 1 / -1; width: 100%; display: flex; justify-content: center; align-items: center;" onclick="showOrderForm()"><i class="fa-solid fa-list" style="margin-left: 8px;"></i> إنشاء قائمة طلب جديدة</button>
+      
+      <!-- ✅ زر صفحة التاجر (يأخذ السطر كاملاً في المنتصف) -->
+      <button id="btn-trader-page" class="btn btn-white hidden" style="padding:15px; font-size:16px; margin:0; grid-column: 1 / -1; width: 100%; display: flex; justify-content: center; align-items: center;" onclick="showScreen('screen-orders')"><i class="fa-solid fa-store" style="margin-left: 8px;"></i> صفحة التاجر (الطلبات الواردة)</button>
     </div>
     <h3 style="color:var(--white); margin-bottom:10px;">🔥 العروض</h3>
     <div id="offers-list"></div>
@@ -579,8 +583,13 @@
       try { await deleteDoc(doc(db, "users", phoneId)); alert("🗑️ تم الحذف"); switchAdminTab(currentAdminTab); } catch(e) { alert("❌ خطأ: " + e.message); }
     };
 
-    window.addToCart = function(product) {
-      if(currentRole === 'visitor' || (currentRole === 'supermarket' && currentStatus !== 'active')) { alert("⚠️ يجب أن يكون حسابك نشطاً لتتمكن من التبضع."); return; }
+   window.addToCart = function(product) {
+      // ✅ التعديل: منع الزائر والتاجر فقط، والسماح للسوبر ماركت والمدير والمسوق
+      if(currentRole === 'visitor' || currentRole === 'trader') { 
+          alert("⚠️ عذراً، التبضع غير متاح لحسابات التجار أو الزوار."); 
+          return; 
+      }
+      
       const existingItem = cart.find(item => item.name === product.name);
       if(existingItem) { existingItem.qty = (parseInt(existingItem.qty) || 0) + 1; } else { cart.push({ name: product.name, qty: 1, price: product.price, img: product.imageUrl }); }
       localStorage.setItem('net_cart', JSON.stringify(cart)); updateCartUI(); alert('✅ تمت إضافة ' + product.name + ' إلى سلة المشتريات');
