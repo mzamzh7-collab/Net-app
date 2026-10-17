@@ -61,7 +61,7 @@
   .order-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; color: var(--dark); }
   .order-info { font-size: 14px; color: var(--gray); margin-bottom: 4px; }
 
-  /* تنسيقات نموذج الطلب (القديمة) */
+  /* تنسيقات نموذج الطلب */
   .item-box { background: #f9f9f9; border: 2px solid #ddd; border-radius: 12px; padding: 14px; margin-bottom: 12px; position: relative; }
   .item-box .item-number { display: inline-block; background: var(--peach); color: var(--white); width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: bold; font-size: 14px; margin-bottom: 8px; }
   .item-box .remove-btn { position: absolute; top: 10px; left: 10px; background: #dc3545; color: var(--white); border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 16px; cursor: pointer; font-weight: bold; }
@@ -72,7 +72,7 @@
   .file-input-btn { display: block; width: 100%; padding: 12px; background: var(--white); border: 2px dashed var(--peach); border-radius: 12px; color: var(--peach); font-weight: bold; text-align: center; font-size: 14px; }
   .preview-img { width: 100%; max-height: 150px; object-fit: contain; border-radius: 12px; margin-top: 8px; display: none; background: #eee; }
 
-  /* تنسيقات صفحة التاجر (الطلبات) */
+  /* تنسيقات صفحة التاجر */
   .orders-header { display: flex; justify-content: space-between; align-items: center; color: var(--white); margin-bottom: 16px; padding: 0 4px; }
   .orders-header h2 { font-size: 20px; }
   .orders-header .count { background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 14px; }
@@ -100,7 +100,7 @@
 </head>
 <body>
 
-  <!-- شاشة تسجيل الدخول (للتاجر) -->
+  <!-- شاشة تسجيل الدخول (OTP) -->
   <div id="auth-container" style="display: none;">
     <div class="screen" id="step-phone">
       <div class="card" style="margin-top:50px;">
@@ -144,18 +144,11 @@
   <!-- صفحة السائقين -->
   <div class="screen" id="screen-drivers">
     <h2 style="color:var(--white); margin-bottom:15px; text-align:center;">🚚 السائقون المتاحون</h2>
-    <div id="drivers-list">
-        <div class="card driver-card">
-          <div class="order-title">👤 علي حسن</div>
-          <div class="order-info"><i class="fa-solid fa-location-dot" style="color:var(--peach);"></i> منطقة: الكاظمية</div>
-          <div class="order-info"><i class="fa-solid fa-truck" style="color:var(--peach);"></i> نوع الحمل: حمل (3 طن)</div>
-          <a href="tel:07701234567" class="btn"><i class="fa-solid fa-phone"></i> اتصال بالسائق</a>
-        </div>
-    </div>
+    <div id="drivers-list"></div>
     <button class="btn btn-white" style="margin-top:15px;" onclick="showScreen('screen-home')"><i class="fa-solid fa-arrow-right"></i> رجوع للرئيسية</button>
   </div>
 
-  <!-- صفحة إضافة عرض (زر +) -->
+  <!-- صفحة إضافة عرض -->
   <div class="screen" id="screen-form-product">
     <div class="card">
       <h2 style="text-align:center; color:var(--peach); margin-bottom:15px;">➕ إضافة عرض جديد</h2>
@@ -177,7 +170,7 @@
     </div>
   </div>
 
-  <!-- صفحة إنشاء طلب (تصميمك القديم) -->
+  <!-- صفحة إنشاء طلب -->
   <div class="screen" id="screen-form">
     <div class="card">
       <h2 style="text-align:center; margin-bottom:16px;">🛒 طلب جديد</h2>
@@ -232,7 +225,7 @@
     </div>
   </div>
 
-  <!-- صفحة شكراً بعد الطلب -->
+  <!-- صفحة شكراً -->
   <div class="screen" id="screen-thanks">
     <div class="card" style="text-align:center;">
       <div style="font-size:70px; margin-bottom:16px;">✅</div>
@@ -277,15 +270,45 @@
 
     <div class="card" style="padding: 0;">
       <ul class="settings-list">
+        <!-- خيارات متاحة للجميع -->
+        <li onclick="showScreen('screen-edit-account')"><span><i class="fa-solid fa-user-pen"></i> تعديل الحساب</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
+        
+        <!-- خيارات الإدارة (مخفية افتراضياً) -->
+        <li id="admin-driver-btn" class="hidden" onclick="showScreen('screen-driver-settings')" style="color:var(--turquoise);"><span><i class="fa-solid fa-truck"></i> إعدادات السائق</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
+        <li id="admin-rate-btn" class="hidden" onclick="editRate()" style="color:var(--turquoise);"><span><i class="fa-solid fa-dollar-sign"></i> تعديل سعر الصرف</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
+        
         <li onclick="alert('مخزني')"><span><i class="fa-solid fa-box"></i> مخزني</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
         <li onclick="alert('قوائمي')"><span><i class="fa-solid fa-clipboard-list"></i> قوائمي</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
         
         <li id="login-btn" onclick="showLogin()" style="color:var(--peach);"><span><i class="fa-solid fa-right-to-bracket"></i> تسجيل دخول التاجر</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
-        
-        <li id="admin-rate-btn" class="hidden" onclick="editRate()" style="color:var(--turquoise);"><span><i class="fa-solid fa-dollar-sign"></i> تعديل سعر الصرف</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
       </ul>
     </div>
     <button id="logout-btn" class="hidden btn" style="background:#dc3545; margin-top:10px;" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
+  </div>
+
+  <!-- صفحة تعديل الحساب -->
+  <div class="screen" id="screen-edit-account">
+    <div class="card">
+      <h2 style="text-align:center; color:var(--peach); margin-bottom:15px;">👤 تعديل الحساب</h2>
+      <label>الاسم الكامل</label><input type="text" id="edit-name" placeholder="أدخل اسمك">
+      <button class="btn" onclick="saveAccount()">💾 حفظ التعديلات</button>
+      <div class="msg" id="account-msg"></div>
+      <button class="btn btn-white" style="margin-top:10px;" onclick="showScreen('screen-settings')"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+    </div>
+  </div>
+
+  <!-- صفحة إعدادات السائق (للإدارة فقط) -->
+  <div class="screen" id="screen-driver-settings">
+    <div class="card">
+      <h2 style="text-align:center; color:var(--turquoise); margin-bottom:15px;">🚚 إعدادات السائق</h2>
+      <label>اسم السائق</label><input type="text" id="driver-name" placeholder="مثال: علي حسن">
+      <label>المنطقة</label><input type="text" id="driver-area" placeholder="مثال: الكاظمية">
+      <label>نوع الحمل</label><input type="text" id="driver-load" placeholder="مثال: حمل (3 طن)">
+      <label>رقم الهاتف</label><input type="tel" id="driver-phone" placeholder="07xxxxxxxxx" style="direction:ltr; text-align:center;">
+      <button class="btn" onclick="saveDriver()" style="background:var(--turquoise);">💾 إضافة السائق</button>
+      <div class="msg" id="driver-msg"></div>
+      <button class="btn btn-white" style="margin-top:10px;" onclick="showScreen('screen-settings')"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+    </div>
   </div>
 
   <!-- شريط التنقل السفلي -->
@@ -304,7 +327,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
     import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs, addDoc, doc, getDoc, setDoc, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDrVVzXE_hd-5HTC1CZoVOU7zGNx7TDQQ",
@@ -330,10 +353,9 @@
     // ═══════════════════════════════════════════════
     // تهيئة التطبيق
     // ═══════════════════════════════════════════════
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       document.getElementById('main-header').style.display = 'block';
       document.getElementById('bottom-nav').style.display = 'flex';
-      document.getElementById('screen-home').classList.add('active');
       
       currentUserPhone = localStorage.getItem('userPhone') || "زائر";
       document.getElementById('profile-phone').innerText = currentUserPhone;
@@ -342,11 +364,26 @@
         document.getElementById('login-btn').classList.add('hidden');
         document.getElementById('logout-btn').classList.remove('hidden');
         
+        // جلب بيانات الحساب من Firebase
+        try {
+          const userDoc = await getDoc(doc(db, "users", currentUserPhone));
+          if(userDoc.exists()) {
+             const data = userDoc.data();
+             if(data.profileImage) document.getElementById('profile-img').src = data.profileImage;
+             if(data.name) {
+                document.getElementById('profile-name').innerText = data.name;
+                document.getElementById('edit-name').value = data.name;
+             }
+          }
+        } catch(e) { console.log("لا توجد بيانات إضافية"); }
+
+        // التحقق مما إذا كان مديراً
         if (currentUserPhone === ADMIN_PHONE || currentUserPhone === "07710669750") {
           document.getElementById('admin-rate-btn').classList.remove('hidden');
-          document.getElementById('profile-name').innerText = "المدير (الإدارة)";
-        } else {
-          document.getElementById('profile-name').innerText = "تاجر";
+          document.getElementById('admin-driver-btn').classList.remove('hidden');
+          if(document.getElementById('profile-name').innerText === "مستخدم Net") {
+             document.getElementById('profile-name').innerText = "المدير (الإدارة)";
+          }
         }
       } else {
         document.getElementById('login-btn').classList.remove('hidden');
@@ -354,6 +391,7 @@
       }
 
       loadOffers();
+      loadDrivers();
     });
 
     window.showScreen = function(id) {
@@ -375,7 +413,7 @@
     };
 
     // ═══════════════════════════════════════════════
-    // العروض
+    // العروض والسائقين
     // ═══════════════════════════════════════════════
     async function loadOffers() {
       const offersList = document.getElementById('offers-list');
@@ -405,6 +443,27 @@
           `;
         });
       } catch (e) { offersList.innerHTML = '<p style="color:red; text-align:center;">خطأ في التحميل.</p>'; }
+    }
+
+    async function loadDrivers() {
+      const driversList = document.getElementById('drivers-list');
+      try {
+        const snap = await getDocs(collection(db, "drivers"));
+        driversList.innerHTML = '';
+        if(snap.empty) { driversList.innerHTML = '<p style="color:white; text-align:center;">لا يوجد سائقون مسجلون حالياً.</p>'; return; }
+
+        snap.forEach((doc) => {
+          const d = doc.data();
+          driversList.innerHTML += `
+            <div class="card driver-card" style="display:flex; flex-direction:column; align-items:center; text-align:center; margin-bottom:15px;">
+              <div class="order-title" style="font-size:20px;">👤 ${d.name}</div>
+              <div class="order-info" style="font-size:16px; width:100%;"><i class="fa-solid fa-location-dot" style="color:var(--peach);"></i> منطقة: ${d.area}</div>
+              <div class="order-info" style="font-size:16px; width:100%;"><i class="fa-solid fa-truck" style="color:var(--peach);"></i> نوع الحمل: ${d.load}</div>
+              <a href="tel:${d.phone}" class="btn" style="width: 80%; margin-top: 15px;"><i class="fa-solid fa-phone"></i> اتصال بالسائق</a>
+            </div>
+          `;
+        });
+      } catch (e) { driversList.innerHTML = '<p style="color:red; text-align:center;">خطأ في التحميل.</p>'; }
     }
 
     window.previewImage = function(event) {
@@ -462,7 +521,98 @@
     };
 
     // ═══════════════════════════════════════════════
-    // صفحة إنشاء الطلب (تصميمك القديم)
+    // إعدادات السائق (للإدارة)
+    // ═══════════════════════════════════════════════
+    window.saveDriver = async function() {
+      const name = document.getElementById('driver-name').value.trim();
+      const area = document.getElementById('driver-area').value.trim();
+      const load = document.getElementById('driver-load').value.trim();
+      const phone = document.getElementById('driver-phone').value.trim();
+      const msg = document.getElementById('driver-msg');
+
+      if(!name || !area || !load || !phone) {
+        msg.className = "msg err"; msg.textContent = "الرجاء ملء جميع الحقول"; return;
+      }
+
+      try {
+        await addDoc(collection(db, "drivers"), { name, area, load, phone, createdAt: new Date() });
+        msg.className = "msg ok"; msg.textContent = "✅ تمت إضافة السائق بنجاح";
+        
+        document.getElementById('driver-name').value = '';
+        document.getElementById('driver-area').value = '';
+        document.getElementById('driver-load').value = '';
+        document.getElementById('driver-phone').value = '';
+        
+        loadDrivers(); // تحديث القائمة
+        setTimeout(() => { msg.style.display = 'none'; }, 2000);
+      } catch(e) {
+        msg.className = "msg err"; msg.textContent = "خطأ: " + e.message;
+      }
+    };
+
+    // ═══════════════════════════════════════════════
+    // تعديل الحساب
+    // ═══════════════════════════════════════════════
+    window.saveAccount = async function() {
+      const newName = document.getElementById('edit-name').value.trim();
+      const msg = document.getElementById('account-msg');
+      const userPhone = localStorage.getItem('userPhone');
+
+      if(!newName) { msg.className = "msg err"; msg.textContent = "الرجاء إدخال الاسم"; return; }
+      if(!userPhone) { msg.className = "msg err"; msg.textContent = "يجب تسجيل الدخول أولاً"; return; }
+
+      try {
+        await setDoc(doc(db, "users", userPhone), { name: newName }, { merge: true });
+        document.getElementById('profile-name').innerText = newName;
+        msg.className = "msg ok"; msg.textContent = "✅ تم حفظ الاسم بنجاح";
+        setTimeout(() => { showScreen('screen-settings'); msg.style.display='none'; }, 1500);
+      } catch(e) {
+        msg.className = "msg err"; msg.textContent = "خطأ: " + e.message;
+      }
+    };
+
+    window.updateProfileImage = function(event) {
+      const file = event.target.files[0];
+      if(!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const MAX_SIZE = 200;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+          } else {
+            if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+          
+          document.getElementById('profile-img').src = compressedBase64;
+          
+          const userPhone = localStorage.getItem('userPhone');
+          if(userPhone) {
+            setDoc(doc(db, "users", userPhone), { profileImage: compressedBase64 }, { merge: true })
+              .then(() => alert("✅ تم حفظ صورة الحساب بنجاح"))
+              .catch(err => alert("حدث خطأ أثناء الحفظ"));
+          }
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    };
+
+    // ═══════════════════════════════════════════════
+    // إنشاء طلب
     // ═══════════════════════════════════════════════
     window.showOrderForm = function() {
       showScreen('screen-form');
@@ -473,61 +623,42 @@
 
     window.addItem = function() {
       var container = document.getElementById("itemsContainer");
-      var maxItems = 20;
-      if (container.children.length >= maxItems) {
-        alert("⚠️ الحد الأقصى " + maxItems + " منتجات.");
-        return;
-      }
+      if (container.children.length >= 20) { alert("⚠️ الحد الأقصى 20 منتجات."); return; }
       itemCounter++;
       var itemId = "item_" + itemCounter;
 
-      var html = '';
-      html += '<div class="item-box" id="' + itemId + '">';
-      html += '<button type="button" class="remove-btn" onclick="removeItem(\'' + itemId + '\')">×</button>';
-      html += '<span class="item-number">' + (container.children.length + 1) + '</span>';
-      html += '<label>📝 اسم المنتج</label>';
-      html += '<input type="text" class="item-name" placeholder="مثال: أرز بسمتي">';
-      html += '<label>🔢 الكمية</label>';
-      html += '<input type="text" class="item-qty" placeholder="مثال: 50 كيس">';
-      html += '<label>🖼️ صورة (اختياري)</label>';
-      html += '<div class="file-input-wrapper">';
-      html += '<div class="file-input-btn" id="' + itemId + '_label">📷 اضغط لاختيار صورة</div>';
-      html += '<input type="file" accept="image/*" onchange="handleItemImage(event, \'' + itemId + '\')">';
-      html += '</div>';
-      html += '<img id="' + itemId + '_preview" class="preview-img">';
-      html += '<input type="hidden" class="item-image" id="' + itemId + '_image">';
-      html += '<input type="hidden" class="item-image-type" id="' + itemId + '_type">';
-      html += '</div>';
-
+      var html = `
+        <div class="item-box" id="${itemId}">
+          <button type="button" class="remove-btn" onclick="removeItem('${itemId}')">×</button>
+          <span class="item-number">${container.children.length + 1}</span>
+          <label>📝 اسم المنتج</label><input type="text" class="item-name" placeholder="مثال: أرز بسمتي">
+          <label>🔢 الكمية</label><input type="text" class="item-qty" placeholder="مثال: 50 كيس">
+          <label>🖼️ صورة (اختياري)</label>
+          <div class="file-input-wrapper">
+            <div class="file-input-btn" id="${itemId}_label">📷 اضغط لاختيار صورة</div>
+            <input type="file" accept="image/*" onchange="handleItemImage(event, '${itemId}')">
+          </div>
+          <img id="${itemId}_preview" class="preview-img">
+          <input type="hidden" class="item-image" id="${itemId}_image">
+        </div>
+      `;
       container.insertAdjacentHTML('beforeend', html);
     };
 
     window.removeItem = function(itemId) {
       var el = document.getElementById(itemId);
       if (el) el.remove();
-      renumberItems();
-    };
-
-    function renumberItems() {
-      var container = document.getElementById("itemsContainer");
-      var boxes = container.querySelectorAll(".item-box");
+      var boxes = document.getElementById("itemsContainer").querySelectorAll(".item-box");
       for (var i = 0; i < boxes.length; i++) {
-        var num = boxes[i].querySelector(".item-number");
-        if (num) num.textContent = i + 1;
+        boxes[i].querySelector(".item-number").textContent = i + 1;
       }
-    }
+    };
 
     window.handleItemImage = function(event, itemId) {
       var file = event.target.files[0];
       if (!file) return;
+      if (file.size > 1024 * 1024) { alert("⚠️ الصورة كبيرة جداً. الحد الأقصى 1 ميجابايت."); event.target.value = ""; return; }
 
-      if (file.size > 1024 * 1024) {
-        alert("⚠️ الصورة كبيرة جداً. الحد الأقصى 1 ميجابايت.");
-        event.target.value = "";
-        return;
-      }
-
-      document.getElementById(itemId + "_type").value = file.type;
       document.getElementById(itemId + "_label").textContent = "✅ " + file.name;
 
       var reader = new FileReader();
@@ -535,7 +666,7 @@
         var preview = document.getElementById(itemId + "_preview");
         preview.src = e.target.result;
         preview.style.display = "block";
-        document.getElementById(itemId + "_image").value = e.target.result.split(",")[1];
+        document.getElementById(itemId + "_image").value = e.target.result;
       };
       reader.readAsDataURL(file);
     };
@@ -561,39 +692,20 @@
         var itemQty = box.querySelector(".item-qty").value.trim();
         var itemImage = box.querySelector(".item-image").value;
 
-        if (!itemName) {
-          msg.className = "msg err";
-          msg.textContent = "الرجاء إدخال اسم المنتج رقم " + (i + 1);
-          return;
-        }
+        if (!itemName) { msg.className = "msg err"; msg.textContent = "الرجاء إدخال اسم المنتج رقم " + (i + 1); return; }
 
         var item = { name: itemName, qty: itemQty };
-        if (itemImage) {
-          item.img = "data:image/jpeg;base64," + itemImage;
-        }
+        if (itemImage) item.img = itemImage;
         items.push(item);
       }
 
-      if (items.length === 0) {
-        msg.className = "msg err";
-        msg.textContent = "الرجاء إضافة منتج واحد على الأقل.";
-        return;
-      }
+      if (items.length === 0) { msg.className = "msg err"; msg.textContent = "الرجاء إضافة منتج واحد على الأقل."; return; }
 
-      btn.disabled = true;
-      msg.className = "msg info";
-      msg.textContent = "جارٍ إرسال الطلب...";
+      btn.disabled = true; msg.className = "msg info"; msg.textContent = "جارٍ إرسال الطلب...";
 
       try {
         await addDoc(collection(db, "orders"), {
-          name: name,
-          phone: phone,
-          address: address,
-          category: category,
-          notes: notes,
-          items: items,
-          status: "جديد",
-          createdAt: new Date()
+          name: name, phone: phone, address: address, category: category, notes: notes, items: items, status: "جديد", createdAt: new Date()
         });
 
         btn.disabled = false;
@@ -605,40 +717,33 @@
         document.getElementById("itemsContainer").innerHTML = "";
         itemCounter = 0;
 
-        msg.className = "msg ok";
-        msg.textContent = "✅ تم الإرسال";
+        msg.className = "msg ok"; msg.textContent = "✅ تم الإرسال";
         setTimeout(function() { showScreen("screen-thanks"); }, 800);
       } catch(e) {
-        btn.disabled = false;
-        msg.className = "msg err";
-        msg.textContent = "❌ خطأ: " + e.message;
+        btn.disabled = false; msg.className = "msg err"; msg.textContent = "❌ خطأ: " + e.message;
       }
     };
 
     // ═══════════════════════════════════════════════
-    // صفحة التاجر (عرض الطلبات من Firebase)
+    // صفحة التاجر (الطلبات)
     // ═══════════════════════════════════════════════
     window.loadOrders = async function() {
       showScreen("screen-orders");
       const ordersList = document.getElementById("ordersList");
       const ordersCount = document.getElementById("ordersCount");
-      
       ordersList.innerHTML = '<p style="color:white; text-align:center;">جاري التحميل...</p>';
 
       try {
         const snap = await getDocs(collection(db, "orders"));
         ordersList.innerHTML = '';
-        
         if(snap.empty) {
           ordersList.innerHTML = '<div class="card" style="text-align:center; color:#666; padding:30px;">لا توجد طلبات جديدة حالياً</div>';
-          ordersCount.textContent = "0";
-          return;
+          ordersCount.textContent = "0"; return;
         }
 
         let count = 0;
         snap.forEach((doc) => {
-          const o = doc.data();
-          count++;
+          const o = doc.data(); count++;
           const isSold = o.status === "تم البيع";
           const soldClass = isSold ? 'sold' : '';
           const statusHtml = isSold ? '<span class="order-status status-sold">✅ تم البيع</span>' : '<span class="order-status status-new">🆕 جديد</span>';
@@ -671,13 +776,8 @@
       detailContent.innerHTML = '<div style="text-align:center; padding:20px;">جارٍ التحميل...</div>';
 
       try {
-        const docRef = doc(db, "orders", orderId);
-        const docSnap = await getDoc(docRef);
-        
-        if(!docSnap.exists()) {
-          detailContent.innerHTML = '<div class="msg err" style="display:block;">الطلب غير موجود</div>';
-          return;
-        }
+        const docSnap = await getDoc(doc(db, "orders", orderId));
+        if(!docSnap.exists()) { detailContent.innerHTML = '<div class="msg err" style="display:block;">الطلب غير موجود</div>'; return; }
 
         const o = docSnap.data();
         const isSold = o.status === "تم البيع";
@@ -733,7 +833,7 @@
     };
 
     // ═══════════════════════════════════════════════
-    // تسجيل الدخول (Firebase OTP)
+    // تسجيل الدخول (OTP)
     // ═══════════════════════════════════════════════
     window.showLogin = function() {
       document.getElementById('auth-container').style.display = 'block';
@@ -758,12 +858,11 @@
       const btn = document.getElementById('btn-send-otp');
 
       if (!phoneInput.startsWith('07') || phoneInput.length !== 11) { errorMsg.style.display = 'block'; return; }
-      errorMsg.style.display = 'none';
-      btn.innerText = "جاري الإرسال..."; btn.disabled = true;
+      errorMsg.style.display = 'none'; btn.innerText = "جاري الإرسال..."; btn.disabled = true;
 
       phoneNumberToVerify = "+964" + phoneInput.substring(1);
 
-      if (phoneNumberToVerify === "+9647710669750") {
+      if (phoneNumberToVerify === ADMIN_PHONE) {
         showStep('step-otp'); btn.innerText = "إرسال الكود"; btn.disabled = false; return;
       }
 
@@ -782,15 +881,13 @@
       const btn = document.getElementById('btn-verify-otp');
 
       if (otpInput.length !== 6) { errorMsg.style.display = 'block'; return; }
-      errorMsg.style.display = 'none';
-      btn.innerText = "جاري التحقق..."; btn.disabled = true;
+      errorMsg.style.display = 'none'; btn.innerText = "جاري التحقق..."; btn.disabled = true;
 
-      if (phoneNumberToVerify === "+9647710669750") {
+      if (phoneNumberToVerify === ADMIN_PHONE) {
         if (otpInput === "123456") { 
             localStorage.setItem('loggedIn', 'true'); 
             localStorage.setItem('userPhone', phoneNumberToVerify);
-            closeLogin();
-            loadOrders();
+            window.location.reload();
         } 
         else { errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح (استخدم 123456)."; }
         btn.innerText = "تحقق ودخول"; btn.disabled = false; return;
@@ -800,8 +897,7 @@
         await confirmationResult.confirm(otpInput);
         localStorage.setItem('loggedIn', 'true');
         localStorage.setItem('userPhone', phoneNumberToVerify);
-        closeLogin();
-        loadOrders();
+        window.location.reload();
       } catch (error) {
         errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح.";
         btn.innerText = "تحقق ودخول"; btn.disabled = false;
@@ -825,46 +921,6 @@
           alert("✅ تم تحديث سعر الصرف بنجاح");
         } catch(e) { alert("خطأ في التحديث"); }
       }
-    };
-
-    window.updateProfileImage = function(event) {
-      const file = event.target.files[0];
-      if(!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const MAX_SIZE = 200;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height) {
-            if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
-          } else {
-            if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          
-          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
-          
-          document.getElementById('profile-img').src = compressedBase64;
-          
-          const userPhone = localStorage.getItem('userPhone');
-          if(userPhone) {
-            setDoc(doc(db, "users", userPhone), { profileImage: compressedBase64 }, { merge: true })
-              .then(() => alert("✅ تم حفظ صورة الحساب بنجاح"))
-              .catch(err => alert("حدث خطأ أثناء الحفظ"));
-          }
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
     };
   </script>
 </body>
