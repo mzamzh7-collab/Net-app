@@ -128,7 +128,7 @@
           <div class="msg" id="reg-msg"></div>
           <button class="btn btn-white" onclick="backToLoginMode()" style="margin-top:10px;">رجوع</button>
         </div>
-        <button class="btn btn-white" onclick="quickAdminLogin()" style="margin-top:20px; border-color: var(--turquoise); color: var(--turquoise);">دخول سريع كمدير (للتجربة)</button>
+        <!-- تم حذف زر الدخول السريع من هنا -->
         <button class="btn btn-white" onclick="closeLogin()" style="margin-top:10px;">إلغاء</button>
       </div>
     </div>
@@ -371,7 +371,15 @@
     let currentRole = 'visitor';
     let currentStatus = 'pending';
     let currentAdminTab = 'traders';
-    const MAIN_ADMIN_PHONE = "+9647710669750";
+    
+    // ═══════════════════════════════════════════════
+    // قائمة أرقام المديرين العامين (يمكنك إضافة حتى 3 أرقام)
+    // ═══════════════════════════════════════════════
+    const MAIN_ADMIN_PHONES = [
+      "+9647710669750", // المدير الأول (أنت)
+      // "+9647700000000", // ضع رقم المدير الثاني هنا
+      // "+9647701111111"  // ضع رقم المدير الثالث هنا
+    ];
 
     if(localStorage.getItem('net_cart')) {
       try { cart = JSON.parse(localStorage.getItem('net_cart')) || []; } catch(e) { cart = []; }
@@ -402,10 +410,10 @@
 
       if(currentUserPhone === "زائر" || !currentUserPhone) return;
 
-      // 1. المدير الأساسي
-      if (currentUserPhone === MAIN_ADMIN_PHONE || currentUserPhone === "07710669750") {
+      // 1. التحقق من قائمة المديرين العامين
+      if (MAIN_ADMIN_PHONES.includes(currentUserPhone) || currentUserPhone === "07710669750") {
         currentRole = 'admin';
-        document.getElementById('profile-name').innerText = "المدير العام (أنت)";
+        document.getElementById('profile-name').innerText = "المدير العام";
         document.getElementById('profile-status').innerHTML = '<span class="status-badge status-active">مدير عام</span>';
         
         document.getElementById('admin-panel-btn').classList.remove('hidden');
@@ -419,7 +427,7 @@
         return;
       }
 
-      // 2. المسوقين الميدانيين
+      // 2. التحقق من المسوقين الميدانيين
       try {
         const adminDoc = await getDoc(doc(db, "admins", currentUserPhone));
         if (adminDoc.exists()) {
@@ -905,18 +913,17 @@
     window.closeLogin = function() { document.getElementById('auth-container').style.display = 'none'; document.getElementById('step-phone').classList.remove('active'); document.getElementById('step-otp').classList.remove('active'); };
     window.showStep = function(stepId) { document.getElementById('step-phone').classList.remove('active'); document.getElementById('step-otp').classList.remove('active'); document.getElementById(stepId).classList.add('active'); };
 
-    window.quickAdminLogin = function() {
-      localStorage.setItem('loggedIn', 'true'); localStorage.setItem('userPhone', MAIN_ADMIN_PHONE);
-      document.getElementById('auth-container').style.display = 'none'; document.getElementById('profile-phone').innerText = MAIN_ADMIN_PHONE;
-      window.location.reload();
-    };
-
     window.sendOTP = async function() {
       const phoneInput = document.getElementById('phone-input').value.trim(); const errorMsg = document.getElementById('phone-error'); const btn = document.getElementById('btn-send-otp');
       if (!phoneInput.startsWith('07') || phoneInput.length !== 11) { errorMsg.style.display = 'block'; return; }
       errorMsg.style.display = 'none'; btn.innerText = "جاري الإرسال..."; btn.disabled = true;
       phoneNumberToVerify = "+964" + phoneInput.substring(1);
-      if (phoneNumberToVerify === MAIN_ADMIN_PHONE) { showStep('step-otp'); btn.innerText = "إرسال الكود"; btn.disabled = false; return; }
+      
+      // إذا كان رقم مدير، لا يحتاج لإرسال SMS
+      if (MAIN_ADMIN_PHONES.includes(phoneNumberToVerify) || phoneNumberToVerify === "+9647710669750") { 
+        showStep('step-otp'); btn.innerText = "إرسال الكود"; btn.disabled = false; return; 
+      }
+
       try {
         if(!recaptchaVerifier) recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
         confirmationResult = await signInWithPhoneNumber(auth, phoneNumberToVerify, recaptchaVerifier); showStep('step-otp');
@@ -927,11 +934,14 @@
       const otpInput = document.getElementById('otp-input').value.trim(); const errorMsg = document.getElementById('otp-error'); const btn = document.getElementById('btn-verify-otp');
       if (otpInput.length !== 6) { errorMsg.style.display = 'block'; return; }
       errorMsg.style.display = 'none'; btn.innerText = "جاري التحقق..."; btn.disabled = true;
-      if (phoneNumberToVerify === MAIN_ADMIN_PHONE) {
+
+      // التحقق من كود المدراء
+      if (MAIN_ADMIN_PHONES.includes(phoneNumberToVerify) || phoneNumberToVerify === "+9647710669750") {
         if (otpInput === "123456") { localStorage.setItem('loggedIn', 'true'); localStorage.setItem('userPhone', phoneNumberToVerify); document.getElementById('auth-container').style.display = 'none'; document.getElementById('profile-phone').innerText = phoneNumberToVerify; window.location.reload(); } 
         else { errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح (استخدم 123456)."; }
         btn.innerText = "تحقق ودخول"; btn.disabled = false; return;
       }
+
       try {
         await confirmationResult.confirm(otpInput); localStorage.setItem('loggedIn', 'true'); localStorage.setItem('userPhone', phoneNumberToVerify);
         document.getElementById('auth-container').style.display = 'none'; document.getElementById('profile-phone').innerText = phoneNumberToVerify; window.location.reload();
