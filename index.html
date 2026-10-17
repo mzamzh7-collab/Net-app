@@ -106,9 +106,17 @@
       <div class="card" style="margin-top:50px;">
         <h2 style="text-align:center; color:var(--peach);">🔐 تأكيد هوية التاجر</h2>
         <p style="text-align:center; color:#666; font-size:14px; margin-bottom:16px;">أدخل رقم هاتفك للاطلاع على الطلبات</p>
+        
         <input type="tel" id="phone-input" placeholder="07XXXXXXXXX" maxlength="11" style="text-align:center; direction:ltr;">
         <p class="msg err" id="phone-error">الرجاء إدخال رقم صحيح.</p>
+        
         <button class="btn" onclick="sendOTP()" id="btn-send-otp">إرسال الكود</button>
+        
+        <!-- زر دخول سريع للمدير -->
+        <button class="btn btn-white" onclick="quickAdminLogin()" style="margin-top:10px; border-color: var(--turquoise); color: var(--turquoise);">
+           دخول سريع كمدير (للتجربة)
+        </button>
+        
         <button class="btn btn-white" onclick="closeLogin()" style="margin-top:10px;">إلغاء</button>
       </div>
     </div>
@@ -270,10 +278,8 @@
 
     <div class="card" style="padding: 0;">
       <ul class="settings-list">
-        <!-- خيارات متاحة للجميع -->
         <li onclick="showScreen('screen-edit-account')"><span><i class="fa-solid fa-user-pen"></i> تعديل الحساب</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
         
-        <!-- خيارات الإدارة (مخفية افتراضياً) -->
         <li id="admin-driver-btn" class="hidden" onclick="showScreen('screen-driver-settings')" style="color:var(--turquoise);"><span><i class="fa-solid fa-truck"></i> إعدادات السائق</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
         <li id="admin-rate-btn" class="hidden" onclick="editRate()" style="color:var(--turquoise);"><span><i class="fa-solid fa-dollar-sign"></i> تعديل سعر الصرف</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
         
@@ -297,7 +303,7 @@
     </div>
   </div>
 
-  <!-- صفحة إعدادات السائق (للإدارة فقط) -->
+  <!-- صفحة إعدادات السائق -->
   <div class="screen" id="screen-driver-settings">
     <div class="card">
       <h2 style="text-align:center; color:var(--turquoise); margin-bottom:15px;">🚚 إعدادات السائق</h2>
@@ -350,9 +356,6 @@
     let currentUserPhone = null;
     const ADMIN_PHONE = "+9647710669750";
 
-    // ═══════════════════════════════════════════════
-    // تهيئة التطبيق
-    // ═══════════════════════════════════════════════
     onAuthStateChanged(auth, async (user) => {
       document.getElementById('main-header').style.display = 'block';
       document.getElementById('bottom-nav').style.display = 'flex';
@@ -364,7 +367,6 @@
         document.getElementById('login-btn').classList.add('hidden');
         document.getElementById('logout-btn').classList.remove('hidden');
         
-        // جلب بيانات الحساب من Firebase
         try {
           const userDoc = await getDoc(doc(db, "users", currentUserPhone));
           if(userDoc.exists()) {
@@ -375,9 +377,8 @@
                 document.getElementById('edit-name').value = data.name;
              }
           }
-        } catch(e) { console.log("لا توجد بيانات إضافية"); }
+        } catch(e) {}
 
-        // التحقق مما إذا كان مديراً
         if (currentUserPhone === ADMIN_PHONE || currentUserPhone === "07710669750") {
           document.getElementById('admin-rate-btn').classList.remove('hidden');
           document.getElementById('admin-driver-btn').classList.remove('hidden');
@@ -412,9 +413,7 @@
       window.scrollTo(0, 0);
     };
 
-    // ═══════════════════════════════════════════════
-    // العروض والسائقين
-    // ═══════════════════════════════════════════════
+    // دوال العروض والسائقين
     async function loadOffers() {
       const offersList = document.getElementById('offers-list');
       offersList.innerHTML = '<p style="color:white; text-align:center;">جاري التحميل...</p>'; 
@@ -520,9 +519,7 @@
       } finally { btn.disabled = false; }
     };
 
-    // ═══════════════════════════════════════════════
-    // إعدادات السائق (للإدارة)
-    // ═══════════════════════════════════════════════
+    // إعدادات السائق
     window.saveDriver = async function() {
       const name = document.getElementById('driver-name').value.trim();
       const area = document.getElementById('driver-area').value.trim();
@@ -543,16 +540,14 @@
         document.getElementById('driver-load').value = '';
         document.getElementById('driver-phone').value = '';
         
-        loadDrivers(); // تحديث القائمة
+        loadDrivers();
         setTimeout(() => { msg.style.display = 'none'; }, 2000);
       } catch(e) {
         msg.className = "msg err"; msg.textContent = "خطأ: " + e.message;
       }
     };
 
-    // ═══════════════════════════════════════════════
     // تعديل الحساب
-    // ═══════════════════════════════════════════════
     window.saveAccount = async function() {
       const newName = document.getElementById('edit-name').value.trim();
       const msg = document.getElementById('account-msg');
@@ -611,9 +606,7 @@
       reader.readAsDataURL(file);
     };
 
-    // ═══════════════════════════════════════════════
     // إنشاء طلب
-    // ═══════════════════════════════════════════════
     window.showOrderForm = function() {
       showScreen('screen-form');
       if (document.getElementById("itemsContainer").children.length === 0) {
@@ -724,9 +717,7 @@
       }
     };
 
-    // ═══════════════════════════════════════════════
-    // صفحة التاجر (الطلبات)
-    // ═══════════════════════════════════════════════
+    // صفحة التاجر
     window.loadOrders = async function() {
       showScreen("screen-orders");
       const ordersList = document.getElementById("ordersList");
@@ -832,9 +823,7 @@
       }
     };
 
-    // ═══════════════════════════════════════════════
-    // تسجيل الدخول (OTP)
-    // ═══════════════════════════════════════════════
+    // تسجيل الدخول
     window.showLogin = function() {
       document.getElementById('auth-container').style.display = 'block';
       document.getElementById('step-phone').classList.add('active');
@@ -850,6 +839,13 @@
       document.getElementById('step-phone').classList.remove('active');
       document.getElementById('step-otp').classList.remove('active');
       document.getElementById(stepId).classList.add('active');
+    };
+
+    // إضافة دالة الدخول السريع للمدير
+    window.quickAdminLogin = function() {
+      localStorage.setItem('loggedIn', 'true');
+      localStorage.setItem('userPhone', ADMIN_PHONE);
+      window.location.reload();
     };
 
     window.sendOTP = async function() {
