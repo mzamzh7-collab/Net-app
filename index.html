@@ -44,40 +44,9 @@
   .profile-img-wrapper { position: relative; width: 100px; height: 100px; margin-bottom: 15px; }
   .profile-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--turquoise); background: #eee; }
   
-  /* إصلاح تشوه أيقونة التعديل */
-  .edit-icon-wrapper {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 32px;
-    height: 32px;
-    z-index: 10;
-    cursor: pointer;
-  }
-  .edit-icon {
-    background: var(--peach);
-    color: white;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid white;
-    font-size: 14px;
-    pointer-events: none;
-  }
-  .edit-icon-wrapper input[type="file"] {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-    margin: 0;
-    padding: 0;
-  }
+  .edit-icon-wrapper { position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; z-index: 10; cursor: pointer; }
+  .edit-icon { background: var(--peach); color: white; width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; font-size: 14px; pointer-events: none; }
+  .edit-icon-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; margin: 0; padding: 0; }
   
   .settings-list { list-style: none; padding: 0; }
   .settings-list li { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 16px; font-weight: bold; }
@@ -170,6 +139,7 @@
   <div class="screen active" id="screen-home">
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showScreen('screen-drivers')"><i class="fa-solid fa-truck"></i> اطلب سائق</button>
+      <!-- تم إضافة ID هنا لتحديث السعر ديناميكياً -->
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" id="home-rate"><i class="fa-solid fa-dollar-sign"></i> سعر الصرف</button>
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showOrderForm()"><i class="fa-solid fa-list"></i> إنشاء قائمة طلب</button>
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showLogin()"><i class="fa-solid fa-store"></i> صفحة التاجر</button>
@@ -274,7 +244,6 @@
     </div>
   </div>
 
-  <!-- صفحة الطلبات (للتاجر) -->
   <div class="screen" id="screen-orders">
     <div class="orders-header">
       <h2>📋 الطلبات الواردة</h2>
@@ -291,14 +260,12 @@
     <div class="card" id="detailContent"></div>
   </div>
 
-  <!-- صفحة مخزني (للتاجر) -->
   <div class="screen" id="screen-inventory">
     <h2 style="color:var(--white); margin-bottom:15px; text-align:center;">📦 مخزني (العروض المنشورة)</h2>
     <div id="inventoryList"></div>
     <button class="btn btn-white" style="margin-top:15px;" onclick="showScreen('screen-settings')"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
   </div>
 
-  <!-- صفحة قوائمي (لصاحب السوق) -->
   <div class="screen" id="screen-my-orders">
     <h2 style="color:var(--white); margin-bottom:15px; text-align:center;">🧾 قوائمي السابقة</h2>
     <div id="myOrdersList"></div>
@@ -309,7 +276,6 @@
     <div class="card profile-container">
       <div class="profile-img-wrapper">
         <img src="https://via.placeholder.com/100?text=User" class="profile-img" id="profile-img">
-        <!-- تم إصلاح تشوه أيقونة التعديل هنا -->
         <div class="edit-icon-wrapper">
             <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
             <input type="file" accept="image/*" onchange="updateProfileImage(event)">
@@ -401,6 +367,23 @@
       try { cart = JSON.parse(localStorage.getItem('net_cart')) || []; } catch(e) { cart = []; }
     }
 
+    // ═══════════════════════════════════════════════
+    // دوال سعر الصرف الديناميكي
+    // ═══════════════════════════════════════════════
+    async function loadExchangeRate() {
+      try {
+        const docSnap = await getDoc(doc(db, "config", "dollar"));
+        if (docSnap.exists()) {
+          const rate = docSnap.data().price;
+          document.getElementById('home-rate').innerHTML = `<i class="fa-solid fa-dollar-sign"></i> سعر الصرف: ${rate}`;
+        } else {
+          document.getElementById('home-rate').innerHTML = `<i class="fa-solid fa-dollar-sign"></i> سعر الصرف: 1320`;
+        }
+      } catch(e) {
+        console.log("خطأ في قراءة سعر الصرف", e);
+      }
+    }
+
     onAuthStateChanged(auth, async (user) => {
       document.getElementById('main-header').style.display = 'block';
       document.getElementById('bottom-nav').style.display = 'flex';
@@ -438,6 +421,7 @@
 
       loadOffers();
       loadDrivers();
+      loadExchangeRate(); // استدعاء الدالة عند فتح التطبيق
       updateCartUI();
     });
 
@@ -576,7 +560,7 @@
         await addDoc(collection(db, "products"), {
           name: name, price: price, pieces: pieces, quantity: quantity,
           imageUrl: imageBase64, 
-          traderPhone: currentUserPhone, // حفظ رقم هاتف التاجر
+          traderPhone: currentUserPhone, 
           createdAt: new Date()
         });
         
@@ -789,7 +773,7 @@
       try {
         await addDoc(collection(db, "orders"), {
           name: name, phone: phone, address: address, category: category, notes: notes, items: items, status: "جديد", 
-          buyerPhone: currentUserPhone, // حفظ رقم هاتف صاحب السوق
+          buyerPhone: currentUserPhone, 
           createdAt: new Date()
         });
 
@@ -813,7 +797,6 @@
       }
     };
 
-    // دالة تحميل الطلبات (للتاجر)
     window.loadOrders = async function() {
       showScreen("screen-orders");
       const ordersList = document.getElementById("ordersList");
@@ -919,14 +902,12 @@
       }
     };
 
-    // دالة تحميل المخزن (للتاجر فقط - بدون حسابات)
     window.loadInventory = async function() {
       showScreen("screen-inventory");
       const inventoryList = document.getElementById("inventoryList");
       inventoryList.innerHTML = '<p style="color:white; text-align:center;">جاري التحميل...</p>';
 
       try {
-        // جلب منتجات هذا التاجر فقط
         const q = query(collection(db, "products"), where("traderPhone", "==", currentUserPhone));
         const snap = await getDocs(q);
         
@@ -954,14 +935,12 @@
       }
     };
 
-    // دالة تحميل قوائمي (لصاحب السوق)
     window.loadMyOrders = async function() {
       showScreen("screen-my-orders");
       const myOrdersList = document.getElementById("myOrdersList");
       myOrdersList.innerHTML = '<p style="color:white; text-align:center;">جاري التحميل...</p>';
 
       try {
-        // جلب الطلبات التي أرسلها هذا المستخدم فقط
         const q = query(collection(db, "orders"), where("buyerPhone", "==", currentUserPhone));
         const snap = await getDocs(q);
         
@@ -1096,8 +1075,10 @@
       let newRate = prompt("أدخل سعر الصرف الجديد للدولار:", "1320");
       if (newRate) {
         try {
+          // حفظ في قاعدة البيانات
           await setDoc(doc(db, "config", "dollar"), { price: Number(newRate) });
-          document.getElementById('home-rate').innerText = `💵 سعر الصرف: ${newRate}`;
+          // تحديث الواجهة
+          document.getElementById('home-rate').innerHTML = `<i class="fa-solid fa-dollar-sign"></i> سعر الصرف: ${newRate}`;
           alert("✅ تم تحديث سعر الصرف بنجاح");
         } catch(e) { alert("خطأ في التحديث"); }
       }
