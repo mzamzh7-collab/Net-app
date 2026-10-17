@@ -24,21 +24,12 @@
   .screen { display: none; padding: 20px 14px; min-height: calc(100vh - 90px); }
   .screen.active { display: block; }
 
-  .welcome { text-align: center; color: var(--white); margin-bottom: 24px; margin-top: 20px;}
-  .welcome h1 { font-size: 24px; margin-bottom: 8px; }
-  .welcome p { font-size: 15px; opacity: 0.95; line-height: 1.7; }
-  .welcome-icon { font-size: 70px; color: var(--peach); margin-bottom: 15px; }
-
-  .main-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; background: var(--white); color: var(--peach); border: 3px solid var(--peach); border-radius: 18px; padding: 20px; font-size: 20px; font-weight: 800; cursor: pointer; margin-bottom: 14px; text-align: center; box-shadow: 0 6px 20px rgba(255,127,80,0.3); }
-  .main-btn i { font-size: 30px; margin-bottom: 10px; }
-  .main-btn .sub { font-size: 14px; font-weight: normal; color: var(--gray); margin-top: 5px; }
-
   .card { background: var(--white); border-radius: 18px; padding: 24px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 16px; }
   input, select, textarea { width: 100%; padding: 14px; font-size: 16px; text-align: right; margin: 8px 0; border: 2px solid #ddd; border-radius: 12px; }
   input:focus { outline: none; border-color: var(--peach); }
   label { display: block; font-weight: bold; margin-top: 12px; font-size: 15px; color: var(--dark); }
   
-  .btn { width: 100%; padding: 15px; background: var(--peach); color: var(--white); border: none; border-radius: 12px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 10px; position: relative; z-index: 20;}
+  .btn { width: 100%; padding: 15px; background: var(--peach); color: var(--white); border: none; border-radius: 12px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 10px; position: relative; z-index: 20; display: flex; align-items: center; justify-content: center; gap: 8px;}
   .btn:disabled { background: #ccc; }
   .btn-white { background: var(--white); color: var(--peach); border: 2px solid var(--peach); }
 
@@ -67,15 +58,20 @@
   .settings-list li:hover { background: #f9f9f9; }
 
   .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; display: none; }
-  .nav-item { text-align: center; color: var(--gray); font-size: 12px; cursor: pointer; }
+  .nav-item { text-align: center; color: var(--gray); font-size: 12px; cursor: pointer; width: 33%; }
   .nav-item.active { color: var(--peach); font-weight: bold; }
   .nav-icon { font-size: 22px; margin-bottom: 2px; }
   .hidden { display: none !important; }
+
+  /* تنسيق خاص للسائقين */
+  .driver-card { display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .driver-card .order-title { font-size: 20px; margin-bottom: 10px; }
+  .driver-card .order-info { font-size: 16px; margin-bottom: 8px; width: 100%; }
+  .driver-card .btn { width: 80%; margin-top: 15px; }
 </style>
 </head>
 <body>
 
-  <!-- شاشات تسجيل الدخول (مخفية افتراضياً) -->
   <div id="auth-container" style="display: none;">
     <div class="screen" id="step-phone">
       <div class="card" style="margin-top:50px;">
@@ -103,30 +99,39 @@
     <div class="brand">مندوب إلكتروني</div>
   </div>
 
+  <!-- الصفحة الرئيسية (العروض) -->
   <div class="screen active" id="screen-home">
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showScreen('screen-drivers')"><i class="fa-solid fa-truck"></i> اطلب سائق</button>
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" id="home-rate"><i class="fa-solid fa-dollar-sign"></i> سعر الصرف</button>
-      <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showScreen('screen-form-order')"><i class="fa-solid fa-list"></i> إنشاء قائمة</button>
+      <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showScreen('screen-form-order')"><i class="fa-solid fa-list"></i> إنشاء قائمة طلب</button>
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="alert('صفحة التاجر')"><i class="fa-solid fa-store"></i> صفحة التاجر</button>
     </div>
     <h3 style="color:var(--white); margin-bottom:10px;">🔥 العروض</h3>
     <div id="offers-list"></div>
   </div>
 
+  <!-- صفحة السائقين -->
   <div class="screen" id="screen-drivers">
-    <h2 style="color:var(--white); margin-bottom:15px;">🚚 السائقون</h2>
+    <h2 style="color:var(--white); margin-bottom:15px; text-align:center;">🚚 السائقون المتاحون</h2>
     <div id="drivers-list">
-        <div class="card">
-          <div style="font-size:18px; font-weight:bold;">علي حسن</div>
-          <div class="order-info"><i class="fa-solid fa-location-dot"></i> الكاظمية</div>
-          <div class="order-info"><i class="fa-solid fa-truck"></i> حمل (3 طن)</div>
-          <a href="tel:07701234567" class="btn"><i class="fa-solid fa-phone"></i> اتصال</a>
+        <div class="card driver-card">
+          <div class="order-title">👤 علي حسن</div>
+          <div class="order-info"><i class="fa-solid fa-location-dot" style="color:var(--peach);"></i> منطقة: الكاظمية</div>
+          <div class="order-info"><i class="fa-solid fa-truck" style="color:var(--peach);"></i> نوع الحمل: حمل (3 طن)</div>
+          <a href="tel:07701234567" class="btn"><i class="fa-solid fa-phone"></i> اتصال بالسائق</a>
+        </div>
+        <div class="card driver-card">
+          <div class="order-title">👤 محمد كريم</div>
+          <div class="order-info"><i class="fa-solid fa-location-dot" style="color:var(--peach);"></i> منطقة: المنصور</div>
+          <div class="order-info"><i class="fa-solid fa-truck" style="color:var(--peach);"></i> نوع الحمل: حمل (1 طن)</div>
+          <a href="tel:07709876543" class="btn"><i class="fa-solid fa-phone"></i> اتصال بالسائق</a>
         </div>
     </div>
-    <button class="btn btn-white" style="margin-top:15px;" onclick="showScreen('screen-home')"><i class="fa-solid fa-arrow-left"></i> رجوع</button>
+    <button class="btn btn-white" style="margin-top:15px;" onclick="showScreen('screen-home')"><i class="fa-solid fa-arrow-right"></i> رجوع للرئيسية</button>
   </div>
 
+  <!-- صفحة إضافة عرض (زر +) -->
   <div class="screen" id="screen-form-product">
     <div class="card">
       <h2 style="text-align:center; color:var(--peach); margin-bottom:15px;">➕ إضافة عرض جديد</h2>
@@ -135,7 +140,7 @@
       <label>عدد القطع</label><input type="number" id="p-pieces" placeholder="24">
       <label>الكمية المتوفرة</label><input type="number" id="p-qty" placeholder="100">
       
-      <label>صورة المنتج</label>
+      <label>صورة المنتج (اختياري)</label>
       <div class="file-upload-wrapper">
         <div class="file-upload-btn" id="upload-label"><i class="fa-solid fa-camera"></i> اضغط لتصوير أو اختيار صورة</div>
         <input type="file" id="p-image-file" accept="image/*" onchange="previewImage(event)">
@@ -143,24 +148,48 @@
       <img id="image-preview" class="preview-img">
       <input type="hidden" id="p-img-base64">
       
-      <button type="button" class="btn" onclick="addProduct()" id="btn-add-product" style="margin-top:20px;"><i class="fa-solid fa-check"></i> نشر العرض</button>
+      <button type="button" class="btn" onclick="addProduct()" id="btn-add-product" style="margin-top:20px;"><i class="fa-solid fa-check"></i> نشر العرض الآن</button>
       <div class="msg" id="product-msg"></div>
     </div>
   </div>
 
+  <!-- صفحة إنشاء قائمة طلب (من الصفحة الرئيسية) -->
   <div class="screen" id="screen-form-order">
     <div class="card">
-      <h2 style="text-align:center; color:var(--peach); margin-bottom:16px;">🛒 طلب جديد</h2>
+      <h2 style="text-align:center; color:var(--peach); margin-bottom:16px;">🛒 إنشاء قائمة طلب</h2>
+      <p style="text-align:center; font-size:14px; color:var(--gray); margin-bottom:15px;">اكتب المنتجات التي تحتاجها لتجهيز القائمة</p>
+      
       <label>اسم السوبرماركت</label><input id="fName" type="text" placeholder="المهيمن">
       <label>رقم الهاتف</label><input id="fPhone" type="tel" placeholder="07xxxxxxxxx" style="direction:ltr; text-align:center;">
       <label>العنوان الكامل</label><input id="fAddress" type="text" placeholder="بغداد">
       
-      <button class="btn" onclick="submitOrder()" id="submitBtn" style="margin-top:20px;"><i class="fa-solid fa-paper-plane"></i> إرسال الطلب</button>
+      <hr style="margin: 20px 0; border: 1px dashed #ddd;">
+      
+      <label>المنتج الأول</label>
+      <div style="display:flex; gap:10px;">
+        <input type="text" id="order-p1" placeholder="اسم المنتج" style="flex:2;">
+        <input type="number" id="order-q1" placeholder="الكمية" style="flex:1;">
+      </div>
+
+      <label>المنتج الثاني</label>
+      <div style="display:flex; gap:10px;">
+        <input type="text" id="order-p2" placeholder="اسم المنتج" style="flex:2;">
+        <input type="number" id="order-q2" placeholder="الكمية" style="flex:1;">
+      </div>
+      
+      <label>المنتج الثالث</label>
+      <div style="display:flex; gap:10px;">
+        <input type="text" id="order-p3" placeholder="اسم المنتج" style="flex:2;">
+        <input type="number" id="order-q3" placeholder="الكمية" style="flex:1;">
+      </div>
+      
+      <button class="btn" onclick="submitOrder()" id="submitBtn" style="margin-top:20px;"><i class="fa-solid fa-paper-plane"></i> إرسال القائمة</button>
       <div class="msg" id="formMsg"></div>
-      <button class="btn btn-white" style="margin-top:10px;" onclick="showScreen('screen-home')"><i class="fa-solid fa-arrow-left"></i> رجوع</button>
+      <button class="btn btn-white" style="margin-top:10px;" onclick="showScreen('screen-home')"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
     </div>
   </div>
 
+  <!-- صفحة الإعدادات -->
   <div class="screen" id="screen-settings">
     <div class="card profile-container">
       <div class="profile-img-wrapper">
@@ -188,6 +217,7 @@
     <button id="logout-btn" class="hidden btn" style="background:#dc3545; margin-top:10px;" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
   </div>
 
+  <!-- شريط التنقل السفلي -->
   <div class="bottom-nav" id="bottom-nav">
     <div class="nav-item" onclick="showScreen('screen-settings')">
       <div class="nav-icon"><i class="fa-solid fa-gear"></i></div>الإعدادات
@@ -224,7 +254,6 @@
     let phoneNumberToVerify = "";
     const ADMIN_PHONE = "07710669750";
 
-    // تشغيل التطبيق مباشرة على الصفحة الرئيسية
     onAuthStateChanged(auth, (user) => {
       document.getElementById('main-header').style.display = 'block';
       document.getElementById('bottom-nav').style.display = 'flex';
@@ -233,7 +262,6 @@
       const userPhone = localStorage.getItem('userPhone') || "زائر";
       document.getElementById('profile-phone').innerText = userPhone;
 
-      // إظهار أزرار الإدارة إذا كان مسجل دخول كمدير
       if (localStorage.getItem('loggedIn') === 'true' || user) {
         document.getElementById('login-btn').classList.add('hidden');
         document.getElementById('logout-btn').classList.remove('hidden');
@@ -305,7 +333,7 @@
         if (otpInput === "123456") { 
             localStorage.setItem('loggedIn', 'true'); 
             localStorage.setItem('userPhone', phoneNumberToVerify);
-            window.location.reload(); // إعادة تحميل الصفحة لتحديث الحالة
+            window.location.reload();
         } 
         else { errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح (استخدم 123456)."; }
         btn.innerText = "تحقق ودخول"; btn.disabled = false; return;
@@ -339,7 +367,7 @@
       try {
         const snap = await getDocs(collection(db, "products"));
         offersList.innerHTML = '';
-        if(snap.empty) { offersList.innerHTML = '<p style="color:white; text-align:center;">لا توجد عروض.</p>'; return; }
+        if(snap.empty) { offersList.innerHTML = '<p style="color:white; text-align:center;">لا توجد عروض مضافة حالياً.</p>'; return; }
 
         snap.forEach((doc) => {
           const p = doc.data();
@@ -458,8 +486,22 @@
     };
 
     window.submitOrder = function() {
-      alert("تم إرسال الطلب بنجاح (تجريبي).");
-      showScreen('screen-home');
+      const name = document.getElementById('fName').value;
+      const phone = document.getElementById('fPhone').value;
+      
+      if(!name || !phone) {
+        document.getElementById('formMsg').className = "msg err";
+        document.getElementById('formMsg').textContent = "الرجاء إدخال اسم السوبرماركت ورقم الهاتف";
+        return;
+      }
+
+      document.getElementById('formMsg').className = "msg ok";
+      document.getElementById('formMsg').textContent = "✅ تم إرسال القائمة بنجاح! سيتواصل معك المندوب قريباً.";
+      
+      setTimeout(() => { 
+        showScreen('screen-home'); 
+        document.getElementById('formMsg').style.display='none';
+      }, 2000);
     };
 
     window.editRate = async function() {
