@@ -1,343 +1,478 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Net - مندوب إلكتروني</title>
-    <style>
-        :root {
-            --white: #ffffff;
-            --blue: #007BFF;
-            --peach: #FF8C69;
-            --bg: #f5f6fa;
-            --text-dark: #333333;
-            --text-light: #888888;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#007BFF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Net - مندوب إلكتروني</title>
+<style>
+  :root {
+    --white: #FFFFFF;
+    --blue: #007BFF;
+    --peach: #FF8C69;
+    --bg: #f5f6fa;
+    --text-dark: #333333;
+    --gray: #666666;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, Arial, sans-serif; }
+  body {
+    background: var(--bg);
+    min-height: 100vh;
+    direction: rtl;
+    color: var(--text-dark);
+    -webkit-tap-highlight-color: transparent;
+    padding-bottom: 70px;
+  }
+  
+  /* ================= الشريط العلوي ================= */
+  .header {
+    background: var(--blue);
+    color: var(--white);
+    padding: 15px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: none;
+  }
+  .header .logo { font-size: 24px; font-weight: 800; color: var(--white); }
+  .header .brand { font-size: 12px; color: var(--peach); }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        
-        body { background-color: var(--bg); color: var(--text-dark); direction: rtl; padding-bottom: 70px; }
+  .screen { display: none; padding: 20px 14px; min-height: calc(100vh - 90px); }
+  .screen.active { display: block; }
 
-        /* ================= شاشات التسجيل ================= */
-        #auth-container {
-            display: flex; justify-content: center; align-items: center; min-height: 100vh;
-            padding: 20px;
-        }
-        .auth-box {
-            background: var(--white); width: 100%; max-width: 400px; padding: 30px 20px;
-            border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center;
-        }
-        .logo { font-size: 40px; font-weight: bold; color: var(--blue); margin-bottom: 5px; }
-        .subtitle { color: var(--peach); font-size: 16px; margin-bottom: 30px; }
-        h2 { font-size: 22px; margin-bottom: 10px; color: var(--blue); }
-        p.description { font-size: 14px; color: var(--text-light); margin-bottom: 25px; }
-        input[type="tel"], input[type="number"] {
-            width: 100%; padding: 15px; font-size: 18px; border: 2px solid #e1e1e1;
-            border-radius: 12px; text-align: center; margin-bottom: 20px; direction: ltr;
-        }
-        button {
-            width: 100%; padding: 15px; background-color: var(--blue); color: var(--white);
-            border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer;
-        }
-        .btn-peach { background-color: var(--peach); }
-        .error-msg { color: red; font-size: 14px; margin-bottom: 15px; display: none; }
-        .link { color: var(--blue); text-decoration: none; font-size: 14px; cursor: pointer; margin-top: 15px; display: inline-block; }
+  .card {
+    background: var(--white);
+    border-radius: 18px;
+    padding: 24px 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    margin-bottom: 16px;
+  }
 
-        /* ================= التطبيق الرئيسي (العروض) ================= */
-        #app-container { display: none; }
+  /* ================= الأزرار الرئيسية ================= */
+  .main-btn {
+    display: block;
+    width: 100%;
+    background: var(--white);
+    color: var(--blue);
+    border: 2px solid var(--blue);
+    border-radius: 15px;
+    padding: 20px;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-bottom: 12px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,123,255,0.1);
+    transition: transform 0.15s;
+  }
+  .main-btn:active { transform: scale(0.98); }
+  .main-btn.peach { color: var(--peach); border-color: var(--peach); box-shadow: 0 4px 10px rgba(255,140,105,0.1); }
 
-        /* الشريط العلوي */
-        .top-bar { padding: 15px; background: var(--white); border-bottom: 1px solid #eee; }
-        .top-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;
-        }
-        .top-btn {
-            background: var(--bg); border: 1px solid #ddd; padding: 12px; border-radius: 10px;
-            text-align: center; font-size: 14px; font-weight: bold; color: var(--blue); cursor: pointer;
-        }
-        .top-btn.peach { color: var(--peach); border-color: var(--peach); }
+  input, select, textarea {
+    width: 100%; padding: 14px; font-size: 16px; text-align: right; margin: 8px 0;
+    border: 2px solid #ddd; border-radius: 12px; font-family: inherit; background: var(--white);
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--blue); }
+  
+  label { display: block; font-weight: bold; margin-top: 12px; margin-bottom: 4px; font-size: 14px; }
+  
+  .btn {
+    width: 100%; padding: 15px; background: var(--blue); color: var(--white);
+    border: none; border-radius: 12px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 10px;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled { background: #ccc; }
+  .btn-peach { background: var(--peach); }
+  
+  /* ================= الطلبات ================= */
+  .order-card {
+    background: var(--white); border-radius: 16px; padding: 15px; margin-bottom: 14px;
+    cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.05); border-right: 5px solid var(--blue);
+  }
+  .order-card.sold { border-right-color: var(--peach); opacity: 0.8; }
+  .order-title { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
+  .order-info { font-size: 14px; color: var(--gray); margin-bottom: 4px; }
 
-        /* قائمة العروض */
-        .offers-container { padding: 15px; }
-        .offer-card {
-            background: var(--white); border-radius: 15px; padding: 15px; margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative;
-        }
-        .offer-image { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
-        
-        .offer-details { display: flex; justify-content: space-between; margin-bottom: 10px; background: #f9f9f9; padding: 10px; border-radius: 8px;}
-        .offer-details span { font-size: 14px; color: #555; font-weight: bold; }
-        
-        .offer-actions { display: flex; gap: 10px; }
-        .btn-action { flex: 1; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold; cursor: pointer; border: none; }
-        .btn-cart { background: var(--blue); color: var(--white); }
-        .btn-like { background: var(--bg); color: var(--peach); border: 1px solid var(--peach); }
+  .msg { margin-top: 12px; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 14px; display: none; text-align: center;}
+  .msg.ok { background: #d4edda; color: #075E54; display: block; }
+  .msg.err { background: #f8d7da; color: #721c24; display: block; }
+  
+  /* ================= الشريط السفلي ================= */
+  .bottom-nav {
+    position: fixed; bottom: 0; width: 100%; background: var(--white);
+    display: flex; justify-content: space-around; padding: 10px 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; display: none;
+  }
+  .nav-item { text-align: center; color: var(--gray); font-size: 12px; cursor: pointer; }
+  .nav-item.active { color: var(--blue); font-weight: bold; }
+  .nav-icon { font-size: 20px; margin-bottom: 3px; }
 
-        /* تأثير الضبابية عند نفاذ المخزون */
-        .out-of-stock { filter: blur(4px); opacity: 0.7; }
-        .out-of-stock-overlay {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.7); color: white; padding: 10px 20px; border-radius: 10px;
-            font-weight: bold; z-index: 10;
-        }
+  .hidden { display: none !important; }
 
-        /* الشريط السفلي */
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: var(--white);
-            display: flex; justify-content: space-around; padding: 10px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100;
-        }
-        .nav-item { text-align: center; color: var(--text-light); font-size: 12px; cursor: pointer; }
-        .nav-item.active { color: var(--blue); font-weight: bold; }
-        .nav-icon { font-size: 20px; margin-bottom: 3px; }
-        .add-btn { color: var(--peach); font-size: 24px; margin-top: -5px; }
-
-        .hidden { display: none !important; }
-    </style>
+  /* ================= مصغرات المنتجات ================= */
+  .item-box { background: #f9f9f9; border: 2px solid #ddd; border-radius: 12px; padding: 14px; margin-bottom: 12px; position: relative; }
+  .item-box .remove-btn { position: absolute; top: 10px; left: 10px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; }
+  .file-input-wrapper { position: relative; margin: 8px 0; }
+  .file-input-wrapper input[type="file"] { opacity: 0; position: absolute; width: 100%; height: 100%; cursor: pointer; }
+  .file-input-btn { display: block; padding: 12px; background: var(--white); border: 2px dashed var(--blue); border-radius: 12px; color: var(--blue); font-weight: bold; text-align: center; }
+</style>
 </head>
 <body>
 
-    <!-- ================= 1. شاشات التسجيل ================= -->
-    <div id="auth-container">
-        <div class="auth-box">
-            <!-- شاشة الترحيب -->
-            <div id="step-welcome">
-                <div class="logo">Net</div>
-                <div class="subtitle">مندوب إلكتروني</div>
-                <h2>أهلاً بك في تطبيقنا</h2>
-                <p class="description">للدخول إلى التطبيق، يرجى تأكيد رقم هاتفك.</p>
-                <button onclick="showStep('step-phone')">بدء الدخول</button>
-            </div>
+  <!-- ================= 1. شاشة التسجيل ================= -->
+  <div id="auth-container">
+    <div class="card" style="margin-top: 50px;">
+      <div id="step-welcome">
+        <h1 style="color:var(--blue); text-align:center; font-size:40px; margin-bottom:5px;">Net</h1>
+        <p style="color:var(--peach); text-align:center; margin-bottom:30px;">مندوب إلكتروني</p>
+        <button class="main-btn" onclick="showStep('step-phone')">بدء الدخول</button>
+      </div>
 
-            <!-- شاشة رقم الهاتف -->
-            <div id="step-phone" class="hidden">
-                <h2>رقم الهاتف</h2>
-                <p class="description">أدخل رقم هاتفك (يبدأ بـ 07).</p>
-                <p class="error-msg" id="phone-error">الرجاء إدخال رقم صحيح.</p>
-                <input type="tel" id="phone-input" placeholder="07XXXXXXXXX" maxlength="11">
-                <button onclick="sendOTP()" id="btn-send-otp">إرسال الكود</button>
-            </div>
+      <div id="step-phone" class="hidden">
+        <h2 style="text-align:center; color:var(--blue);">رقم الهاتف</h2>
+        <p style="text-align:center; color:var(--gray); font-size:14px;">أدخل رقم هاتفك (يبدأ بـ 07)</p>
+        <p class="msg err" id="phone-error">الرجاء إدخال رقم صحيح.</p>
+        <input type="tel" id="phone-input" placeholder="07XXXXXXXXX" maxlength="11" style="text-align:center; direction:ltr;">
+        <button class="btn" onclick="sendOTP()" id="btn-send-otp">إرسال الكود</button>
+      </div>
 
-            <!-- شاشة الكود -->
-            <div id="step-otp" class="hidden">
-                <h2>كود التحقق</h2>
-                <p class="description">أدخل الكود المكون من 6 أرقام.</p>
-                <p class="error-msg" id="otp-error">الكود غير صحيح.</p>
-                <input type="number" id="otp-input" placeholder="------" maxlength="6">
-                <button onclick="verifyOTP()" class="btn-peach" id="btn-verify-otp">تحقق ودخول</button>
-                <div id="recaptcha-container"></div>
-                <a class="link" id="resend-link" onclick="sendOTP()" style="display:none;">إعادة إرسال الكود</a>
-                <span class="link" id="timer-text" style="display:none;">الإعادة بعد <span id="timer">60</span> ثانية</span>
-                <br>
-                <a class="link" onclick="showStep('step-phone')">تغيير رقم الهاتف</a>
-            </div>
-        </div>
+      <div id="step-otp" class="hidden">
+        <h2 style="text-align:center; color:var(--blue);">كود التحقق</h2>
+        <p style="text-align:center; color:var(--gray); font-size:14px;">أدخل الكود المكون من 6 أرقام.</p>
+        <p class="msg err" id="otp-error">الكود غير صحيح.</p>
+        <input type="number" id="otp-input" placeholder="------" maxlength="6" style="text-align:center; direction:ltr;">
+        <button class="btn btn-peach" onclick="verifyOTP()" id="btn-verify-otp">تحقق ودخول</button>
+        <div id="recaptcha-container"></div>
+        <a href="#" onclick="showStep('step-phone')" style="display:block; text-align:center; margin-top:15px; color:var(--blue); font-size:14px;">تغيير رقم الهاتف</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 2. التطبيق الرئيسي ================= -->
+  <div class="header" id="main-header">
+    <div class="logo">Net</div>
+    <div class="brand">مندوب إلكتروني</div>
+  </div>
+
+  <!-- الشاشة الرئيسية (العروض) -->
+  <div class="screen" id="screen-home">
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+      <button class="main-btn peach" style="padding:12px; font-size:14px; margin:0;">🚚 اطلب سائق</button>
+      <button class="main-btn peach" style="padding:12px; font-size:14px; margin:0;" id="dollar-rate">💵 سعر الصرف: 1,320</button>
+      <button class="main-btn" style="padding:12px; font-size:14px; margin:0;" onclick="showOrderForm()">🛒 إنشاء قائمة</button>
+      <button class="main-btn" style="padding:12px; font-size:14px; margin:0;" onclick="showLogin()">🏪 صفحة التاجر</button>
     </div>
 
-    <!-- ================= 2. التطبيق الرئيسي ================= -->
-    <div id="app-container">
-        
-        <!-- الشريط العلوي -->
-        <div class="top-bar">
-            <div class="top-grid">
-                <div class="top-btn peach">🚚 اطلب سائق</div>
-                <div class="top-btn peach" id="dollar-rate">💵 سعر الصرف: 1,320</div>
-                <div class="top-btn">🛒 إنشاء قائمة مشتريات</div>
-                <div class="top-btn" onclick="checkTrader()">🏪 صفحة التاجر</div>
-            </div>
-        </div>
-
-        <!-- قائمة العروض -->
-        <div class="offers-container" id="offers-list">
-            <!-- سيتم تحميل العروض هنا من Firebase -->
-            <p style="text-align:center; color:#888; margin-top:20px;">جاري تحميل العروض...</p>
-        </div>
-
-        <!-- الشريط السفلي -->
-        <div class="bottom-nav">
-            <div class="nav-item">
-                <div class="nav-icon">⚙️</div>
-                الإعدادات
-            </div>
-            <div class="nav-item" onclick="addProductAlert()">
-                <div class="nav-icon add-btn">➕</div>
-                إضافة عرض
-            </div>
-            <div class="nav-item active">
-                <div class="nav-icon">📋</div>
-                قوائمي
-            </div>
-        </div>
+    <h3 style="color:var(--blue); margin-bottom:10px;">🔥 العروض</h3>
+    <div id="offers-list">
+      <p style="text-align:center; color:#888;">جاري تحميل العروض...</p>
     </div>
+  </div>
 
-    <!-- ================= سكربت Firebase ================= -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+  <!-- شاشة دخول التاجر -->
+  <div class="screen" id="screen-login">
+    <div class="card">
+      <h2 style="text-align:center; margin-bottom:8px;">🔐 تأكيد هوية التاجر</h2>
+      <p style="text-align:center; color:#666; font-size:14px; margin-bottom:16px;">أدخل رقم هاتفك للاطلاع على الطلبات</p>
+      <input id="loginPhone" type="tel" placeholder="07xxxxxxxxx" style="text-align:center; direction:ltr;">
+      <button class="btn" onclick="loginTrader()" id="loginBtn">دخول</button>
+      <div class="msg" id="loginMsg"></div>
+      <button class="btn" style="background:transparent; color:var(--gray); border:1px solid #ddd; margin-top:15px;" onclick="showScreen('screen-home')">← رجوع</button>
+    </div>
+  </div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDrVVzXE_hd-5HTC1CZoVOU7zGNx7TDQQ",
-            authDomain: "net-732c9.firebaseapp.com",
-            projectId: "net-732c9",
-            storageBucket: "net-732c9.firebasestorage.app",
-            messagingSenderId: "928563175887",
-            appId: "1:928563175887:web:57a9102491dcb8a96572ba"
-        };
+  <!-- شاشة الطلبات (للتاجر) -->
+  <div class="screen" id="screen-orders">
+    <h2 style="color:var(--blue); margin-bottom:15px; display:flex; justify-content:space-between;">
+      <span>📋 الطلبات</span>
+      <span style="font-size:14px; background:#fff; padding:4px 10px; border-radius:10px;">0</span>
+    </h2>
+    <div id="trader-orders-list">
+      <p style="text-align:center; color:#888;">جاري التحميل...</p>
+    </div>
+    <button class="btn" style="background:#dc3545; margin-top:20px;" onclick="logoutTrader()">🚪 تسجيل الخروج</button>
+  </div>
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        auth.languageCode = 'ar';
+  <!-- شاشة استمارة الطلب (للبقال) -->
+  <div class="screen" id="screen-form">
+    <div class="card">
+      <h2 style="text-align:center; margin-bottom:16px;">🛒 طلب جديد</h2>
+      <label>📝 اسم السوبرماركت</label>
+      <input id="fName" type="text" placeholder="مثال: المهيمن">
+      <label>📞 رقم الهاتف</label>
+      <input id="fPhone" type="tel" placeholder="07xxxxxxxxx" style="direction:ltr; text-align:center;">
+      <label>📍 العنوان الكامل</label>
+      <input id="fAddress" type="text" placeholder="مثال: بغداد - الزعفرانية">
+      
+      <div style="border-top:2px dashed var(--peach); margin:20px 0; padding-top:15px;">
+        <h3 style="color:var(--peach); text-align:center; margin-bottom:12px;">📦 المنتجات</h3>
+        <div id="itemsContainer"></div>
+        <button class="btn" style="background:var(--white); color:var(--peach); border:2px solid var(--peach);" onclick="addItem()">➕ إضافة منتج آخر</button>
+      </div>
+      
+      <button class="btn btn-peach" onclick="submitOrder()" id="submitBtn" style="margin-top:20px;">✅ إرسال الطلب</button>
+      <div class="msg" id="formMsg"></div>
+      <button class="btn" style="background:transparent; color:var(--gray); border:1px solid #ddd; margin-top:15px;" onclick="showScreen('screen-home')">← رجوع</button>
+    </div>
+  </div>
 
-        let confirmationResult = null;
-        let recaptchaVerifier = null;
-        let phoneNumberToVerify = "";
+  <!-- الشريط السفلي -->
+  <div class="bottom-nav" id="bottom-nav">
+    <div class="nav-item" onclick="alert('الإعدادات - قريباً')">
+      <div class="nav-icon">⚙️</div>الإعدادات
+    </div>
+    <div class="nav-item" onclick="alert('إضافة عرض - للتجار فقط قريباً')">
+      <div class="nav-icon" style="color:var(--peach); font-size:24px;">➕</div>
+    </div>
+    <div class="nav-item" onclick="showScreen('screen-orders')">
+      <div class="nav-icon">📋</div>قوائمي
+    </div>
+  </div>
 
-        // التحقق من حالة تسجيل الدخول
-        onAuthStateChanged(auth, (user) => {
-            if (user || localStorage.getItem('loggedIn') === 'true') {
-                showApp();
-            } else {
-                document.getElementById('auth-container').style.display = 'flex';
-                document.getElementById('app-container').style.display = 'none';
-            }
+  <!-- سكربت Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDrVVzXE_hd-5HTC1CZoVOU7zGNx7TDQQ",
+      authDomain: "net-732c9.firebaseapp.com",
+      projectId: "net-732c9",
+      storageBucket: "net-732c9.firebasestorage.app",
+      messagingSenderId: "928563175887",
+      appId: "1:928563175887:web:57a9102491dcb8a96572ba"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    auth.languageCode = 'ar';
+
+    let confirmationResult = null;
+    let recaptchaVerifier = null;
+    let phoneNumberToVerify = "";
+    let itemCounter = 0;
+
+    // حفظ حالة الدخول
+    onAuthStateChanged(auth, (user) => {
+      if (user || localStorage.getItem('loggedIn') === 'true') {
+        showApp();
+      } else {
+        document.getElementById('auth-container').style.display = 'block';
+        document.getElementById('main-header').style.display = 'none';
+        document.getElementById('bottom-nav').style.display = 'none';
+        showScreen('auth-container');
+      }
+    });
+
+    window.showStep = function(stepId) {
+      document.getElementById('step-welcome').classList.add('hidden');
+      document.getElementById('step-phone').classList.add('hidden');
+      document.getElementById('step-otp').classList.add('hidden');
+      document.getElementById(stepId).classList.remove('hidden');
+    };
+
+    window.setupRecaptcha = function() {
+      if (!recaptchaVerifier) {
+        recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+      }
+    };
+
+    window.sendOTP = async function() {
+      const phoneInput = document.getElementById('phone-input').value.trim();
+      const errorMsg = document.getElementById('phone-error');
+      const btn = document.getElementById('btn-send-otp');
+
+      if (!phoneInput.startsWith('07') || phoneInput.length !== 11) {
+        errorMsg.style.display = 'block'; return;
+      }
+      errorMsg.style.display = 'none';
+      btn.innerText = "جاري الإرسال..."; btn.disabled = true;
+
+      phoneNumberToVerify = "+964" + phoneInput.substring(1);
+
+      if (phoneNumberToVerify === "+9647710669750") {
+        showStep('step-otp'); btn.innerText = "إرسال الكود"; btn.disabled = false; return;
+      }
+
+      try {
+        setupRecaptcha();
+        confirmationResult = await signInWithPhoneNumber(auth, phoneNumberToVerify, recaptchaVerifier);
+        showStep('step-otp');
+      } catch (error) {
+        errorMsg.style.display = 'block'; errorMsg.innerText = "حدث خطأ. حاول لاحقاً.";
+      } finally { btn.innerText = "إرسال الكود"; btn.disabled = false; }
+    };
+
+    window.verifyOTP = async function() {
+      const otpInput = document.getElementById('otp-input').value.trim();
+      const errorMsg = document.getElementById('otp-error');
+      const btn = document.getElementById('btn-verify-otp');
+
+      if (otpInput.length !== 6) { errorMsg.style.display = 'block'; return; }
+      errorMsg.style.display = 'none';
+      btn.innerText = "جاري التحقق..."; btn.disabled = true;
+
+      if (phoneNumberToVerify === "+9647710669750") {
+        if (otpInput === "123456") {
+          localStorage.setItem('loggedIn', 'true');
+          showApp();
+        } else {
+          errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح (استخدم 123456).";
+        }
+        btn.innerText = "تحقق ودخول"; btn.disabled = false; return;
+      }
+
+      try {
+        await confirmationResult.confirm(otpInput);
+        localStorage.setItem('loggedIn', 'true');
+        showApp();
+      } catch (error) {
+        errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح.";
+        btn.innerText = "تحقق ودخول"; btn.disabled = false;
+      }
+    };
+
+    // ================= دوال التطبيق =================
+    window.showApp = function() {
+      document.getElementById('auth-container').style.display = 'none';
+      document.getElementById('main-header').style.display = 'block';
+      document.getElementById('bottom-nav').style.display = 'flex';
+      showScreen('screen-home');
+      loadOffers();
+    };
+
+    window.showScreen = function(id) {
+      var screens = document.querySelectorAll(".screen");
+      for (var i = 0; i < screens.length; i++) { screens[i].classList.remove("active"); }
+      document.getElementById(id).classList.add("active");
+      window.scrollTo(0, 0);
+    };
+
+    // جلب العروض من Firebase
+    async function loadOffers() {
+      const offersList = document.getElementById('offers-list');
+      offersList.innerHTML = ''; 
+      try {
+        const querySnapshot = await getDocs(collection(db, "products"));
+        if(querySnapshot.empty) {
+          offersList.innerHTML = '<p style="text-align:center;">لا توجد عروض حالياً.</p>';
+          return;
+        }
+        querySnapshot.forEach((doc) => {
+          const product = doc.data();
+          const isOut = product.quantity <= 0;
+          const blur = isOut ? 'opacity:0.5; filter:blur(2px);' : '';
+          
+          offersList.innerHTML += `
+            <div class="order-card" style="${blur}">
+              <div class="order-title">📦 ${product.name || 'منتج'}</div>
+              <div class="order-info">💰 السعر: ${product.price || 0} دينار</div>
+              <div class="order-info">🔢 متوفر: ${product.quantity || 0}</div>
+              <button class="btn btn-peach" style="margin-top:10px;" onclick="alert('سيتم إضافة السلة قريباً')" ${isOut?'disabled':''}>🛒 تبضع</button>
+            </div>
+          `;
         });
+      } catch (error) {
+        offersList.innerHTML = '<p style="text-align:center; color:red;">حدث خطأ في التحميل.</p>';
+      }
+    }
 
-        window.showStep = function(stepId) {
-            document.getElementById('step-welcome').classList.add('hidden');
-            document.getElementById('step-phone').classList.add('hidden');
-            document.getElementById('step-otp').classList.add('hidden');
-            document.getElementById(stepId).classList.remove('hidden');
-        };
-
-        window.setupRecaptcha = function() {
-            if (!recaptchaVerifier) {
-                recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
-            }
-        };
-
-        window.sendOTP = async function() {
-            const phoneInput = document.getElementById('phone-input').value.trim();
-            const errorMsg = document.getElementById('phone-error');
-            const btn = document.getElementById('btn-send-otp');
-
-            if (!phoneInput.startsWith('07') || phoneInput.length !== 11) {
-                errorMsg.style.display = 'block'; return;
-            }
-            errorMsg.style.display = 'none';
-            btn.innerText = "جاري الإرسال..."; btn.disabled = true;
-
-            phoneNumberToVerify = "+964" + phoneInput.substring(1);
-
-            // 🔥 تخطي جوجل لرقم الاختبار
-            if (phoneNumberToVerify === "+9647710669750") {
-                showStep('step-otp'); btn.innerText = "إرسال الكود"; btn.disabled = false; return;
-            }
-
-            try {
-                setupRecaptcha();
-                confirmationResult = await signInWithPhoneNumber(auth, phoneNumberToVerify, recaptchaVerifier);
-                showStep('step-otp');
-            } catch (error) {
-                errorMsg.style.display = 'block'; errorMsg.innerText = "حدث خطأ. حاول لاحقاً.";
-            } finally { btn.innerText = "إرسال الكود"; btn.disabled = false; }
-        };
-
-        window.verifyOTP = async function() {
-            const otpInput = document.getElementById('otp-input').value.trim();
-            const errorMsg = document.getElementById('otp-error');
-            const btn = document.getElementById('btn-verify-otp');
-
-            if (otpInput.length !== 6) { errorMsg.style.display = 'block'; return; }
-            errorMsg.style.display = 'none';
-            btn.innerText = "جاري التحقق..."; btn.disabled = true;
-
-            // 🔥 التحقق من رقم الاختبار
-            if (phoneNumberToVerify === "+9647710669750") {
-                if (otpInput === "123456") {
-                    localStorage.setItem('loggedIn', 'true'); // حفظ الجلسة
-                    showApp();
-                } else {
-                    errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح (استخدم 123456).";
-                }
-                btn.innerText = "تحقق ودخول"; btn.disabled = false; return;
-            }
-
-            try {
-                await confirmationResult.confirm(otpInput);
-                localStorage.setItem('loggedIn', 'true');
-                showApp();
-            } catch (error) {
-                errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح.";
-                btn.innerText = "تحقق ودخول"; btn.disabled = false;
-            }
-        };
-
-        // ================= دوال التطبيق =================
-        function showApp() {
-            document.getElementById('auth-container').style.display = 'none';
-            document.getElementById('app-container').style.display = 'block';
-            loadOffers();
+    // ================= دخول التاجر =================
+    window.showLogin = function() { showScreen('screen-login'); };
+    
+    window.loginTrader = async function() {
+      const phone = document.getElementById("loginPhone").value.trim();
+      const msg = document.getElementById("loginMsg");
+      msg.className = "msg"; msg.style.display = "block"; msg.textContent = "جاري التحقق...";
+      
+      try {
+        // ملاحظة: هنا نبحث عن الرقم في مجموعة traders
+        const q = query(collection(db, "traders"), where("phone", "==", phone), where("isActive", "==", true));
+        const snap = await getDocs(q);
+        
+        if(snap.empty) {
+          msg.className = "msg err"; msg.textContent = "رقمك غير مسجل أو اشتراكك منتهي.";
+          return;
         }
+        
+        localStorage.setItem('traderPhone', phone);
+        msg.className = "msg ok"; msg.textContent = "✅ تم الدخول";
+        setTimeout(() => { loadTraderOrders(); showScreen('screen-orders'); }, 500);
+        
+      } catch(e) {
+        msg.className = "msg err"; msg.textContent = "خطأ في الاتصال.";
+      }
+    };
 
-        // جلب العروض من Firebase
-        async function loadOffers() {
-            const offersList = document.getElementById('offers-list');
-            offersList.innerHTML = ''; // مسح التحميل
+    window.logoutTrader = function() {
+      localStorage.removeItem('traderPhone');
+      showScreen('screen-home');
+    };
 
-            try {
-                const querySnapshot = await getDocs(collection(db, "products"));
-                
-                if(querySnapshot.empty) {
-                    offersList.innerHTML = '<p style="text-align:center;">لا توجد عروض حالياً.</p>';
-                    return;
-                }
+    // ================= تحميل طلبات التاجر =================
+    async function loadTraderOrders() {
+      const list = document.getElementById('trader-orders-list');
+      list.innerHTML = 'جاري التحميل...';
+      // للتبسيط الآن، نجلب كل الطلبات (لاحقاً سنفلترها حسب traderId)
+      try {
+        const snap = await getDocs(collection(db, "orders"));
+        if(snap.empty) { list.innerHTML = '<p>لا توجد طلبات.</p>'; return; }
+        list.innerHTML = '';
+        snap.forEach(doc => {
+          const o = doc.data();
+          list.innerHTML += `
+            <div class="order-card">
+              <div class="order-title">🏪 ${o.userName}</div>
+              <div class="order-info">📍 ${o.userAddress}</div>
+              <div class="order-info">📞 ${o.userPhone}</div>
+              <button class="btn" style="margin-top:10px;">عرض التفاصيل</button>
+            </div>
+          `;
+        });
+      } catch(e) { list.innerHTML = 'خطأ.'; }
+    }
 
-                querySnapshot.forEach((doc) => {
-                    const product = doc.data();
-                    
-                    // التحقق إذا كانت الكمية صفر
-                    const isOutOfStock = product.quantity <= 0;
-                    const blurClass = isOutOfStock ? 'out-of-stock' : '';
-                    const overlay = isOutOfStock ? '<div class="out-of-stock-overlay">نفذ المخزون</div>' : '';
+    // ================= إرسال طلب جديد =================
+    window.showOrderForm = function() {
+      showScreen('screen-form');
+      if (document.getElementById("itemsContainer").children.length === 0) { addItem(); }
+    };
 
-                    const card = `
-                        <div class="offer-card ${blurClass}">
-                            ${overlay}
-                            <img src="${product.imageUrl || 'https://via.placeholder.com/300'}" class="offer-image">
-                            <div class="offer-details">
-                                <span>📦 ${product.name || 'منتج'}</span>
-                                <span>💰 ${product.price || 0} دينار</span>
-                                <span>🔢 متوفر: ${product.quantity || 0}</span>
-                            </div>
-                            <div class="offer-actions">
-                                <button class="btn-action btn-like">❤️ لايك</button>
-                                <button class="btn-action btn-cart" ${isOutOfStock ? 'disabled' : ''} onclick="addToCart('${doc.id}')">🛒 تبضع</button>
-                            </div>
-                        </div>
-                    `;
-                    offersList.innerHTML += card;
-                });
-            } catch (error) {
-                console.error("خطأ في جلب العروض:", error);
-                offersList.innerHTML = '<p style="text-align:center; color:red;">حدث خطأ في تحميل العروض.</p>';
-            }
-        }
+    window.addItem = function() {
+      var container = document.getElementById("itemsContainer");
+      itemCounter++;
+      var itemId = "item_" + itemCounter;
+      var html = `
+        <div class="item-box" id="${itemId}">
+          <button type="button" class="remove-btn" onclick="document.getElementById('${itemId}').remove()">×</button>
+          <label>📝 اسم المنتج</label>
+          <input type="text" class="item-name" placeholder="مثال: أرز">
+          <label>🔢 الكمية</label>
+          <input type="text" class="item-qty" placeholder="مثال: 50">
+        </div>
+      `;
+      container.insertAdjacentHTML('beforeend', html);
+    };
 
-        // زر التبضع (مؤقت)
-        window.addToCart = function(id) {
-            alert("تم إضافة المنتج للسلة (سيتم برمجتها لاحقاً).");
-        };
+    window.submitOrder = function() {
+      const name = document.getElementById("fName").value;
+      const phone = document.getElementById("fPhone").value;
+      const address = document.getElementById("fAddress").value;
+      const msg = document.getElementById("formMsg");
 
-        // زر التاجر (مؤقت)
-        window.checkTrader = function() {
-            alert("هذه الصفحة مخصصة للتجار فقط (سيتم برمجتها لاحقاً).");
-        };
+      if(!name || !phone || !address) {
+        msg.className="msg err"; msg.textContent="الرجاء ملء الحقول الأساسية"; return;
+      }
 
-        window.addProductAlert = function() {
-            alert("هذه الصفحة للتجار فقط لإضافة عرض (سيتم برمجتها لاحقاً).");
-        };
-    </script>
+      msg.className="msg ok"; msg.textContent="✅ تم إرسال طلبك بنجاح! (تجريبي)";
+      // هنا سنضع كود الحفظ في Firebase (addDoc) في الخطوة القادمة
+      setTimeout(()=>{ showScreen('screen-home'); msg.style.display='none'; }, 2000);
+    };
+  </script>
 </body>
 </html>
