@@ -31,10 +31,11 @@
   
   /* الأيقونات */
   .svg-icon { width: 24px; height: 24px; fill: currentColor; display: inline-block; vertical-align: middle; }
-  .svg-icon-large { width: 40px; height: 40px; fill: var(--peach); margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
+  .svg-icon-large { width: 50px; height: 50px; fill: var(--peach); margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
 
-  .main-btn { display: block; width: 100%; background: var(--white); color: var(--peach); border: 3px solid var(--peach); border-radius: 18px; padding: 24px; font-size: 20px; font-weight: 800; cursor: pointer; margin-bottom: 14px; text-align: center; box-shadow: 0 6px 20px rgba(255,127,80,0.3); }
-  .main-btn .sub { font-size: 13px; font-weight: normal; color: var(--gray); margin-top: 4px; }
+  .main-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; background: var(--white); color: var(--peach); border: 3px solid var(--peach); border-radius: 18px; padding: 20px; font-size: 20px; font-weight: 800; cursor: pointer; margin-bottom: 14px; text-align: center; box-shadow: 0 6px 20px rgba(255,127,80,0.3); }
+  .main-btn .btn-title { display: flex; align-items: center; gap: 10px; font-size: 22px; }
+  .main-btn .sub { font-size: 14px; font-weight: normal; color: var(--gray); margin-top: 5px; }
 
   .card { background: var(--white); border-radius: 18px; padding: 24px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 16px; }
   input, select, textarea { width: 100%; padding: 14px; font-size: 16px; text-align: right; margin: 8px 0; border: 2px solid #ddd; border-radius: 12px; }
@@ -54,13 +55,11 @@
   .msg.ok { background: #d4edda; color: #075E54; display: block; }
   .msg.err { background: #f8d7da; color: #721c24; display: block; }
 
-  /* إصلاح تداخل الكاميرا */
   .file-upload-wrapper { position: relative; overflow: hidden; margin-bottom: 20px; }
   .file-upload-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10; }
   .file-upload-btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; background: var(--white); border: 2px dashed var(--peach); border-radius: 12px; color: var(--peach); font-weight: bold; text-align: center; }
   .preview-img { width: 100%; height: 150px; object-fit: contain; border-radius: 10px; margin-top: 10px; display: none; background: #eee; }
 
-  /* تصميم صفحة الحساب */
   .profile-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
   .profile-img-wrapper { position: relative; width: 100px; height: 100px; margin-bottom: 15px; }
   .profile-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--turquoise); background: #eee; }
@@ -71,7 +70,6 @@
   .settings-list li:last-child { border-bottom: none; }
   .settings-list li:hover { background: #f9f9f9; }
 
-  /* الشريط السفلي */
   .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; display: none; }
   .nav-item { text-align: center; color: var(--gray); font-size: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px;}
   .nav-item.active { color: var(--peach); font-weight: bold; }
@@ -88,17 +86,17 @@
         <div class="logo" style="font-size:40px; font-weight:bold; color:var(--peach); margin-bottom:5px;">Net</div>
         <div class="brand" style="font-size:16px; margin-bottom:20px;">مندوب إلكتروني</div>
         <!-- أيقونة السلة الكبيرة -->
-        <svg class="svg-icon-large" style="width:80px; height:80px;" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+        <svg class="svg-icon-large" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
         <h1>أهلاً بك</h1>
         <p>كل ما تحتاجه في السوبر ماركت<br>في مكان واحد</p>
       </div>
       <button class="main-btn" onclick="showStep('step-phone')">
-        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z"/></svg>
-        أنا تاجر <div class="sub">للاطلاع على الطلبات</div>
+        <div class="btn-title"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z"/></svg> أنا تاجر</div>
+        <div class="sub">للاطلاع على الطلبات</div>
       </button>
       <button class="main-btn" onclick="showStep('step-phone')">
-        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
-        أنا صاحب سوق <div class="sub">لإرسال طلب جديد</div>
+        <div class="btn-title"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg> أنا صاحب سوق</div>
+        <div class="sub">لإرسال طلب جديد</div>
       </button>
     </div>
 
@@ -148,17 +146,17 @@
         صفحة التاجر
       </button>
     </div>
-    <h3 style="color:var(--white); margin-bottom:10px;">العروض</h3>
+    <h3 style="color:var(--white); margin-bottom:10px;">🔥 العروض</h3>
     <div id="offers-list"></div>
   </div>
 
   <!-- صفحة السائقين -->
   <div class="screen" id="screen-drivers">
-    <h2 style="color:var(--white); margin-bottom:15px;">السائقون</h2>
+    <h2 style="color:var(--white); margin-bottom:15px;">🚚 السائقون</h2>
     <div id="drivers-list">
-        <div class="card">
-          <div style="font-size:18px; font-weight:bold;">علي حسن</div>
-          <div class="order-info">
+        <div class="card ">
+          <div style="font-size:18px0; font-weight:bold;">علي 24 حسن</div >
+          <div class="order-info24">
             <svg class="svg-icon" style="width:16px; height:16px;" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
             المنطقة: الكاظمية
           </div>
@@ -180,17 +178,17 @@
   <!-- استمارة إضافة عرض (للتاجر) -->
   <div class="screen" id="screen-form-product">
     <div class="card">
-      <h2 style="text-align:center; color:var(--peach); margin-bottom:15px;">إضافة عرض جديد</h2>
-      <label>اسم المنتج</label>
+      <h2 style="text-align:center; color:var(--peach); margin-bottom:15px;">➕ إضافة عرض جديد</h2>
+      <label>📝 اسم المنتج</label>
       <input type="text" id="p-name" placeholder="مثال: أرز بسمتي">
-      <label>السعر (دينار)</label>
+      <label>💰 السعر (دينار)</label>
       <input type="number" id="p-price" placeholder="25000">
-      <label>عدد القطع (اختياري)</label>
+      <label>📦 عدد القطع (اختياري)</label>
       <input type="number" id="p-pieces" placeholder="24">
-      <label>الكمية المتوفرة</label>
+      <label>🔢 الكمية المتوفرة</label>
       <input type="number" id="p-qty" placeholder="100">
       
-      <label>صورة المنتج</label>
+      <label>🖼️ صورة المنتج</label>
       <div class="file-upload-wrapper">
         <div class="file-upload-btn" id="upload-label">
           <svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
@@ -202,8 +200,7 @@
       <input type="hidden" id="p-img-base64">
       
       <button type="button" class="btn" onclick="addProduct()" id="btn-add-product" style="margin-top:20px;">
-        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-        نشر العرض
+        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> نشر العرض
       </button>
       <div class="msg" id="product-msg"></div>
     </div>
@@ -212,17 +209,16 @@
   <!-- استمارة الطلب (للبقال) -->
   <div class="screen" id="screen-form-order">
     <div class="card">
-      <h2 style="text-align:center; color:var(--peach); margin-bottom:16px;">طلب جديد</h2>
-      <label>اسم السوبرماركت</label>
+      <h2 style="text-align:center; color:var(--peach); margin-bottom:16px;">🛒 طلب جديد</h2>
+      <label>📝 اسم السوبرماركت</label>
       <input id="fName" type="text" placeholder="مثال: المهيمن">
-      <label>رقم الهاتف</label>
+      <label>📞 رقم الهاتف</label>
       <input id="fPhone" type="tel" placeholder="07xxxxxxxxx" style="direction:ltr; text-align:center;">
-      <label>العنوان الكامل</label>
+      <label>📍 العنوان الكامل</label>
       <input id="fAddress" type="text" placeholder="بغداد - الزعفرانية">
       
       <button class="btn" onclick="submitOrder()" id="submitBtn" style="margin-top:20px;">
-        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-        إرسال الطلب
+        <svg class="svg-icon" viewBox="0"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> إرسال الطلب
       </button>
       <div class="msg" id="formMsg"></div>
       <button class="btn btn-white" style="margin-top:10px;" onclick="showScreen('screen-home')">
@@ -243,8 +239,8 @@
             <input type="file" accept="image/*" onchange="updateProfileImage(event)">
         </div>
       </div>
-      <div class="profile-name" id="profile-name">مستخدم Net</div>
-      <div class="profile-phone" id="profile-phone">077XXXXXXXX</div>
+      <div class="profile-name" id="profile-name" style="font-size:20px; font-weight:bold; color:var(--dark);">مستخدم Net</div>
+      <div class="profile-phone" id="profile-phone" style="font-size:16px; color:var(--gray); direction:ltr; margin-top:5px;">077XXXXXXXX</div>
     </div>
 
     <div class="card" style="padding: 0;">
@@ -265,12 +261,11 @@
     </div>
 
     <button class="btn" style="background:#dc3545; margin-top:10px;" onclick="logout()">
-      <svg class="svg-icon" viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
-      تسجيل الخروج
+      <svg class="svg-icon" viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg> تسجيل الخروج
     </button>
   </div>
 
   <!-- الشريط السفلي -->
   <div class="bottom-nav" id="bottom-nav">
     <div class="nav-item" onclick="showScreen('screen-settings')">
-      <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0
+      <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-
