@@ -1,1034 +1,357 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#40E0D0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Net - مندوب إلكتروني">
-<link rel="manifest" href="manifest.json">
-<title>Net - مندوب إلكتروني</title>
-<style>
-  :root {
-    --turquoise: #40E0D0;
-    --peach: #FF7F50;
-    --white: #FFFFFF;
-    --dark: #333333;
-    --gray: #666666;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, Arial, sans-serif; }
-  body {
-    background: var(--turquoise);
-    min-height: 100vh;
-    direction: rtl;
-    color: var(--dark);
-    -webkit-tap-highlight-color: transparent;
-  }
-  .header {
-    background: linear-gradient(135deg, var(--turquoise), #20B2AA);
-    color: var(--white);
-    padding: 20px 16px;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    transition: background 0.3s;
-  }
-  .header .logo { font-size: 26px; font-weight: 800; letter-spacing: 1px; color: var(--peach); }
-  .header .brand { font-size: 13px; opacity: 0.95; margin-top: 4px; }
-  .header.header-peach {
-    background: linear-gradient(135deg, var(--peach), #e06a3f);
-  }
-  .header.header-peach .logo { color: var(--white); }
-  .screen { display: none; padding: 20px 14px; min-height: calc(100vh - 90px); }
-  .screen.active { display: block; }
-  .card {
-    background: var(--white);
-    border-radius: 18px;
-    padding: 24px 20px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    margin-bottom: 16px;
-  }
-  .welcome { text-align: center; color: var(--white); margin-bottom: 24px; }
-  .welcome h1 { font-size: 24px; margin-bottom: 8px; }
-  .welcome p { font-size: 15px; opacity: 0.95; line-height: 1.7; }
-  .welcome-icon { font-size: 70px; text-align: center; margin-bottom: 20px; }
-  .main-btn {
-    display: block;
-    width: 100%;
-    background: var(--white);
-    color: var(--peach);
-    border: 3px solid var(--peach);
-    border-radius: 18px;
-    padding: 24px;
-    font-size: 20px;
-    font-weight: 800;
-    cursor: pointer;
-    margin-bottom: 14px;
-    text-align: center;
-    box-shadow: 0 6px 20px rgba(255,127,80,0.3);
-    transition: transform 0.15s, box-shadow 0.15s;
-    font-family: inherit;
-  }
-  .main-btn:hover, .main-btn:active {
-    transform: scale(0.98);
-    box-shadow: 0 3px 10px rgba(255,127,80,0.4);
-  }
-  .main-btn .icon { font-size: 40px; display: block; margin-bottom: 8px; }
-  .main-btn .sub { font-size: 13px; font-weight: normal; color: var(--gray); margin-top: 4px; }
-  input, select, textarea {
-    width: 100%;
-    padding: 14px;
-    font-size: 16px;
-    text-align: right;
-    margin: 8px 0;
-    border: 2px solid #ddd;
-    border-radius: 12px;
-    font-family: inherit;
-    background: var(--white);
-    color: var(--dark);
-    transition: border-color 0.2s;
-  }
-  input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--peach);
-  }
-  label {
-    display: block;
-    font-weight: bold;
-    margin-top: 12px;
-    margin-bottom: 4px;
-    color: var(--dark);
-    font-size: 15px;
-  }
-  .btn {
-    width: 100%;
-    padding: 15px;
-    background: var(--peach);
-    color: var(--white);
-    border: none;
-    border-radius: 12px;
-    font-size: 17px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 10px;
-    font-family: inherit;
-    transition: transform 0.15s, background 0.2s;
-  }
-  .btn:hover { background: #e06a3f; }
-  .btn:active { transform: scale(0.98); }
-  .btn:disabled { background: #ccc; cursor: not-allowed; }
-  .btn-white { background: var(--white); color: var(--peach); border: 2px solid var(--peach); }
-  .btn-small {
-    padding: 8px 14px;
-    font-size: 14px;
-    width: auto;
-    margin-top: 6px;
-  }
-  .order-card {
-    background: var(--turquoise);
-    color: var(--white);
-    border-radius: 16px;
-    padding: 18px;
-    margin-bottom: 14px;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-  .order-card:hover, .order-card:active {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-  }
-  .order-card.sold { opacity: 0.6; }
-  .order-card .order-thumb {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    background: rgba(255,255,255,0.3);
-  }
-  .order-card .order-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
-  .order-card .order-info { font-size: 14px; margin-bottom: 4px; opacity: 0.95; }
-  .order-card .order-status {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-    margin-top: 8px;
-  }
-  .order-card .status-new { background: var(--white); color: var(--turquoise); }
-  .order-card .status-sold { background: var(--peach); color: var(--white); }
-  .detail-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px dashed #ddd;
-  }
-  .detail-row:last-child { border-bottom: none; }
-  .detail-row .lbl { font-weight: bold; color: var(--gray); font-size: 14px; }
-  .detail-row .val { font-weight: bold; color: var(--dark); font-size: 16px; text-align: left; }
-  .detail-image {
-    width: 100%;
-    max-height: 300px;
-    object-fit: contain;
-    border-radius: 12px;
-    margin: 12px 0;
-    background: #f5f5f5;
-  }
-  .btn-sold {
-    background: var(--peach);
-    color: var(--white);
-    font-size: 18px;
-    margin-top: 20px;
-  }
-  .btn-sold:disabled { background: #ccc; }
-  .msg {
-    margin-top: 12px;
-    padding: 14px;
-    border-radius: 12px;
-    font-weight: bold;
-    font-size: 15px;
-    display: none;
-  }
-  .msg.ok { background: #d4edda; color: #075E54; display: block; }
-  .msg.err { background: #f8d7da; color: #721c24; display: block; }
-  .msg.info { background: #e7f3ff; color: #004085; display: block; }
-  .loading {
-    display: none;
-    text-align: center;
-    padding: 20px;
-    color: var(--white);
-    font-weight: bold;
-  }
-  .loading-dark { color: var(--dark); }
-  .spinner {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    border: 3px solid rgba(255,255,255,0.3);
-    border-top: 3px solid var(--white);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    vertical-align: middle;
-    margin-left: 8px;
-  }
-  .spinner-dark { border-color: rgba(0,0,0,0.2); border-top-color: var(--dark); }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .footer {
-    text-align: center;
-    padding: 20px;
-    color: var(--white);
-    font-size: 13px;
-    opacity: 0.9;
-  }
-  .footer .admin { font-weight: bold; margin-top: 6px; }
-  .file-input-wrapper {
-    position: relative;
-    margin: 8px 0;
-  }
-  .file-input-wrapper input[type="file"] {
-    opacity: 0;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    padding: 0;
-    margin: 0;
-  }
-  .file-input-btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background: var(--white);
-    border: 2px dashed var(--peach);
-    border-radius: 12px;
-    color: var(--peach);
-    font-weight: bold;
-    text-align: center;
-    font-size: 14px;
-  }
-  .preview-img {
-    width: 100%;
-    max-height: 150px;
-    object-fit: contain;
-    border-radius: 12px;
-    margin-top: 8px;
-  }
-  .orders-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: var(--white);
-    margin-bottom: 16px;
-    padding: 0 4px;
-  }
-  .orders-header h2 { font-size: 20px; }
-  .orders-header .count {
-    background: rgba(255,255,255,0.2);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 14px;
-  }
-  .refresh-btn {
-    background: transparent;
-    border: none;
-    color: var(--white);
-    font-size: 24px;
-    cursor: pointer;
-    padding: 8px;
-    vertical-align: middle;
-  }
-  .item-box {
-    background: #f9f9f9;
-    border: 2px solid #ddd;
-    border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 12px;
-    position: relative;
-  }
-  .item-box .item-number {
-    display: inline-block;
-    background: var(--peach);
-    color: var(--white);
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 28px;
-    font-weight: bold;
-    font-size: 14px;
-    margin-bottom: 8px;
-  }
-  .item-box .remove-btn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: #dc3545;
-    color: var(--white);
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  .item-box label {
-    margin-top: 6px;
-    font-size: 13px;
-  }
-  .item-box input {
-    padding: 10px;
-    font-size: 14px;
-    margin: 4px 0;
-  }
-  .order-items-list {
-    background: #f9f9f9;
-    border-radius: 12px;
-    padding: 12px;
-    margin: 12px 0;
-  }
-  .order-item-line {
-    padding: 8px 0;
-    border-bottom: 1px dashed #ddd;
-    font-size: 15px;
-  }
-  .order-item-line:last-child { border-bottom: none; }
-  .order-item-line strong { color: var(--peach); }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Net - مندوب إلكتروني</title>
+    <style>
+        /* الألوان الأساسية */
+        :root {
+            --white: #ffffff;
+            --blue: #007BFF;
+            --peach: #FF8C69;
+            --bg: #f5f6fa;
+            --text-dark: #333333;
+            --text-light: #888888;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        .container {
+            background-color: var(--white);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* شاشة الترحيب */
+        #step-welcome {
+            display: block;
+        }
+        
+        /* شاشة إدخال الرقم */
+        #step-phone {
+            display: none;
+        }
+
+        /* شاشة إدخال كود التحقق */
+        #step-otp {
+            display: none;
+        }
+
+        .logo {
+            font-size: 40px;
+            font-weight: bold;
+            color: var(--blue);
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: var(--peach);
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: var(--blue);
+        }
+
+        p.description {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 25px;
+        }
+
+        input[type="tel"], input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #e1e1e1;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+            direction: ltr; /* لجعل الأرقام تكتب من اليسار */
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--blue);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--blue);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-peach {
+            background-color: var(--peach);
+        }
+
+        .btn-peach:hover {
+            background-color: #e67e5a;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .error-msg {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .success-msg {
+            color: green;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .link {
+            color: var(--blue);
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 15px;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
-  <div class="header" id="header">
-  <div class="logo">Net</div>
-  <div class="brand">مندوب إلكتروني</div>
-</div>
 
-<div class="screen active" id="screen-home">
-  <div class="welcome">
-    <div class="welcome-icon">🛒</div>
-    <h1>أهلاً بك</h1>
-    <p>كل ما تحتاجه في السوبر ماركت<br>في مكان واحد</p>
-  </div>
+    <div class="container">
+        
+        <!-- 1. شاشة الترحيب -->
+        <div id="step-welcome">
+            <div class="logo">Net</div>
+            <div class="subtitle">مندوب إلكتروني</div>
+            <h2>أهلاً بك في تطبيقنا</h2>
+            <p class="description">للدخول إلى التطبيق، يرجى تأكيد رقم هاتفك.</p>
+            <button onclick="showStep('step-phone')">بدء الدخول</button>
+        </div>
 
-  <button class="main-btn" onclick="showLogin()">
-    <span class="icon">🏪</span>
-    أنا تاجر
-    <div class="sub">للاطلاع على الطلبات</div>
-  </button>
+        <!-- 2. شاشة إدخال رقم الهاتف -->
+        <div id="step-phone">
+            <h2>رقم الهاتف</h2>
+            <p class="description">أدخل رقم هاتفك المكون من 11 رقماً (يبدأ بـ 07).</p>
+            <p class="error-msg" id="phone-error">الرجاء إدخال رقم صحيح.</p>
+            <input type="tel" id="phone-input" placeholder="07XXXXXXXXX" maxlength="11">
+            <button onclick="sendOTP()" id="btn-send-otp">إرسال الكود</button>
+        </div>
 
-  <button class="main-btn" onclick="showOrderForm()">
-    <span class="icon">🛒</span>
-    أنا صاحب سوق
-    <div class="sub">لإرسال طلب جديد</div>
-  </button>
+        <!-- 3. شاشة إدخال كود التحقق OTP -->
+        <div id="step-otp">
+            <h2>كود التحقق</h2>
+            <p class="description">أدخل الكود المكون من 6 أرقام الذي تم إرساله إلى هاتفك.</p>
+            <p class="error-msg" id="otp-error">الكود غير صحيح.</p>
+            <input type="number" id="otp-input" placeholder="------" maxlength="6">
+            <button onclick="verifyOTP()" class="btn-peach" id="btn-verify-otp">تحقق ودخول</button>
+            
+            <!-- مؤقت إعادة الإرسال -->
+            <div id="recaptcha-container"></div>
+            <a class="link" id="resend-link" onclick="sendOTP()" style="display:none;">إعادة إرسال الكود</a>
+            <span class="link" id="timer-text" style="display:none;">يمكنك الإعادة بعد <span id="timer">60</span> ثانية</span>
+            
+            <a class="link" onclick="showStep('step-phone')">تغيير رقم الهاتف</a>
+        </div>
 
-  <div class="footer">
-    <div>Net - مندوب إلكتروني</div>
-    <div class="admin">الإدارة: 07710669750</div>
-  </div>
-</div>
-
-<div class="screen" id="screen-login">
-  <div class="card">
-    <h2 style="text-align:center; margin-bottom:8px;">🔐 تأكيد هوية التاجر</h2>
-    <p style="text-align:center; color:#666; font-size:14px; margin-bottom:16px;">
-      أدخل رقم هاتفك للاطلاع على الطلبات
-    </p>
-    <input id="loginPhone" type="tel" placeholder="07xxxxxxxxx" autocomplete="tel">
-    <button class="btn" onclick="login()" id="loginBtn">دخول</button>
-    <div class="msg" id="loginMsg"></div>
-    <button class="btn btn-white" style="margin-top:16px;" onclick="showHome()">← رجوع</button>
-  </div>
-</div>
-
-<div class="screen" id="screen-orders">
-  <div class="orders-header">
-    <h2>📋 الطلبات</h2>
-    <div>
-      <span class="count" id="ordersCount">0</span>
-      <button class="refresh-btn" onclick="loadOrders()">🔄</button>
-    </div>
-  </div>
-
-  <div class="loading" id="ordersLoading">
-    جارٍ التحميل... <span class="spinner"></span>
-  </div>
-
-  <div id="ordersList"></div>
-
-  <button class="btn btn-white" style="margin-top:20px;" onclick="logout()">🚪 تسجيل الخروج</button>
-</div>
-
-<div class="screen" id="screen-detail">
-  <div class="card" id="detailContent"></div>
-</div>
-
-<div class="screen" id="screen-form">
-  <div class="card">
-    <h2 style="text-align:center; margin-bottom:16px;">🛒 طلب جديد</h2>
-
-    <label>📝 اسم السوبرماركت</label>
-    <input id="fName" type="text" placeholder="مثال: المهيمن">
-
-    <label>📞 رقم الهاتف</label>
-    <input id="fPhone" type="tel" placeholder="07xxxxxxxxx">
-
-    <label>📍 العنوان الكامل</label>
-    <input id="fAddress" type="text" placeholder="مثال: بغداد - الزعفرانية">
-
-    <label>📂 فئة الطلب (اختياري)</label>
-    <select id="fCategory">
-      <option value="">— اختر الفئة —</option>
-      <option>مواد غذائية جافة</option>
-      <option>لحوم واسماك ودجاج</option>
-      <option>البان واجبان</option>
-      <option>مشروبات وعصائر</option>
-      <option>معلبات</option>
-      <option>حلويات وبسكويت</option>
-      <option>مكسرات وكرزات</option>
-      <option>بهارات وتوابل</option>
-      <option>منظفات</option>
-      <option>مستحضرات تجميل</option>
-      <option>مستلزمات منزلية</option>
-      <option>مواد تغليف وسفري</option>
-      <option>مجمدات</option>
-      <option>مخبوزات</option>
-      <option>صيدلية</option>
-      <option>مستلزمات أطفال</option>
-      <option>مستلزمات حيوانات</option>
-      <option>أدوات ومستلزمات المحال</option>
-      <option>منتجات طبيعية</option>
-      <option>سكائر وتبغ ومعسل</option>
-      <option>أخرى</option>
-    </select>
-
-    <div style="border-top:2px dashed #FF7F50; margin:20px 0; padding-top:15px;">
-      <h3 style="color:#FF7F50; text-align:center; margin-bottom:12px;">📦 المنتجات (حتى 20)</h3>
-      <div id="itemsContainer"></div>
-      <button class="btn btn-white" onclick="addItem()" style="margin-top:10px;">➕ إضافة منتج آخر</button>
     </div>
 
-    <label>📝 ملاحظات عامة (اختياري)</label>
-    <textarea id="fNotes" rows="3" placeholder="أي ملاحظة إضافية..."></textarea>
+    <!-- سكربت Firebase -->
+    <script type="module">
+        // استيراد دوال Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-    <button class="btn" onclick="submitOrder()" id="submitBtn">✅ إرسال الطلب</button>
-
-    <div class="msg" id="formMsg"></div>
-
-    <button class="btn btn-white" style="margin-top:16px;" onclick="showHome()">← رجوع</button>
-  </div>
-</div>
-
-<div class="screen" id="screen-thanks">
-  <div class="card" style="text-align:center;">
-    <div style="font-size:70px; margin-bottom:16px;">✅</div>
-    <h2 style="color:#075E54; margin-bottom:12px;">تم إرسال طلبك</h2>
-    <p style="color:#666; line-height:1.8;">
-      سيتم إرسال طلبك إلى التجار المشتركين.<br>
-      ستصلك مكالماتهم على رقمك قريبًا.
-    </p>
-    <button class="btn" style="margin-top:20px;" onclick="showOrderForm()">➕ طلب جديد</button>
-    <button class="btn btn-white" onclick="showHome()">🏠 العودة للرئيسية</button>
-  </div>
-</div>
-
-<script>
-  var WEB_APP_URL = "https://script.google.com/macros/s/AKfycbywYbx042JiZXrmaC5XKLkhqMiY5QuhQKMsJiXYScaZiaAP3FlollvFr_KXSCI5wVTFQA/exec";
-
-  var currentUser = null;
-  var currentOrder = null;
-  var itemCounter = 0;
-
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js").catch(function(err) { console.log("SW error:", err); });
-  }
-
-  function escapeHtml(text) {
-    if (text === null || text === undefined) return '';
-    return String(text)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
-
-  function showScreen(id) {
-    var screens = document.querySelectorAll(".screen");
-    for (var i = 0; i < screens.length; i++) {
-      screens[i].classList.remove("active");
-    }
-    document.getElementById(id).classList.add("active");
-    window.scrollTo(0, 0);
-
-    var header = document.getElementById("header");
-    if (id === "screen-orders" || id === "screen-detail") {
-      header.classList.add("header-peach");
-    } else {
-      header.classList.remove("header-peach");
-    }
-  }
-
-  function showHome() {
-    showScreen("screen-home");
-  }
-
-  function showLogin() {
-    showScreen("screen-login");
-    var saved = localStorage.getItem("net_user");
-    if (saved) {
-      try {
-        currentUser = JSON.parse(saved);
-        document.getElementById("loginPhone").value = currentUser.phone;
-      } catch(e) {}
-    }
-  }
-
-  function showOrderForm() {
-    showScreen("screen-form");
-    // إذا لم تكن هناك منتجات، أضف منتجًا واحدًا تلقائيًا
-    if (document.getElementById("itemsContainer").children.length === 0) {
-      addItem();
-    }
-  }
-
-  // ═══════════════════════════════════════════════
-  // إدارة المنتجات (إضافة / حذف)
-  // ═══════════════════════════════════════════════
-  function addItem() {
-    var container = document.getElementById("itemsContainer");
-    var maxItems = 20;
-    if (container.children.length >= maxItems) {
-      alert("⚠️ الحد الأقصى " + maxItems + " منتجات.");
-      return;
-    }
-    itemCounter++;
-    var itemId = "item_" + itemCounter;
-
-    var html = '';
-    html += '<div class="item-box" id="' + itemId + '">';
-    html += '<button type="button" class="remove-btn" onclick="removeItem(\'' + itemId + '\')">×</button>';
-    html += '<span class="item-number">' + container.children.length + 1 + '</span>';
-    html += '<label>📝 اسم المنتج</label>';
-    html += '<input type="text" class="item-name" placeholder="مثال: أرز بسمتي">';
-    html += '<label>🔢 الكمية</label>';
-    html += '<input type="text" class="item-qty" placeholder="مثال: 50 كيس">';
-    html += '<label>🖼️ صورة (اختياري)</label>';
-    html += '<div class="file-input-wrapper">';
-    html += '<div class="file-input-btn" id="' + itemId + '_label">📷 اضغط لاختيار صورة</div>';
-    html += '<input type="file" accept="image/*" onchange="handleItemImage(event, \'' + itemId + '\')">';
-    html += '</div>';
-    html += '<img id="' + itemId + '_preview" class="preview-img" style="display:none;">';
-    html += '<input type="hidden" class="item-image" id="' + itemId + '_image">';
-    html += '<input type="hidden" class="item-image-type" id="' + itemId + '_type">';
-    html += '</div>';
-
-    container.insertAdjacentHTML('beforeend', html);
-  }
-
-  function removeItem(itemId) {
-    var el = document.getElementById(itemId);
-    if (el) el.remove();
-    // إعادة ترقيم المنتجات
-    renumberItems();
-  }
-
-  function renumberItems() {
-    var container = document.getElementById("itemsContainer");
-    var boxes = container.querySelectorAll(".item-box");
-    for (var i = 0; i < boxes.length; i++) {
-      var num = boxes[i].querySelector(".item-number");
-      if (num) num.textContent = i + 1;
-    }
-  }
-
-  function handleItemImage(event, itemId) {
-    var file = event.target.files[0];
-    if (!file) return;
-
-    if (file.size > 5 * 1024 * 1024) {
-      alert("⚠️ الصورة كبيرة جداً. الحد الأقصى 5 ميجابايت.");
-      event.target.value = "";
-      return;
-    }
-
-    document.getElementById(itemId + "_type").value = file.type;
-    document.getElementById(itemId + "_label").textContent = "✅ " + file.name;
-
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      var preview = document.getElementById(itemId + "_preview");
-      preview.src = e.target.result;
-      preview.style.display = "block";
-      document.getElementById(itemId + "_image").value = e.target.result.split(",")[1];
-    };
-    reader.readAsDataURL(file);
-  }
-  // ═══════════════════════════════════════════════
-  // تسجيل الدخول
-  // ═══════════════════════════════════════════════
-  function login() {
-    var phone = document.getElementById("loginPhone").value.trim();
-    var msg = document.getElementById("loginMsg");
-    var btn = document.getElementById("loginBtn");
-
-    if (!phone || phone.replace(/\D/g, "").length < 10) {
-      msg.className = "msg err";
-      msg.textContent = "الرجاء إدخال رقم هاتف صحيح.";
-      return;
-    }
-
-    btn.disabled = true;
-    msg.className = "msg info";
-    msg.textContent = "جارٍ التحقق...";
-
-    fetch(WEB_APP_URL + "?action=checkUser&phone=" + encodeURIComponent(phone))
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        btn.disabled = false;
-        if (!data.ok) {
-          msg.className = "msg err";
-          msg.textContent = data.msg || "رقمك غير مسجل";
-          return;
-        }
-        currentUser = {
-          phone: data.trader.phone,
-          store: data.trader.store,
-          area: data.trader.area
+        // إعدادات Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDrVVzXE_hd-5HTC1CZoVOU7zGNx7TDQQ",
+            authDomain: "net-732c9.firebaseapp.com",
+            projectId: "net-732c9",
+            storageBucket: "net-732c9.firebasestorage.app",
+            messagingSenderId: "928563175887",
+            appId: "1:928563175887:web:57a9102491dcb8a96572ba"
         };
-        localStorage.setItem("net_user", JSON.stringify(currentUser));
-        msg.className = "msg ok";
-        msg.textContent = "✅ مرحباً " + (currentUser.store || "");
-        setTimeout(function() { loadOrders(); }, 500);
-      })
-      .catch(function(err) {
-        btn.disabled = false;
-        msg.className = "msg err";
-        msg.textContent = "خطأ في الاتصال. تحقق من الإنترنت.";
-        console.error(err);
-      });
-  }
 
-function logout() {
-    if (!confirm("هل تريد تسجيل الخروج؟")) return;
+        // تهيئة Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        auth.languageCode = 'ar'; // لغة رسالة الـ SMS
 
-    // مسح Cache المستخدم
-    if (currentUser) {
-      var keys = Object.keys(localStorage);
-      keys.forEach(function(key) {
-        if (key.indexOf("net_orders_") === 0 || key.indexOf("net_order_") === 0) {
-          localStorage.removeItem(key);
-        }
-      });
-    }
+        let confirmationResult = null;
+        let recaptchaVerifier = null;
+        let phoneNumberToVerify = "";
 
-    currentUser = null;
-    localStorage.removeItem("net_user");
-    document.getElementById("loginPhone").value = "";
-    showHome();
-  }
-  // ═══════════════════════════════════════════════
-  // قائمة الطلبات
-  // ═══════════════════════════════════════════════
-// ═══════════════════════════════════════════════
-  // قائمة الطلبات (مع Cache + تحديث صامت)
-  // ═══════════════════════════════════════════════
-  function loadOrders() {
-    if (!currentUser) { showLogin(); return; }
-    showScreen("screen-orders");
+        // دوال التنقل بين الشاشات (يجب أن تكون عامة لتستدعيها أزرار HTML)
+        window.showStep = function(stepId) {
+            document.getElementById('step-welcome').style.display = 'none';
+            document.getElementById('step-phone').style.display = 'none';
+            document.getElementById('step-otp').style.display = 'none';
+            
+            document.getElementById(stepId).style.display = 'block';
 
-    var ordersList = document.getElementById("ordersList");
-    var ordersCount = document.getElementById("ordersCount");
-    var ordersLoading = document.getElementById("ordersLoading");
-
-    // ═══ 1. عرض المخزّن فورًا ═══
-    var cacheKey = "net_orders_" + currentUser.phone;
-    var cached = localStorage.getItem(cacheKey);
-    var hasCache = false;
-
-    if (cached) {
-      try {
-        var cachedOrders = JSON.parse(cached);
-        if (cachedOrders && cachedOrders.length > 0) {
-          ordersCount.textContent = cachedOrders.length;
-          ordersList.innerHTML = buildOrdersHtml(cachedOrders);
-          ordersLoading.style.display = "none";
-          hasCache = true;
-        }
-      } catch (e) {}
-    }
-
-    // إذا لا يوجد Cache، أظهر التحميل
-    if (!hasCache) {
-      ordersLoading.style.display = "block";
-      ordersList.innerHTML = "";
-    }
-
-    // ═══ 2. جلب البيانات الجديدة (تحديث صامت) ═══
-    fetch(WEB_APP_URL + "?action=orders&phone=" + encodeURIComponent(currentUser.phone))
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        ordersLoading.style.display = "none";
-
-        if (!data.ok) {
-          if (!hasCache) {
-            ordersList.innerHTML = '<div class="msg err" style="display:block;">' + (data.msg || "خطأ") + '</div>';
-          }
-          return;
-        }
-
-        var orders = data.orders || [];
-        ordersCount.textContent = orders.length;
-
-        // حفظ في Cache
-        try {
-          localStorage.setItem(cacheKey, JSON.stringify(orders));
-        } catch (e) {}
-
-        // تحديث العرض
-        if (orders.length === 0) {
-          ordersList.innerHTML = '<div class="card" style="text-align:center; color:#666; padding:30px;">لا توجد طلبات جديدة حالياً</div>';
-          return;
-        }
-
-        ordersList.innerHTML = buildOrdersHtml(orders);
-      })
-      .catch(function(err) {
-        ordersLoading.style.display = "none";
-        if (!hasCache) {
-          ordersList.innerHTML = '<div class="msg err" style="display:block;">خطأ في الاتصال</div>';
-        }
-        console.error(err);
-      });
-  }
-
-  // ═══ دالة مساعدة: بناء HTML للطلبات ═══
-  function buildOrdersHtml(orders) {
-    var html = "";
-    orders.forEach(function(o) {
-      var isSold = String(o.status).indexOf("تم البيع") !== -1;
-      var soldClass = isSold ? 'sold' : '';
-      var statusHtml = isSold ? '<span class="order-status status-sold">✅ تم البيع</span>' : '<span class="order-status status-new">🆕 جديد</span>';
-
-      var imageHtml = '';
-      if (o.items && o.items.length > 0 && o.items[0].img && o.items[0].img.indexOf('http') === 0) {
-        imageHtml = '<img src="' + escapeHtml(o.items[0].img) + '" class="order-thumb" onerror="this.style.display=\'none\'">';
-      }
-
-      var itemsCount = o.itemsCount || (o.items ? o.items.length : 0);
-
-      html += '<div class="order-card ' + soldClass + '" onclick="openDetail(' + o.row + ')">';
-      html += imageHtml;
-      html += '<div class="order-title">🏪 ' + escapeHtml(o.name || 'غير محدد') + '</div>';
-      if (o.category) html += '<div class="order-info">📂 ' + escapeHtml(o.category) + '</div>';
-      html += '<div class="order-info">📦 عدد المنتجات: ' + itemsCount + '</div>';
-      html += '<div class="order-info">📍 ' + escapeHtml(o.address || '-') + '</div>';
-      html += statusHtml;
-      html += '</div>';
-    });
-    return html;
-  }
-  // ═══════════════════════════════════════════════
-  // تفاصيل الطلب
-  // ═══════════════════════════════════════════════
-// ═══════════════════════════════════════════════
-  // تفاصيل الطلب (مع Cache + تحديث صامت)
-  // ═══════════════════════════════════════════════
-  function openDetail(rowId) {
-    if (!currentUser) return;
-    showScreen("screen-detail");
-
-    var detailContent = document.getElementById("detailContent");
-    var cacheKey = "net_order_" + rowId + "_" + currentUser.phone;
-    var cached = localStorage.getItem(cacheKey);
-    var hasCache = false;
-
-    // ═══ 1. عرض المخزّن فورًا ═══
-    if (cached) {
-      try {
-        var cachedOrder = JSON.parse(cached);
-        renderDetail(cachedOrder);
-        hasCache = true;
-      } catch (e) {}
-    }
-
-    if (!hasCache) {
-      detailContent.innerHTML = '<div class="loading loading-dark" style="display:block;">جارٍ التحميل... <span class="spinner spinner-dark"></span></div>';
-    }
-
-    // ═══ 2. جلب البيانات الجديدة (تحديث صامت) ═══
-    fetch(WEB_APP_URL + "?action=orderDetails&row=" + rowId + "&phone=" + encodeURIComponent(currentUser.phone))
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (!data.ok) {
-          if (!hasCache) {
-            detailContent.innerHTML = '<div class="msg err" style="display:block;">' + (data.msg || "خطأ") + '</div>';
-          }
-          return;
-        }
-
-        currentOrder = data.order;
-
-        try {
-          localStorage.setItem(cacheKey, JSON.stringify(data.order));
-        } catch (e) {}
-
-        renderDetail(data.order);
-      })
-      .catch(function(err) {
-        if (!hasCache) {
-          detailContent.innerHTML = '<div class="msg err" style="display:block;">خطأ في الاتصال</div>';
-        }
-        console.error(err);
-      });
-  }
-  function renderDetail(o) {
-    var isSold = String(o.status).indexOf("تم البيع") !== -1;
-
-    var html = '';
-    html += '<h2 style="text-align:center; color:#FF7F50; margin-bottom:16px;">📋 تفاصيل الطلب</h2>';
-
-    html += '<div class="detail-row">';
-    html += '<span class="lbl">🏪 اسم السوبرماركت</span>';
-    html += '<span class="val">' + escapeHtml(o.name || '-') + '</span>';
-    html += '</div>';
-
-    html += '<div class="detail-row">';
-    html += '<span class="lbl">📞 رقم الهاتف</span>';
-    html += '<a href="tel:' + escapeHtml(o.phone || '') + '" class="val" style="color:#FF7F50; text-decoration:none;">' + escapeHtml(o.phone || '-') + '</a>';
-    html += '</div>';
-
-    html += '<div class="detail-row">';
-    html += '<span class="lbl">📍 العنوان</span>';
-    html += '<span class="val">' + escapeHtml(o.address || '-') + '</span>';
-    html += '</div>';
-
-    if (o.category) {
-      html += '<div class="detail-row">';
-      html += '<span class="lbl">📂 الفئة</span>';
-      html += '<span class="val">' + escapeHtml(o.category) + '</span>';
-      html += '</div>';
-    }
-
-    // عرض المنتجات
-    if (o.items && o.items.length > 0) {
-      html += '<h3 style="color:#FF7F50; margin-top:20px; margin-bottom:8px;">📦 المنتجات (' + o.items.length + '):</h3>';
-      html += '<div class="order-items-list">';
-      o.items.forEach(function(item, idx) {
-        html += '<div class="order-item-line">';
-        html += '<strong>' + (idx + 1) + '. ' + escapeHtml(item.name || '-') + '</strong>';
-        if (item.qty) html += ' — الكمية: ' + escapeHtml(item.qty);
-        if (item.img && item.img.indexOf('http') === 0) {
-          html += '<br><img src="' + escapeHtml(item.img) + '" class="detail-image" style="max-height:150px; margin-top:8px;" onerror="this.style.display=\'none\'">';
-        }
-        html += '</div>';
-      });
-      html += '</div>';
-    }
-
-    if (isSold) {
-      html += '<div class="msg ok" style="display:block; text-align:center; margin-top:16px;">✅ تم بيع هذا الطلب</div>';
-    } else {
-      html += '<button class="btn btn-sold" onclick="markAsSold()" id="soldBtn">✅ تم بيع الطلب</button>';
-    }
-
-    html += '<button class="btn btn-white" style="margin-top:16px;" onclick="loadOrders()">← رجوع للطلبات</button>';
-    document.getElementById("detailContent").innerHTML = html;
-  }
-
-  // ═══════════════════════════════════════════════
-  // تسجيل البيع
-  // ═══════════════════════════════════════════════
-  function markAsSold() {
-    if (!currentUser || !currentOrder) return;
-    if (!confirm("هل أنت متأكد أنك بعت هذا الطلب للزبون؟")) return;
-
-    var btn = document.getElementById("soldBtn");
-    if (btn) { btn.disabled = true; btn.textContent = "جارٍ التسجيل..."; }
-
-    fetch(WEB_APP_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "markAsSold",
-        row: currentOrder.row,
-        phone: currentUser.phone
-      })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data.ok) {
-        alert("✅ " + data.msg);
-        loadOrders();
-      } else {
-        alert("❌ " + (data.msg || "خطأ"));
-        if (btn) { btn.disabled = false; btn.textContent = "✅ تم بيع الطلب"; }
-      }
-    })
-    .catch(function(err) {
-      alert("❌ خطأ في الاتصال");
-      if (btn) { btn.disabled = false; btn.textContent = "✅ تم بيع الطلب"; }
-      console.error(err);
-    });
-  }
-
-  // ═══════════════════════════════════════════════
-  // إرسال الطلب
-  // ═══════════════════════════════════════════════
-  function submitOrder() {
-    var name     = document.getElementById("fName").value.trim();
-    var phone    = document.getElementById("fPhone").value.trim();
-    var address  = document.getElementById("fAddress").value.trim();
-    var category = document.getElementById("fCategory").value;
-    var notes    = document.getElementById("fNotes").value.trim();
-    var msg      = document.getElementById("formMsg");
-    var btn      = document.getElementById("submitBtn");
-
-    // التحقق
-    if (!name)  { msg.className = "msg err"; msg.textContent = "الرجاء إدخال اسم السوبرماركت."; return; }
-    if (!phone || phone.replace(/\D/g, "").length < 10) { msg.className = "msg err"; msg.textContent = "الرجاء إدخال رقم هاتف صحيح."; return; }
-    if (!address) { msg.className = "msg err"; msg.textContent = "الرجاء إدخال العنوان."; return; }
-
-    // جمع المنتجات
-    var items = [];
-    var boxes = document.querySelectorAll(".item-box");
-    for (var i = 0; i < boxes.length; i++) {
-      var box = boxes[i];
-      var itemName = box.querySelector(".item-name").value.trim();
-      var itemQty = box.querySelector(".item-qty").value.trim();
-      var itemImage = box.querySelector(".item-image").value;
-      var itemImageType = box.querySelector(".item-image-type").value;
-
-      if (!itemName) {
-        msg.className = "msg err";
-        msg.textContent = "الرجاء إدخال اسم المنتج رقم " + (i + 1);
-        return;
-      }
-
-      var item = {
-        name: itemName,
-        qty: itemQty
-      };
-
-      if (itemImage && itemImageType) {
-        item.image = {
-          base64: itemImage,
-          mimeType: itemImageType,
-          name: "item_" + Date.now() + "_" + i + ".jpg"
+            // إخفاء رسائل الخطأ عند التنقل
+            document.getElementById('phone-error').style.display = 'none';
+            document.getElementById('otp-error').style.display = 'none';
         };
-      }
 
-      items.push(item);
-    }
+        // دالة إعداد reCAPTCHA (مطلوب من Firebase لمنع الاحتيال)
+        window.setupRecaptcha = function() {
+            if (!recaptchaVerifier) {
+                recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    'size': 'invisible',
+                    'callback': (response) => {
+                        // reCAPTCHA solved
+                    }
+                });
+            }
+        };
 
-    if (items.length === 0) {
-      msg.className = "msg err";
-      msg.textContent = "الرجاء إضافة منتج واحد على الأقل.";
-      return;
-    }
+        // دالة إرسال كود الـ OTP
+        window.sendOTP = async function() {
+            const phoneInput = document.getElementById('phone-input').value.trim();
+            const errorMsg = document.getElementById('phone-error');
+            const btn = document.getElementById('btn-send-otp');
 
-    btn.disabled = true;
-    msg.className = "msg info";
-    msg.textContent = "جارٍ إرسال الطلب...";
+            // التحقق من صحة الرقم (يبدأ بـ 07 وطوله 11)
+            if (!phoneInput.startsWith('07') || phoneInput.length !== 11) {
+                errorMsg.style.display = 'block';
+                errorMsg.innerText = "الرجاء إدخال رقم صحيح يبدأ بـ 07 ويتكون من 11 رقماً.";
+                return;
+            }
 
-    fetch(WEB_APP_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "submitOrder",
-        name: name,
-        phone: phone,
-        address: address,
-        category: category,
-        notes: notes,
-        items: items
-      })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      btn.disabled = false;
-      if (data.ok) {
-        // إعادة تعيين الاستمارة
-        document.getElementById("fName").value = "";
-        document.getElementById("fPhone").value = "";
-        document.getElementById("fAddress").value = "";
-        document.getElementById("fCategory").value = "";
-        document.getElementById("fNotes").value = "";
-        document.getElementById("itemsContainer").innerHTML = "";
-        itemCounter = 0;
+            errorMsg.style.display = 'none';
+            btn.innerText = "جاري الإرسال...";
+            btn.disabled = true;
 
-        msg.className = "msg ok";
-        msg.textContent = "✅ تم الإرسال";
-        setTimeout(function() { showScreen("screen-thanks"); }, 800);
-      } else {
-        msg.className = "msg err";
-        msg.textContent = "❌ " + (data.msg || "خطأ في الإرسال");
-      }
-    })
-    .catch(function(err) {
-      btn.disabled = false;
-      msg.className = "msg err";
-      msg.textContent = "❌ خطأ في الاتصال";
-      console.error(err);
-    });
-  }
+            // تحويل الرقم للصيغة الدولية (964...)
+            phoneNumberToVerify = "+964" + phoneInput.substring(1);
 
-  // ═══════════════════════════════════════════════
-  // عند فتح التطبيق
-  // ═══════════════════════════════════════════════
-  window.addEventListener("load", function() {
-    var saved = localStorage.getItem("net_user");
-    if (saved) {
-      try {
-        currentUser = JSON.parse(saved);
-      } catch(e) {}
-    }
-  });
-</script>
+            try {
+                setupRecaptcha();
+                const appVerifier = recaptchaVerifier;
+                
+                // إرسال الكود عبر Firebase
+                confirmationResult = await signInWithPhoneNumber(auth, phoneNumberToVerify, appVerifier);
+                
+                // الانتقال لشاشة الـ OTP
+                showStep('step-otp');
+                startTimer();
+                
+            } catch (error) {
+                console.error("خطأ في إرسال الكود:", error);
+                errorMsg.style.display = 'block';
+                errorMsg.innerText = "حدث خطأ. قد يكون الرقم غير صحيح أو تم تجاوز الحد المسموح. حاول لاحقاً.";
+            } finally {
+                btn.innerText = "إرسال الكود";
+                btn.disabled = false;
+            }
+        };
 
+        // دالة التحقق من الكود
+        window.verifyOTP = async function() {
+            const otpInput = document.getElementById('otp-input').value.trim();
+            const errorMsg = document.getElementById('otp-error');
+            const btn = document.getElementById('btn-verify-otp');
+
+            if (otpInput.length !== 6) {
+                errorMsg.style.display = 'block';
+                errorMsg.innerText = "الرجاء إدخال كود مكون من 6 أرقام.";
+                return;
+            }
+
+            errorMsg.style.display = 'none';
+            btn.innerText = "جاري التحقق...";
+            btn.disabled = true;
+
+            try {
+                if (!confirmationResult) {
+                    throw new Error("لم يتم طلب الكود بعد.");
+                }
+
+                // التحقق من الكود عبر Firebase
+                const result = await confirmationResult.confirm(otpInput);
+                const user = result.user;
+                
+                console.log("تم تسجيل الدخول بنجاح:", user.phoneNumber);
+                
+                // TODO: هنا سنضع الكود للانتقال إلى الصفحة الرئيسية (العروض)
+                alert("✅ تم التحقق بنجاح!\nأهلاً بك في التطبيق.");
+                
+                // سنقوم بإضافة كود الانتقال للصفحة الرئيسية في الخطوة القادمة
+
+            } catch (error) {
+                console.error("خطأ في التحقق:", error);
+                errorMsg.style.display = 'block';
+                errorMsg.innerText = "الكود غير صحيح أو انتهت صلاحيته. حاول مرة أخرى.";
+                btn.innerText = "تحقق ودخول";
+                btn.disabled = false;
+            }
+        };
+
+        // مؤقت إعادة إرسال الكود
+        window.startTimer = function() {
+            let timeLeft = 60;
+            const timerText = document.getElementById('timer-text');
+            const timerSpan = document.getElementById('timer');
+            const resendLink = document.getElementById('resend-link');
+            
+            timerText.style.display = 'inline-block';
+            resendLink.style.display = 'none';
+            timerSpan.innerText = timeLeft;
+
+            const interval = setInterval(() => {
+                timeLeft--;
+                timerSpan.innerText = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    timerText.style.display = 'none';
+                    resendLink.style.display = 'inline-block';
+                }
+            }, 1000);
+        };
+    </script>
 </body>
 </html>
