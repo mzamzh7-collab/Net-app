@@ -10,17 +10,21 @@
   :root { --turquoise: #40E0D0; --peach: #FF7F50; --white: #FFFFFF; --dark: #333333; --gray: #666666; }
   * { margin:0; padding:0; box-sizing:border-box; font-family: system-ui, -apple-system, sans-serif; }
   body { background: var(--turquoise); min-height: 100vh; direction: rtl; color: var(--dark); padding-bottom: 70px; }
+  
   .header { background: linear-gradient(135deg, var(--turquoise), #20B2AA); color: var(--white); padding: 20px 16px; text-align: center; position: sticky; top: 0; z-index: 100; display: none; }
   .header .logo { font-size: 26px; font-weight: 800; color: var(--peach); }
   .header .brand { font-size: 13px; opacity: 0.95; }
   .header.header-peach { background: linear-gradient(135deg, var(--peach), #e06a3f); }
   .header.header-peach .logo { color: var(--white); }
+  
   .screen { display: none; padding: 20px 14px; min-height: calc(100vh - 90px); }
   .screen.active { display: block; }
+  
   .card { background: var(--white); border-radius: 18px; padding: 24px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 16px; }
   input, select, textarea { width: 100%; padding: 14px; font-size: 16px; text-align: right; margin: 8px 0; border: 2px solid #ddd; border-radius: 12px; font-family: inherit; }
   input:focus, select:focus, textarea:focus { outline: none; border-color: var(--peach); }
   label { display: block; font-weight: bold; margin-top: 12px; font-size: 15px; color: var(--dark); }
+  
   .btn { width: 100%; padding: 15px; background: var(--peach); color: var(--white); border: none; border-radius: 12px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 10px; position: relative; z-index: 20; display: flex; align-items: center; justify-content: center; gap: 8px;}
   .btn:disabled { background: #ccc; }
   .btn-white { background: var(--white); color: var(--peach); border: 2px solid var(--peach); }
@@ -28,42 +32,51 @@
   .btn-danger { background: #dc3545; color: white; }
   .btn-success { background: #28a745; color: white; }
   .btn-info { background: #17a2b8; color: white; }
+  
   .msg { margin-top: 12px; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 15px; display: none; text-align:center;}
   .msg.ok { background: #d4edda; color: #075E54; display: block; }
   .msg.err { background: #f8d7da; color: #721c24; display: block; }
   .msg.info { background: #e7f3ff; color: #004085; display: block; }
+  
   .profile-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
   .profile-img-wrapper { position: relative; width: 100px; height: 100px; margin-bottom: 15px; }
   .profile-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--turquoise); background: #eee; }
   .edit-icon-wrapper { position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; z-index: 10; cursor: pointer; }
   .edit-icon { background: var(--peach); color: white; width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; font-size: 14px; pointer-events: none; }
   .edit-icon-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; margin: 0; padding: 0; }
+  
   .settings-list { list-style: none; padding: 0; }
   .settings-list li { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 16px; font-weight: bold; }
   .settings-list li:last-child { border-bottom: none; }
   .settings-list li:hover { background: #f9f9f9; }
+  
   .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; display: none; }
   .nav-item { text-align: center; color: var(--gray); font-size: 12px; cursor: pointer; width: 33%; }
   .nav-item.active { color: var(--peach); font-weight: bold; }
   .nav-icon { font-size: 22px; margin-bottom: 2px; }
   .hidden { display: none !important; }
+  
   .order-card { background: var(--white); border-radius: 16px; padding: 15px; margin-bottom: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
   .order-image { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
   .order-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; color: var(--dark); }
   .order-info { font-size: 14px; color: var(--gray); margin-bottom: 4px; }
+  
   .item-box { background: #f9f9f9; border: 2px solid #ddd; border-radius: 12px; padding: 14px; margin-bottom: 12px; position: relative; }
   .item-box .item-number { display: inline-block; background: var(--peach); color: var(--white); width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: bold; font-size: 14px; margin-bottom: 8px; }
   .item-box .remove-btn { position: absolute; top: 10px; left: 10px; background: #dc3545; color: var(--white); border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 16px; cursor: pointer; font-weight: bold; }
   .item-box label { margin-top: 6px; font-size: 13px; }
   .item-box input { padding: 10px; font-size: 14px; margin: 4px 0; }
+  
   .file-input-wrapper { position: relative; margin: 8px 0; }
   .file-input-wrapper input[type="file"] { opacity: 0; position: absolute; width: 100%; height: 100%; cursor: pointer; top: 0; left: 0; padding: 0; margin: 0; z-index: 10; }
   .file-input-btn { display: block; width: 100%; padding: 12px; background: var(--white); border: 2px dashed var(--peach); border-radius: 12px; color: var(--peach); font-weight: bold; text-align: center; font-size: 14px; }
   .preview-img { width: 100%; max-height: 150px; object-fit: contain; border-radius: 12px; margin-top: 8px; display: none; background: #eee; }
+  
   .orders-header { display: flex; justify-content: space-between; align-items: center; color: var(--white); margin-bottom: 16px; padding: 0 4px; }
   .orders-header h2 { font-size: 20px; }
   .orders-header .count { background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 14px; }
   .refresh-btn { background: transparent; border: none; color: var(--white); font-size: 24px; cursor: pointer; padding: 8px; vertical-align: middle; }
+  
   .trader-order-card { background: var(--turquoise); color: var(--white); border-radius: 16px; padding: 18px; margin-bottom: 14px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.15); transition: transform 0.15s; }
   .trader-order-card:hover { transform: translateY(-2px); }
   .trader-order-card.sold { opacity: 0.6; }
@@ -72,18 +85,22 @@
   .order-status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-top: 8px; }
   .status-new { background: var(--white); color: var(--turquoise); }
   .status-sold { background: var(--peach); color: var(--white); }
+  
   .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed #ddd; }
   .detail-row:last-child { border-bottom: none; }
   .detail-row .lbl { font-weight: bold; color: var(--gray); font-size: 14px; }
   .detail-row .val { font-weight: bold; color: var(--dark); font-size: 16px; text-align: left; }
+  
   .order-items-list { background: #f9f9f9; border-radius: 12px; padding: 12px; margin: 12px 0; }
   .order-item-line { padding: 8px 0; border-bottom: 1px dashed #ddd; font-size: 15px; }
   .order-item-line:last-child { border-bottom: none; }
   .order-item-line strong { color: var(--peach); }
   .detail-image { width: 100%; max-height: 150px; object-fit: contain; border-radius: 12px; margin-top: 8px; background: #f5f5f5; }
+  
   .floating-cart { position: fixed; bottom: 80px; left: 20px; background: var(--peach); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 15px rgba(255, 127, 80, 0.5); cursor: pointer; z-index: 150; border: 3px solid white; transition: transform 0.2s; }
   .floating-cart:active { transform: scale(0.9); }
   .cart-badge { position: absolute; top: -5px; right: -5px; background: #dc3545; color: white; font-size: 14px; font-weight: bold; width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid white; }
+  
   .admin-user-card { background: #f9f9f9; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; border: 1px solid #ddd; }
   .admin-user-info h4 { margin-bottom: 4px; color: var(--dark); }
   .admin-user-info p { font-size: 13px; color: var(--gray); direction: ltr; text-align: right; }
@@ -145,7 +162,7 @@
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" id="home-rate"><i class="fa-solid fa-dollar-sign"></i> سعر الصرف</button>
     </div>
 
-    <!-- ✅ الأزرار الطويلة (تظهر فوق بعضها بعرض الشاشة للمدير، أو واحد فقط حسب الصلاحية) -->
+    <!-- ✅ الأزرار الطويلة (تظهر فوق بعضها بعرض الشاشة) -->
     <button id="btn-create-order" class="btn btn-white hidden" style="padding:15px; font-size:16px; margin-bottom:10px; width: 100%; display: block; text-align: center; font-weight: bold;" onclick="showOrderForm()">
         <i class="fa-solid fa-list" style="margin-left: 8px;"></i> إنشاء قائمة طلب جديدة
     </button>
@@ -153,8 +170,8 @@
     <button id="btn-trader-page" class="btn btn-white hidden" style="padding:15px; font-size:16px; margin-bottom:10px; width: 100%; display: block; text-align: center; font-weight: bold;" onclick="showScreen('screen-orders')">
         <i class="fa-solid fa-store" style="margin-left: 8px;"></i> صفحة التاجر (الطلبات الواردة)
     </button>
-    </div>
-    <h3 style="color:var(--white); margin-bottom:10px;">🔥 العروض</h3>
+
+    <h3 style="color:var(--white); margin-bottom:10px; margin-top:15px;">🔥 العروض</h3>
     <div id="offers-list"></div>
   </div>
 
@@ -177,8 +194,8 @@
       <label>عدد القطع</label><input type="number" id="p-pieces" placeholder="24">
       <label>الكمية المتوفرة</label><input type="number" id="p-qty" placeholder="100">
       <label>صورة المنتج (اختياري)</label>
-      <div class="file-upload-wrapper">
-        <div class="file-upload-btn" id="upload-label"><i class="fa-solid fa-camera"></i> اضغط لتصوير أو اختيار صورة</div>
+      <div class="file-input-wrapper">
+        <div class="file-input-btn" id="upload-label"><i class="fa-solid fa-camera"></i> اضغط لتصوير أو اختيار صورة</div>
         <input type="file" id="p-image-file" accept="image/*" onchange="previewImage(event)">
       </div>
       <img id="image-preview" class="preview-img">
