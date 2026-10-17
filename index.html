@@ -139,15 +139,20 @@
   </div>
 
   <div class="screen active" id="screen-home">
+    <!-- الأزرار الصغيرة (سائق وسعر الصرف) -->
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showScreen('screen-drivers')"><i class="fa-solid fa-truck"></i> اطلب سائق</button>
       <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" id="home-rate"><i class="fa-solid fa-dollar-sign"></i> سعر الصرف</button>
-      <button id="btn-create-order" class="btn btn-white hidden" style="padding:10px; font-size:14px; margin:0;" onclick="showOrderForm()"><i class="fa-solid fa-list"></i> إنشاء قائمة طلب</button>
-     <!-- ✅ زر إنشاء قائمة (يأخذ السطر كاملاً في المنتصف) -->
-      <button id="btn-create-order" class="btn btn-white hidden" style="padding:15px; font-size:16px; margin:0; grid-column: 1 / -1; width: 100%; display: flex; justify-content: center; align-items: center;" onclick="showOrderForm()"><i class="fa-solid fa-list" style="margin-left: 8px;"></i> إنشاء قائمة طلب جديدة</button>
-      
-      <!-- ✅ زر صفحة التاجر (يأخذ السطر كاملاً في المنتصف) -->
-      <button id="btn-trader-page" class="btn btn-white hidden" style="padding:15px; font-size:16px; margin:0; grid-column: 1 / -1; width: 100%; display: flex; justify-content: center; align-items: center;" onclick="showScreen('screen-orders')"><i class="fa-solid fa-store" style="margin-left: 8px;"></i> صفحة التاجر (الطلبات الواردة)</button>
+    </div>
+
+    <!-- ✅ الأزرار الطويلة (تظهر فوق بعضها بعرض الشاشة للمدير، أو واحد فقط حسب الصلاحية) -->
+    <button id="btn-create-order" class="btn btn-white hidden" style="padding:15px; font-size:16px; margin-bottom:10px; width: 100%; display: block; text-align: center; font-weight: bold;" onclick="showOrderForm()">
+        <i class="fa-solid fa-list" style="margin-left: 8px;"></i> إنشاء قائمة طلب جديدة
+    </button>
+    
+    <button id="btn-trader-page" class="btn btn-white hidden" style="padding:15px; font-size:16px; margin-bottom:10px; width: 100%; display: block; text-align: center; font-weight: bold;" onclick="showScreen('screen-orders')">
+        <i class="fa-solid fa-store" style="margin-left: 8px;"></i> صفحة التاجر (الطلبات الواردة)
+    </button>
     </div>
     <h3 style="color:var(--white); margin-bottom:10px;">🔥 العروض</h3>
     <div id="offers-list"></div>
