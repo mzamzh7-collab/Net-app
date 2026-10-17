@@ -3,120 +3,160 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#40E0D0">
 <title>Net - مندوب إلكتروني</title>
 <style>
   :root {
+    --turquoise: #40E0D0;
+    --peach: #FF7F50;
     --white: #FFFFFF;
-    --blue: #007BFF;
-    --peach: #FF8C69;
-    --bg: #f5f6fa;
-    --text-dark: #333333;
+    --dark: #333333;
     --gray: #666666;
   }
   * { margin:0; padding:0; box-sizing:border-box; font-family: system-ui, -apple-system, sans-serif; }
-  body { background: var(--bg); min-height: 100vh; direction: rtl; color: var(--text-dark); padding-bottom: 70px; }
+  body {
+    background: var(--turquoise);
+    min-height: 100vh;
+    direction: rtl;
+    color: var(--dark);
+    padding-bottom: 70px; /* مساحة للشريط السفلي */
+  }
   
-  /* الشريط العلوي */
-  .header { background: var(--blue); color: var(--white); padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; display: none; }
-  .header .logo { font-size: 24px; font-weight: 800; }
-  
+  .header {
+    background: linear-gradient(135deg, var(--turquoise), #20B2AA);
+    color: var(--white);
+    padding: 20px 16px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: none;
+  }
+  .header .logo { font-size: 26px; font-weight: 800; letter-spacing: 1px; color: var(--peach); }
+  .header .brand { font-size: 13px; opacity: 0.95; margin-top: 4px; }
+
   .screen { display: none; padding: 20px 14px; min-height: calc(100vh - 90px); }
   .screen.active { display: block; }
 
-  .card { background: var(--white); border-radius: 18px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 16px; }
+  .welcome { text-align: center; color: var(--white); margin-bottom: 24px; margin-top: 20px;}
+  .welcome h1 { font-size: 24px; margin-bottom: 8px; }
+  .welcome p { font-size: 15px; opacity: 0.95; line-height: 1.7; }
+  .welcome-icon { font-size: 70px; text-align: center; margin-bottom: 20px; }
 
-  /* الأزرار الرئيسية */
-  .main-btn { display: block; width: 100%; background: var(--white); color: var(--blue); border: 2px solid var(--blue); border-radius: 15px; padding: 15px; font-size: 16px; font-weight: 800; cursor: pointer; margin-bottom: 10px; text-align: center; }
-  .main-btn.peach { color: var(--peach); border-color: var(--peach); }
-  
+  .main-btn {
+    display: block; width: 100%; background: var(--white); color: var(--peach);
+    border: 3px solid var(--peach); border-radius: 18px; padding: 24px;
+    font-size: 20px; font-weight: 800; cursor: pointer; margin-bottom: 14px;
+    text-align: center; box-shadow: 0 6px 20px rgba(255,127,80,0.3);
+  }
+  .main-btn .icon { font-size: 40px; display: block; margin-bottom: 8px; }
+  .main-btn .sub { font-size: 13px; font-weight: normal; color: var(--gray); margin-top: 4px; }
+
+  .card { background: var(--white); border-radius: 18px; padding: 24px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 16px; }
   input, select, textarea { width: 100%; padding: 14px; font-size: 16px; text-align: right; margin: 8px 0; border: 2px solid #ddd; border-radius: 12px; }
-  input:focus { outline: none; border-color: var(--blue); }
-  label { display: block; font-weight: bold; margin-top: 12px; font-size: 14px; }
+  input:focus { outline: none; border-color: var(--peach); }
+  label { display: block; font-weight: bold; margin-top: 12px; font-size: 15px; }
   
-  .btn { width: 100%; padding: 15px; background: var(--blue); color: var(--white); border: none; border-radius: 12px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+  .btn { width: 100%; padding: 15px; background: var(--peach); color: var(--white); border: none; border-radius: 12px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 10px; }
   .btn:disabled { background: #ccc; }
-  .btn-peach { background: var(--peach); }
-  
-  /* بطاقة المنتج */
-  .product-card { background: var(--white); border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-  .product-img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; background: #eee; }
-  .product-info { display: flex; justify-content: space-between; background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 14px; font-weight: bold; color: #555; }
-  
-  /* بطاقة السائق */
-  .driver-card { background: var(--white); border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-right: 5px solid var(--peach); display: flex; flex-direction: column; gap: 5px; }
-  
-  /* الشريط السفلي */
-  .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; display: none; }
-  .nav-item { text-align: center; color: var(--gray); font-size: 12px; cursor: pointer; }
-  .nav-item.active { color: var(--blue); font-weight: bold; }
-  .nav-icon { font-size: 20px; margin-bottom: 3px; }
+  .btn-white { background: var(--white); color: var(--peach); border: 2px solid var(--peach); }
 
-  .hidden { display: none !important; }
-  .msg { margin-top: 12px; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 14px; display: none; text-align: center;}
+  .order-card { background: var(--white); border-radius: 16px; padding: 15px; margin-bottom: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
+  .order-image { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
+  .order-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; color: var(--dark); }
+  .order-info { font-size: 14px; color: var(--gray); margin-bottom: 4px; }
+
+  .msg { margin-top: 12px; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 15px; display: none; text-align:center;}
   .msg.ok { background: #d4edda; color: #075E54; display: block; }
   .msg.err { background: #f8d7da; color: #721c24; display: block; }
+
+  .file-upload-wrapper { position: relative; margin: 10px 0; }
+  .file-upload-wrapper input[type="file"] { opacity: 0; position: absolute; width: 100%; height: 100%; cursor: pointer; }
+  .file-upload-btn { display: block; padding: 15px; background: var(--white); border: 2px dashed var(--peach); border-radius: 12px; color: var(--peach); font-weight: bold; text-align: center; }
+  .preview-img { width: 100%; height: 150px; object-fit: contain; border-radius: 10px; margin-top: 10px; display: none; background: #eee; }
+  
+  /* ✅ الشريط السفلي المحدث */
+  .bottom-nav {
+    position: fixed; bottom: 0; width: 100%; background: var(--white);
+    display: flex; justify-content: space-around; padding: 10px 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; display: none;
+  }
+  .nav-item { text-align: center; color: var(--gray); font-size: 12px; cursor: pointer; padding: 0 15px;}
+  .nav-item.active { color: var(--peach); font-weight: bold; }
+  .nav-icon { font-size: 22px; margin-bottom: 2px; }
+
+  .hidden { display: none !important; }
 </style>
 </head>
 <body>
 
-  <!-- ================= 1. شاشة التسجيل ================= -->
+  <!-- ================= 1. شاشة الترحيب والتسجيل ================= -->
   <div id="auth-container">
-    <div class="card" style="margin-top: 50px;">
-      <div id="step-welcome">
-        <h1 style="color:var(--blue); text-align:center; font-size:40px;">Net</h1>
-        <p style="color:var(--peach); text-align:center; margin-bottom:30px;">مندوب إلكتروني</p>
-        <button class="main-btn" onclick="showStep('step-phone')">بدء الدخول</button>
+    <div class="screen active" id="screen-welcome" style="display:block;">
+      <div class="welcome">
+        <div class="logo" style="font-size:40px; font-weight:bold; color:var(--peach); margin-bottom:5px;">Net</div>
+        <div class="brand" style="font-size:16px; margin-bottom:20px;">مندوب إلكتروني</div>
+        <div class="welcome-icon">🛒</div>
+        <h1>أهلاً بك</h1>
+        <p>كل ما تحتاجه في السوبر ماركت<br>في مكان واحد</p>
       </div>
-      <div id="step-phone" class="hidden">
-        <h2 style="text-align:center;">رقم الهاتف</h2>
+      <button class="main-btn" onclick="showStep('step-phone')">
+        <span class="icon">🏪</span> أنا تاجر <div class="sub">للاطلاع على الطلبات</div>
+      </button>
+      <button class="main-btn" onclick="showStep('step-phone')">
+        <span class="icon">🛒</span> أنا صاحب سوق <div class="sub">لإرسال طلب جديد</div>
+      </button>
+    </div>
+
+    <div class="screen" id="step-phone">
+      <div class="card" style="margin-top:50px;">
+        <h2 style="text-align:center; color:var(--peach);">رقم الهاتف</h2>
         <input type="tel" id="phone-input" placeholder="07XXXXXXXXX" maxlength="11" style="text-align:center; direction:ltr;">
         <p class="msg err" id="phone-error">الرجاء إدخال رقم صحيح.</p>
         <button class="btn" onclick="sendOTP()" id="btn-send-otp">إرسال الكود</button>
       </div>
-      <div id="step-otp" class="hidden">
-        <h2 style="text-align:center;">كود التحقق</h2>
+    </div>
+
+    <div class="screen" id="step-otp">
+      <div class="card" style="margin-top:50px;">
+        <h2 style="text-align:center; color:var(--peach);">كود التحقق</h2>
         <input type="number" id="otp-input" placeholder="------" maxlength="6" style="text-align:center; direction:ltr;">
         <p class="msg err" id="otp-error">الكود غير صحيح.</p>
-        <button class="btn btn-peach" onclick="verifyOTP()" id="btn-verify-otp">تحقق ودخول</button>
+        <button class="btn" onclick="verifyOTP()" id="btn-verify-otp">تحقق ودخول</button>
         <div id="recaptcha-container"></div>
       </div>
     </div>
   </div>
 
-  <!-- ================= 2. التطبيق ================= -->
-  <div class="header" id="main-header"><div class="logo">Net</div></div>
+  <!-- ================= 2. التطبيق الداخلي ================= -->
+  <div class="header" id="main-header">
+    <div class="logo">Net</div>
+    <div class="brand">مندوب إلكتروني</div>
+  </div>
 
   <!-- الرئيسية (العروض) -->
   <div class="screen" id="screen-home">
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
-      <button class="main-btn peach" onclick="showScreen('screen-drivers')">🚚 اطلب سائق</button>
-      <button class="main-btn peach">💵 سعر الصرف: 1,320</button>
-      <button class="main-btn" onclick="showScreen('screen-form-order')">🛒 إنشاء قائمة</button>
-      <button class="main-btn" onclick="alert('صفحة التاجر')">🏪 صفحة التاجر</button>
+      <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showScreen('screen-drivers')">🚚 اطلب سائق</button>
+      <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;">💵 سعر الصرف: 1,320</button>
+      <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="showScreen('screen-form-order')">🛒 إنشاء قائمة</button>
+      <button class="btn btn-white" style="padding:10px; font-size:14px; margin:0;" onclick="alert('صفحة التاجر')">🏪 صفحة التاجر</button>
     </div>
-    <h3 style="color:var(--blue); margin-bottom:10px;">🔥 العروض</h3>
+    <h3 style="color:var(--white); margin-bottom:10px;">🔥 العروض</h3>
     <div id="offers-list"></div>
   </div>
 
   <!-- صفحة السائقين -->
   <div class="screen" id="screen-drivers">
-    <h2 style="color:var(--blue); margin-bottom:15px;">🚚 السائقون المتاحون</h2>
-    <div id="drivers-list">
-      <!-- بيانات تجريبية للسائقين -->
-      <div class="driver-card">
-        <div style="font-size:18px; font-weight:bold;">👤 علي حسن</div>
-        <div>📍 المنطقة: الكاظمية</div>
-        <div>🚗 السيارة: حمل (3 طن)</div>
-        <a href="tel:07701234567" class="btn btn-peach" style="text-decoration:none; text-align:center;">📞 اتصال</a>
-      </div>
-      <div class="driver-card">
-        <div style="font-size:18px; font-weight:bold;">👤 محمد كريم</div>
-        <div>📍 المنطقة: الشعلة</div>
-        <div>🚗 السيارة: كيا بيكب</div>
-        <a href="tel:07709876543" class="btn btn-peach" style="text-decoration:none; text-align:center;">📞 اتصال</a>
-      </div>
+    <h2 style="color:var(--white); margin-bottom:15px;">🚚 السائقون</h2>
+    <div class="card">
+      <div style="font-size:18px; font-weight:bold;">👤 علي حسن</div>
+      <div>📍 الكاظمية</div>
+      <div>🚗 حمل (3 طن)</div>
+      <a href="tel:07701234567" class="btn">📞 اتصال</a>
     </div>
-    <button class="btn" style="background:transparent; color:var(--gray); border:1px solid #ddd; margin-top:15px;" onclick="showScreen('screen-home')">← رجوع</button>
+    <button class="btn btn-white" style="margin-top:15px;" onclick="showScreen('screen-home')">← رجوع</button>
   </div>
 
   <!-- استمارة إضافة عرض (للتاجر) -->
@@ -126,48 +166,79 @@
       <label>📝 اسم المنتج</label>
       <input type="text" id="p-name" placeholder="مثال: أرز بسمتي">
       <label>💰 السعر (دينار)</label>
-      <input type="number" id="p-price" placeholder="مثال: 25000">
-      <label>📦 عدد القطع في الكارتون (اختياري)</label>
-      <input type="number" id="p-pieces" placeholder="مثال: 24">
+      <input type="number" id="p-price" placeholder="25000">
+      <label>📦 عدد القطع (اختياري)</label>
+      <input type="number" id="p-pieces" placeholder="24">
       <label>🔢 الكمية المتوفرة</label>
-      <input type="number" id="p-qty" placeholder="مثال: 100">
-      <label>🖼️ رابط الصورة (اختياري)</label>
-      <input type="text" id="p-img" placeholder="https://..." style="direction:ltr;">
+      <input type="number" id="p-qty" placeholder="100">
       
-      <button class="btn btn-peach" onclick="addProduct()" id="btn-add-product">✅ نشر العرض</button>
+      <label>🖼️ صورة المنتج</label>
+      <div class="file-upload-wrapper">
+        <div class="file-upload-btn" id="upload-label">📷 اضغط لتصوير أو اختيار صورة</div>
+        <input type="file" id="p-image-file" accept="image/*" capture="environment" onchange="previewImage(event)">
+      </div>
+      <img id="image-preview" class="preview-img">
+      <input type="hidden" id="p-img-base64">
+      
+      <button class="btn" onclick="addProduct()" id="btn-add-product" style="margin-top:20px;">✅ نشر العرض</button>
       <div class="msg" id="product-msg"></div>
-      <button class="btn" style="background:transparent; color:var(--gray); border:1px solid #ddd;" onclick="showScreen('screen-home')">← رجوع</button>
     </div>
   </div>
 
   <!-- استمارة الطلب (للبقال) -->
   <div class="screen" id="screen-form-order">
     <div class="card">
-      <h2 style="text-align:center; margin-bottom:16px;">🛒 طلب جديد</h2>
+      <h2 style="text-align:center; color:var(--peach); margin-bottom:16px;">🛒 طلب جديد</h2>
       <label>📝 اسم السوبرماركت</label>
       <input id="fName" type="text" placeholder="مثال: المهيمن">
       <label>📞 رقم الهاتف</label>
       <input id="fPhone" type="tel" placeholder="07xxxxxxxxx" style="direction:ltr; text-align:center;">
       <label>📍 العنوان الكامل</label>
-      <input id="fAddress" type="text" placeholder="مثال: بغداد - الزعفرانية">
+      <input id="fAddress" type="text" placeholder="بغداد - الزعفرانية">
       
-      <button class="btn btn-peach" onclick="submitOrder()" id="submitBtn" style="margin-top:20px;">✅ إرسال الطلب</button>
+      <button class="btn" onclick="submitOrder()" id="submitBtn" style="margin-top:20px;">✅ إرسال الطلب</button>
       <div class="msg" id="formMsg"></div>
-      <button class="btn" style="background:transparent; color:var(--gray); border:1px solid #ddd;" onclick="showScreen('screen-home')">← رجوع</button>
+      <button class="btn btn-white" style="margin-top:10px;" onclick="showScreen('screen-home')">← رجوع</button>
     </div>
   </div>
 
-  <!-- الشريط السفلي -->
+  <!-- ✅ شاشة الإعدادات الجديدة -->
+  <div class="screen" id="screen-settings">
+    <div class="card">
+      <h2 style="text-align:center; color:var(--peach); margin-bottom:20px;">⚙️ الإعدادات</h2>
+      
+      <!-- زر قوائمي هنا -->
+      <button class="btn btn-white" style="border-color:var(--turquoise); color:var(--turquoise); margin-bottom:15px;" onclick="alert('سيتم عرض قوائمك السابقة هنا')">
+        📋 قوائمي السابقة
+      </button>
+      
+      <button class="btn btn-white" style="border-color:var(--turquoise); color:var(--turquoise); margin-bottom:15px;" onclick="alert('سيتم عرض الحساب هنا')">
+        👤 حسابي
+      </button>
+
+      <button class="btn" style="background:#dc3545; margin-top:30px;" onclick="logout()">
+        🚪 تسجيل الخروج
+      </button>
+    </div>
+  </div>
+
+  <!-- ✅ الشريط السفلي المحدث -->
   <div class="bottom-nav" id="bottom-nav">
-    <div class="nav-item" onclick="alert('الإعدادات')"><div class="nav-icon">⚙️</div>الإعدادات</div>
-    <div class="nav-item" onclick="showScreen('screen-form-product')"><div class="nav-icon" style="color:var(--peach); font-size:24px;">➕</div></div>
-    <div class="nav-item" onclick="alert('قوائمي')"><div class="nav-icon">📋</div>قوائمي</div>
+    <div class="nav-item" onclick="showScreen('screen-settings')">
+      <div class="nav-icon">⚙️</div>الإعدادات
+    </div>
+    <div class="nav-item" onclick="showScreen('screen-form-product')">
+      <div class="nav-icon" style="color:var(--peach); font-size:26px;">➕</div>
+    </div>
+    <div class="nav-item active" onclick="showScreen('screen-home')">
+      <div class="nav-icon">🏠</div>الرئيسية
+    </div>
   </div>
 
   <!-- سكربت Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
     import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -188,7 +259,6 @@
     let recaptchaVerifier = null;
     let phoneNumberToVerify = "";
 
-    // حفظ الجلسة
     onAuthStateChanged(auth, (user) => {
       if (localStorage.getItem('loggedIn') === 'true' || user) {
         showApp();
@@ -196,15 +266,23 @@
         document.getElementById('auth-container').style.display = 'block';
         document.getElementById('main-header').style.display = 'none';
         document.getElementById('bottom-nav').style.display = 'none';
+        showScreenAuth('screen-welcome');
       }
     });
 
     window.showStep = function(stepId) {
-      document.getElementById('step-welcome').classList.add('hidden');
-      document.getElementById('step-phone').classList.add('hidden');
-      document.getElementById('step-otp').classList.add('hidden');
-      document.getElementById(stepId).classList.remove('hidden');
+      document.getElementById('screen-welcome').classList.remove('active');
+      document.getElementById('screen-welcome').style.display = 'none';
+      document.getElementById('step-phone').classList.remove('active');
+      document.getElementById('step-otp').classList.remove('active');
+      document.getElementById(stepId).classList.add('active');
+      document.getElementById(stepId).style.display = 'block';
     };
+
+    function showScreenAuth(id) {
+      document.querySelectorAll("#auth-container .screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
 
     window.sendOTP = async function() {
       const phoneInput = document.getElementById('phone-input').value.trim();
@@ -255,7 +333,6 @@
       }
     };
 
-    // دوال التطبيق
     window.showApp = function() {
       document.getElementById('auth-container').style.display = 'none';
       document.getElementById('main-header').style.display = 'block';
@@ -267,17 +344,22 @@
     window.showScreen = function(id) {
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
       document.getElementById(id).classList.add("active");
+      
+      // تحديث حالة الأزرار في الشريط السفلي
+      document.querySelectorAll(".nav-item").forEach(nav => nav.classList.remove("active"));
+      if(id === 'screen-home') document.querySelectorAll(".nav-item")[2].classList.add("active");
+      if(id === 'screen-settings') document.querySelectorAll(".nav-item")[0].classList.add("active");
+      
       window.scrollTo(0, 0);
     };
 
-    // جلب العروض
     async function loadOffers() {
       const offersList = document.getElementById('offers-list');
-      offersList.innerHTML = 'جاري التحميل...'; 
+      offersList.innerHTML = '<p style="color:white; text-align:center;">جاري التحميل...</p>'; 
       try {
         const snap = await getDocs(collection(db, "products"));
         offersList.innerHTML = '';
-        if(snap.empty) { offersList.innerHTML = '<p style="text-align:center;">لا توجد عروض.</p>'; return; }
+        if(snap.empty) { offersList.innerHTML = '<p style="color:white; text-align:center;">لا توجد عروض.</p>'; return; }
 
         snap.forEach((doc) => {
           const p = doc.data();
@@ -287,29 +369,43 @@
           const piecesText = p.pieces ? ` (${p.pieces} قطعة)` : '';
 
           offersList.innerHTML += `
-            <div class="product-card" style="${blur}">
-              <img src="${imgUrl}" class="product-img" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
-              <div class="product-info">
-                <span>📦 ${p.name}${piecesText}</span>
-                <span>💰 ${p.price} دينار</span>
-                <span>🔢 متوفر: ${p.quantity}</span>
-              </div>
-              <button class="btn btn-peach" onclick="alert('تم إضافة ${p.name} للسلة')" ${isOut?'disabled':''}>
+            <div class="order-card" style="${blur}">
+              <img src="${imgUrl}" class="order-image" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
+              <div class="order-title">📦 ${p.name}${piecesText}</div>
+              <div class="order-info">💰 ${p.price} دينار</div>
+              <div class="order-info">🔢 متوفر: ${p.quantity}</div>
+              <button class="btn" style="margin-top:10px;" onclick="alert('تم إضافة ${p.name} للسلة')" ${isOut?'disabled':''}>
                 ${isOut ? 'نفذ المخزون' : '🛒 تبضع'}
               </button>
             </div>
           `;
         });
-      } catch (e) { offersList.innerHTML = 'خطأ في التحميل.'; }
+      } catch (e) { offersList.innerHTML = '<p style="color:red; text-align:center;">خطأ في التحميل.</p>'; }
     }
 
-    // إضافة عرض جديد
+    window.previewImage = function(event) {
+      const file = event.target.files[0];
+      if(!file) return;
+      if(file.size > 1024 * 1024) { alert("حجم الصورة كبير جداً. اختر صورة أصغر."); return; }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('image-preview').src = e.target.result;
+        document.getElementById('image-preview').style.display = 'block';
+        document.getElementById('p-img-base64').value = e.target.result;
+        document.getElementById('upload-label').innerText = "✅ تم اختيار الصورة";
+        document.getElementById('upload-label').style.borderColor = "green";
+        document.getElementById('upload-label').style.color = "green";
+      };
+      reader.readAsDataURL(file);
+    };
+
     window.addProduct = async function() {
       const name = document.getElementById('p-name').value;
       const price = Number(document.getElementById('p-price').value);
       const pieces = Number(document.getElementById('p-pieces').value) || 0;
       const quantity = Number(document.getElementById('p-qty').value);
-      const imageUrl = document.getElementById('p-img').value;
+      const imageBase64 = document.getElementById('p-img-base64').value; 
       const msg = document.getElementById('product-msg');
       const btn = document.getElementById('btn-add-product');
 
@@ -320,19 +416,40 @@
       try {
         await addDoc(collection(db, "products"), {
           name: name, price: price, pieces: pieces, quantity: quantity,
-          imageUrl: imageUrl, createdAt: new Date()
+          imageUrl: imageBase64, createdAt: new Date()
         });
+        
         msg.className="msg ok"; msg.textContent="✅ تم نشر العرض بنجاح";
+        
+        document.getElementById('p-name').value = '';
+        document.getElementById('p-price').value = '';
+        document.getElementById('p-pieces').value = '';
+        document.getElementById('p-qty').value = '';
+        document.getElementById('p-img-base64').value = '';
+        document.getElementById('image-preview').style.display = 'none';
+        document.getElementById('upload-label').innerText = "📷 اضغط لتصوير أو اختيار صورة";
+        document.getElementById('upload-label').style.borderColor = "var(--peach)";
+        document.getElementById('upload-label').style.color = "var(--peach)";
+
         setTimeout(() => { showScreen('screen-home'); loadOffers(); msg.style.display='none'; }, 1500);
       } catch(e) {
         msg.className="msg err"; msg.textContent="خطأ: " + e.message;
       } finally { btn.disabled = false; }
     };
 
-    // إرسال طلب (مبدئي)
     window.submitOrder = function() {
       alert("تم إرسال الطلب بنجاح (تجريبي).");
       showScreen('screen-home');
+    };
+
+    // ✅ دالة تسجيل الخروج الجديدة
+    window.logout = function() {
+      if(confirm("هل تريد تسجيل الخروج؟")) {
+        localStorage.removeItem('loggedIn');
+        signOut(auth).then(() => {
+          window.location.reload();
+        });
+      }
     };
   </script>
 </body>
