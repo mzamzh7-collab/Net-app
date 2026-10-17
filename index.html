@@ -37,8 +37,8 @@
   .profile-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--turquoise); background: #eee; }
   .edit-icon-wrapper { position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; z-index: 10; cursor: pointer; }
   .edit-icon { background: var(--peach); color: white; width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; font-size: 14px; pointer-events: none; }
-  .edit-icon-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; margin: 0; padding: 0; }
-  .settings-list { list-style: none; padding: 0; }
+  .edit-icon-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; margin {: 0; padding:  background0; }
+  .settings-list { list-style:: none; padding: 0; rgba }
   .settings-list li { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 16px; font-weight: bold; }
   .settings-list li:last-child { border-bottom: none; }
   .settings-list li:hover { background: #f9f9f9; }
@@ -62,7 +62,7 @@
   .preview-img { width: 100%; max-height: 150px; object-fit: contain; border-radius: 12px; margin-top: 8px; display: none; background: #eee; }
   .orders-header { display: flex; justify-content: space-between; align-items: center; color: var(--white); margin-bottom: 16px; padding: 0 4px; }
   .orders-header h2 { font-size: 20px; }
-  .orders-header .count { background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 14px; }
+  .orders-header .count(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 14px; }
   .refresh-btn { background: transparent; border: none; color: var(--white); font-size: 24px; cursor: pointer; padding: 8px; vertical-align: middle; }
   .trader-order-card { background: var(--turquoise); color: var(--white); border-radius: 16px; padding: 18px; margin-bottom: 14px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.15); transition: transform 0.15s; }
   .trader-order-card:hover { transform: translateY(-2px); }
@@ -98,7 +98,6 @@
 </style>
 </head>
 <body>
-
   <div id="auth-container" style="display: none;">
     <div class="screen" id="step-phone">
       <div class="card" style="margin-top:50px;">
@@ -111,7 +110,7 @@
           <label>رقم الهاتف</label>
           <input type="tel" id="phone-input" placeholder="07XXXXXXXXX" maxlength="11" style="text-align:center; direction:ltr;">
           <p class="msg err" id="phone-error">الرجاء إدخال رقم صحيح.</p>
-          <button class="btn" onclick="sendOTP()" id="btn-send-otp">إرسال الكود</button>
+          <button class="btn" onclick="sendOTP()" id="btn-send-otp">دخول</button>
           <button class="btn btn-white" onclick="backToLoginMode()" style="margin-top:10px;">رجوع</button>
         </div>
         <div id="register-form" class="hidden">
@@ -128,17 +127,7 @@
           <div class="msg" id="reg-msg"></div>
           <button class="btn btn-white" onclick="backToLoginMode()" style="margin-top:10px;">رجوع</button>
         </div>
-        <!-- تم حذف زر الدخول السريع من هنا -->
         <button class="btn btn-white" onclick="closeLogin()" style="margin-top:10px;">إلغاء</button>
-      </div>
-    </div>
-    <div class="screen" id="step-otp">
-      <div class="card" style="margin-top:50px;">
-        <h2 style="text-align:center; color:var(--peach);">كود التحقق</h2>
-        <input type="number" id="otp-input" placeholder="------" maxlength="6" style="text-align:center; direction:ltr;">
-        <p class="msg err" id="otp-error">الكود غير صحيح.</p>
-        <button class="btn" onclick="verifyOTP()" id="btn-verify-otp">تحقق ودخول</button>
-        <div id="recaptcha-container"></div>
       </div>
     </div>
   </div>
@@ -346,7 +335,7 @@
   </div>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
     import { getFirestore, collection, getDocs, addDoc, doc, getDoc, setDoc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -363,8 +352,6 @@
     const db = getFirestore(app);
     auth.languageCode = 'ar';
 
-    let confirmationResult = null;
-    let recaptchaVerifier = null;
     let itemCounter = 0;
     let currentUserPhone = null;
     let cart = [];
@@ -910,42 +897,27 @@
     };
 
     window.showLogin = function() { document.getElementById('auth-container').style.display = 'block'; document.getElementById('step-phone').classList.add('active'); };
-    window.closeLogin = function() { document.getElementById('auth-container').style.display = 'none'; document.getElementById('step-phone').classList.remove('active'); document.getElementById('step-otp').classList.remove('active'); };
-    window.showStep = function(stepId) { document.getElementById('step-phone').classList.remove('active'); document.getElementById('step-otp').classList.remove('active'); document.getElementById(stepId).classList.add('active'); };
+    window.closeLogin = function() { document.getElementById('auth-container').style.display = 'none'; document.getElementById('step-phone').classList.remove('active'); };
+    window.showStep = function(stepId) { document.getElementById('step-phone').classList.remove('active'); document.getElementById(stepId).classList.add('active'); };
 
+    // ✅ تم التعديل هنا: الدخول المباشر بدون OTP
     window.sendOTP = async function() {
-      const phoneInput = document.getElementById('phone-input').value.trim(); const errorMsg = document.getElementById('phone-error'); const btn = document.getElementById('btn-send-otp');
-      if (!phoneInput.startsWith('07') || phoneInput.length !== 11) { errorMsg.style.display = 'block'; return; }
-      errorMsg.style.display = 'none'; btn.innerText = "جاري الإرسال..."; btn.disabled = true;
-      phoneNumberToVerify = "+964" + phoneInput.substring(1);
+      const phoneInput = document.getElementById('phone-input').value.trim(); 
+      const errorMsg = document.getElementById('phone-error'); 
+      const btn = document.getElementById('btn-send-otp');
       
-      // إذا كان رقم مدير، لا يحتاج لإرسال SMS
-      if (MAIN_ADMIN_PHONES.includes(phoneNumberToVerify) || phoneNumberToVerify === "+9647710669750") { 
-        showStep('step-otp'); btn.innerText = "إرسال الكود"; btn.disabled = false; return; 
-      }
-
-      try {
-        if(!recaptchaVerifier) recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
-        confirmationResult = await signInWithPhoneNumber(auth, phoneNumberToVerify, recaptchaVerifier); showStep('step-otp');
-      } catch (error) { errorMsg.style.display = 'block'; errorMsg.innerText = "حدث خطأ. حاول لاحقاً."; } finally { btn.innerText = "إرسال الكود"; btn.disabled = false; }
-    };
-
-    window.verifyOTP = async function() {
-      const otpInput = document.getElementById('otp-input').value.trim(); const errorMsg = document.getElementById('otp-error'); const btn = document.getElementById('btn-verify-otp');
-      if (otpInput.length !== 6) { errorMsg.style.display = 'block'; return; }
-      errorMsg.style.display = 'none'; btn.innerText = "جاري التحقق..."; btn.disabled = true;
-
-      // التحقق من كود المدراء
-      if (MAIN_ADMIN_PHONES.includes(phoneNumberToVerify) || phoneNumberToVerify === "+9647710669750") {
-        if (otpInput === "123456") { localStorage.setItem('loggedIn', 'true'); localStorage.setItem('userPhone', phoneNumberToVerify); document.getElementById('auth-container').style.display = 'none'; document.getElementById('profile-phone').innerText = phoneNumberToVerify; window.location.reload(); } 
-        else { errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح (استخدم 123456)."; }
-        btn.innerText = "تحقق ودخول"; btn.disabled = false; return;
-      }
-
-      try {
-        await confirmationResult.confirm(otpInput); localStorage.setItem('loggedIn', 'true'); localStorage.setItem('userPhone', phoneNumberToVerify);
-        document.getElementById('auth-container').style.display = 'none'; document.getElementById('profile-phone').innerText = phoneNumberToVerify; window.location.reload();
-      } catch (error) { errorMsg.style.display = 'block'; errorMsg.innerText = "الكود غير صحيح."; btn.innerText = "تحقق ودخول"; btn.disabled = false; }
+      if (!phoneInput.startsWith('07') || phoneInput.length !== 11) { errorMsg.style.display = 'block'; return; }
+      
+      errorMsg.style.display = 'none'; 
+      btn.innerText = "جاري الدخول..."; 
+      btn.disabled = true;
+      
+      const phoneNumber = "+964" + phoneInput.substring(1);
+      
+      // الدخول المباشر وحفظ الرقم
+      localStorage.setItem('loggedIn', 'true'); 
+      localStorage.setItem('userPhone', phoneNumber); 
+      window.location.reload();
     };
 
     window.logout = function() {
