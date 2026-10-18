@@ -397,7 +397,52 @@
 
     window.markSold = async function(id) { if (!confirm("تأكيد؟")) return; const b = document.getElementById("sBtn"); if (b) { b.disabled = true; b.textContent = "..."; } try { await updateDoc(doc(db, "orders", id), { status: "تم البيع" }); alert("✅"); loadOrders(); } catch(e) { alert("خطأ"); if (b) { b.disabled = false; b.textContent = "✅"; } } };
 
-    window.loadInv = async function() { show("st-inv"); const l = document.getElementById("inv-l"); l.innerHTML = '...'; try { const q = query(collection(db, "products"), where("traderPhone", "==", currentPhone)); const s = await getDocs(q); l.innerHTML = ''; if(s.empty) { l.innerHTML = 'فارغ'; return; } s.forEach((d) => { const p = d.data(); const i = p.imageUrl || 'https://via.placeholder.com/300'; l.innerHTML += `<div class="o-c"><img src="${i}" class="o-img"><div class="o-t">📦 ${p.name}</div><div class="o-i">💰 ${p.price}</div><div class="o-i">🔢 ${p.quantity}</div></div>`; }); } catch(e) { l.innerHTML = 'خطأ'; } };
+   window.loadInv = async function() { 
+      show("st-inv"); 
+      const l = document.getElementById("inv-l"); 
+      l.innerHTML = 'جاري التحميل...'; 
+      try { 
+        // تحديد البيانات التي سيراها كل مستخدم
+        let q;
+        if (role === 'admin' || role === 'marketer') {
+          // المدير والمسوق يرون كل العروض في التطبيق
+          q = collection(db, "products");
+        } else {
+          // التاجر يرى عروضه فقط
+          q = query(collection(db, "products"), where("traderPhone", "==", currentPhone));
+        }
+        
+        const s = await getDocs(q); 
+        l.innerHTML = ''; 
+        if(s.empty) { l.innerHTML = 'لا توجد عروض حالياً'; return; } 
+        
+        s.forEach((d) => { 
+          const p = d.data(); 
+          const i = p.imageUrl || 'https://via.placeholder.com/300'; 
+          
+          // إضافة زر الحذف (يظهر للجميع لأنهم دخلوا هذه الصفحة أصلاً)
+          let deleteBtn = `<button class="b b-d" style="margin-top:10px; padding:10px; font-size:14px;" onclick="deleteProduct('${d.id}')"><i class="fa-solid fa-trash"></i> حذف العرض</button>`;
+
+          l.innerHTML += `<div class="o-c"><img src="${i}" class="o-img"><div class="o-t">📦 ${p.name}</div><div class="o-i">💰 ${p.price} دينار</div><div class="o-i">🔢 ${p.quantity} قطعة</div>${deleteBtn}</div>`; 
+        }); 
+      } catch(e) { 
+        l.innerHTML = 'حدث خطأ في التحميل'; 
+        console.log(e);
+      } 
+    };
+
+    // دالة الحذف
+    window.deleteProduct = async function(id) {
+      if (!confirm("هل أنت متأكد من حذف هذا العرض نهائياً؟")) return;
+      try {
+        await deleteDoc(doc(db, "products", id));
+        alert("🗑️ تم حذف العرض بنجاح");
+        loadInv(); // إعادة تحميل الصفحة
+        loadOffers(); // تحديث الصفحة الرئيسية
+      } catch(e) {
+        alert("حدث خطأ أثناء الحذف: " + e.message);
+      }
+    };
 
     window.loadMyOrd = async function() { show("st-my-orders"); const l = document.getElementById("myord-l"); l.innerHTML = '...'; try { const q = query(collection(db, "orders"), where("buyerPhone", "==", currentPhone)); const s = await getDocs(q); l.innerHTML = ''; if(s.empty) { l.innerHTML = 'فارغ'; return; } s.forEach((d) => { const o = d.data(); const iS = o.status === "تم البيع"; const sC = iS ? 'sold' : ''; const sH = iS ? '<span class="o-s s-s">✅</span>' : '<span class="o-s s-n">⏳</span>'; l.innerHTML += `<div class="t-o ${sC}"><div class="o-t">🏪 ${o.name}</div><div class="o-i">📦 ${o.items ? o.items.length : 0}</div><div class="o-i">📅 ${o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleDateString('ar-EG') : '-'}</div>${sH}</div>`; }); } catch(e) { l.innerHTML = 'خطأ'; } };
 
