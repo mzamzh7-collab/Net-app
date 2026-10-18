@@ -43,11 +43,14 @@
   .a-t{display:flex;gap:10px;margin-bottom:15px}.a-tab{flex:1;padding:10px;text-align:center;background:#eee;border-radius:8px;cursor:pointer;font-weight:bold}.a-tab.active{background:var(--p);color:white}
   .hidden{display:none!important}
 </style>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js');
-  }
-</script>
+
+  <link rel="manifest" href="/Net-app/manifest.json">
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/Net-app/sw.js');
+    }
+  </script>
 </head>
 <body>
 
