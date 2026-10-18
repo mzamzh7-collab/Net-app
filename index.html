@@ -7,6 +7,11 @@
 <title>Net</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="apple-touch-icon" href="icon-192.png">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js');
+  }
+</script>
 <style>
   :root{--t:#40E0D0;--p:#FF7F50;--w:#FFF;--d:#333;--g:#666}*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}body{background:var(--t);min-height:100vh;direction:rtl;color:var(--d);padding-bottom:70px}
   .h{background:linear-gradient(135deg,var(--t),#20B2AA);color:var(--w);padding:20px;text-align:center;position:sticky;top:0;z-index:100;display:none}
@@ -43,14 +48,6 @@
   .a-t{display:flex;gap:10px;margin-bottom:15px}.a-tab{flex:1;padding:10px;text-align:center;background:#eee;border-radius:8px;cursor:pointer;font-weight:bold}.a-tab.active{background:var(--p);color:white}
   .hidden{display:none!important}
 </style>
-
-  <link rel="manifest" href="/Net-app/manifest.json">
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/Net-app/sw.js');
-    }
-  </script>
 </head>
 <body>
 
@@ -96,7 +93,7 @@
     <div id="offers-l"></div>
   </div>
 
-  <div class="f-c" id="f-cart" onclick="showOrder()" style="display:none;"><i class="fa-solid fa-cart-shopping"></i><span class="c-b" id="c-badge">0</span></div>
+  <div class="f-c" id="f-cart" onclick="openCart()" style="display:none;"><i class="fa-solid fa-cart-shopping"></i><span class="c-b" id="c-badge">0</span></div>
 
   <div class="s" id="st-drivers">
     <h2 style="color:var(--w);margin-bottom:15px;text-align:center;">🚚 السائقون</h2>
@@ -170,6 +167,7 @@
       <li id="li-rate" class="hidden" onclick="editRate()" style="color:var(--t);"><span><i class="fa-solid fa-dollar-sign"></i> تعديل سعر الصرف</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
       <li id="li-inv" class="hidden" onclick="loadInv()"><span><i class="fa-solid fa-box"></i> مخزني</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
       <li id="li-myord" class="hidden" onclick="loadMyOrd()"><span><i class="fa-solid fa-clipboard-list"></i> قوائمي</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
+      <li id="li-notif" class="hidden" onclick="requestNotifications()" style="color:#28a745;"><span><i class="fa-solid fa-bell"></i> تفعيل الإشعارات</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
       <li id="li-login" onclick="openAuth()" style="color:var(--p);"><span><i class="fa-solid fa-right-to-bracket"></i> تسجيل دخول</span> <span><i class="fa-solid fa-chevron-left"></i></span></li>
     </ul></div>
     <button id="btn-logout" class="hidden b" style="background:#dc3545;margin-top:10px;" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
@@ -195,6 +193,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
     import { getFirestore, collection, getDocs, addDoc, doc, getDoc, setDoc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDrVVzXE_hd-5HTC1CZoVOU7zGNx7TDQQ",
@@ -220,17 +219,17 @@
     }
 
     async function applyPerms() {
-      ['btn-order','btn-trader','nav-add','li-admin','li-driver','li-rate','li-inv','li-myord'].forEach(id => document.getElementById(id).classList.add('hidden'));
+      ['btn-order','btn-trader','nav-add','li-admin','li-driver','li-rate','li-inv','li-myord','li-notif'].forEach(id => document.getElementById(id).classList.add('hidden'));
       document.getElementById('prof-status').innerHTML = '';
       if(currentPhone === "زائر" || !currentPhone) return;
 
       if (ADMINS.includes(currentPhone)) {
         role = 'admin'; document.getElementById('prof-name').innerText = "المدير العام"; document.getElementById('prof-status').innerHTML = '<span class="s-b s-a">مدير</span>';
-        ['li-admin','li-driver','li-rate','btn-order','btn-trader','nav-add','li-inv','li-myord'].forEach(id => document.getElementById(id).classList.remove('hidden'));
+        ['li-admin','li-driver','li-rate','btn-order','btn-trader','nav-add','li-inv','li-myord','li-notif'].forEach(id => document.getElementById(id).classList.remove('hidden'));
         return;
       }
 
-      try { const a = await getDoc(doc(db, "admins", currentPhone)); if (a.exists()) { role = 'marketer'; document.getElementById('prof-name').innerText = a.data().name || "مسوق"; document.getElementById('prof-status').innerHTML = '<span class="s-b" style="background:#17a2b8;color:white;">مسوق</span>'; ['li-driver','li-rate','btn-order','btn-trader','nav-add','li-inv','li-myord'].forEach(id => document.getElementById(id).classList.remove('hidden')); return; } } catch(e) {}
+      try { const a = await getDoc(doc(db, "admins", currentPhone)); if (a.exists()) { role = 'marketer'; document.getElementById('prof-name').innerText = a.data().name || "مسوق"; document.getElementById('prof-status').innerHTML = '<span class="s-b" style="background:#17a2b8;color:white;">مسوق</span>'; ['li-driver','li-rate','btn-order','btn-trader','nav-add','li-inv','li-myord','li-notif'].forEach(id => document.getElementById(id).classList.remove('hidden')); return; } } catch(e) {}
 
       try { const u = await getDoc(doc(db, "users", currentPhone)); if (u.exists()) {
         const d = u.data(); role = d.role || 'visitor'; status = d.status || 'pending';
@@ -239,7 +238,7 @@
         else if (status === 'suspended') { document.getElementById('prof-status').innerHTML = '<span class="s-b s-s">موقوف</span>'; return; } 
         else {
           document.getElementById('prof-status').innerHTML = `<span class="s-b s-a">نشط (${rName})</span>`;
-          if (role === 'trader') { ['btn-trader','nav-add','li-inv'].forEach(id => document.getElementById(id).classList.remove('hidden')); }
+          if (role === 'trader') { ['btn-trader','nav-add','li-inv','li-notif'].forEach(id => document.getElementById(id).classList.remove('hidden')); }
           else if (role === 'supermarket') { ['btn-order','li-myord'].forEach(id => document.getElementById(id).classList.remove('hidden')); }
         }
       } } catch(e) {}
@@ -318,6 +317,15 @@
       if(e) { e.qty = (parseInt(e.qty) || 0) + 1; } else { cart.push({ name: p.name, qty: 1, price: p.price, img: p.imageUrl }); }
       localStorage.setItem('net_cart', JSON.stringify(cart)); updateCartUI();
     };
+
+    window.openCart = function() {
+      if(role === 'trader' || role === 'visitor') {
+        alert("⚠️ عذراً، السلة وإنشاء الطلبات غير متاحة لحسابات التجار أو الزوار.");
+        return;
+      }
+      showOrder(); 
+    };
+
     function updateCartUI() { const b = document.getElementById('c-badge'); if(cart.length > 0) { let t = 0; cart.forEach(i => t += (parseInt(i.qty) || 0)); b.innerText = t; if(document.getElementById('st-home').classList.contains('active') && (role === 'supermarket' || role === 'admin' || role === 'marketer')) { document.getElementById('f-cart').style.display = 'flex'; } } else { document.getElementById('f-cart').style.display = 'none'; } }
 
     async function loadOffers() {
@@ -393,6 +401,24 @@
     window.doLogout = function() { if(confirm("خروج؟")) { localStorage.removeItem('loggedIn'); localStorage.removeItem('userPhone'); signOut(auth).then(() => { window.location.reload(); }); } };
 
     window.editRate = async function() { let r = prompt("السعر الجديد:", "1320"); if (r) { try { await setDoc(doc(db, "config", "dollar"), { price: Number(r) }); document.getElementById('h-rate').innerHTML = `<i class="fa-solid fa-dollar-sign"></i> ${r}`; alert("✅"); } catch(e) { alert("خطأ"); } } };
+
+    window.requestNotifications = async function() {
+      if (!('Notification' in window)) { alert("متصفحك لا يدعم الإشعارات"); return; }
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          const messaging = getMessaging(app);
+          const token = await getToken(messaging, { vapidKey: "BLsVpH6bqyw5EnmBXXgMzNpBuJZgEpEEZ6GsVyp6UuXQ5Y77CrkgObrwu4Uir5aYzq6zm-7llX5RVk3srUHQyCQ" });
+          if (token) {
+            const userPhone = localStorage.getItem('userPhone');
+            if(userPhone) {
+              await setDoc(doc(db, "users", userPhone), { fcmToken: token }, { merge: true });
+              alert("✅ تم تفعيل الإشعارات بنجاح");
+            }
+          }
+        } else { alert("⚠️ تم رفض الإشعارات"); }
+      } catch(e) { console.log("خطأ في الإشعارات: ", e); alert("حدث خطأ في تفعيل الإشعارات. تأكد من الاتصال بالإنترنت."); }
+    };
   </script>
 </body>
 </html>
