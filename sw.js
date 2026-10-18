@@ -1,57 +1,27 @@
-const CACHE_VERSION = "net-app-v3";
-const FILES = ["./", "./index.html", "./manifest.json"];
+const CACHE_NAME = 'net-app-v1';
+const ASSETS = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
+];
 
-// ═══ التثبيت ═══
-self.addEventListener("install", function(e) {
+self.addEventListener('install', (e) => {
+  self.skipWaiting();
   e.waitUntil(
-    caches.open(CACHE_VERSION).then(function(cache) {
-      return cache.addAll(FILES);
-    }).then(function() {
-      return self.skipWaiting();
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
 });
 
-// ═══ التنشيط: حذف الـ Cache القديم ═══
-self.addEventListener("activate", function(e) {
-  e.waitUntil(
-    caches.keys().then(function(keys) {
-      return Promise.all(
-        keys.filter(function(k) { return k !== CACHE_VERSION; })
-            .map(function(k) { return caches.delete(k); })
-      );
-    }).then(function() {
-      return self.clients.claim();
+self.addEventListener('activate', (e) => {
+  e.waitUntil(self.clients.claim());
+});
+
+self.addEventListener('fetch', (e) => {
+  e.respondWith(
+    caches.match(e.request).then((response) => {
+      return response || fetch(e.request);
     })
   );
-});
-
-// ═══ الجلب: الشبكة أولاً، ثم الـ Cache ═══
-self.addEventListener("fetch", function(e) {
-  if (e.request.url.startsWith(self.location.origin)) {
-    e.respondWith(
-      fetch(e.request).then(function(response) {
-        var responseClone = response.clone();
-        caches.open(CACHE_VERSION).then(function(cache) {
-          cache.put(e.request, responseClone);
-        });
-        return response;
-      }).catch(function() {
-        return caches.match(e.request);
-      })
-    );
-  } else {
-    e.respondWith(
-      fetch(e.request).catch(function() {
-        return caches.match(e.request);
-      })
-    );
-  }
-});
-
-// ═══ رسالة من التطبيق ═══
-self.addEventListener("message", function(e) {
-  if (e.data === "skipWaiting") {
-    self.skipWaiting();
-  }
 });
