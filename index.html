@@ -49,7 +49,13 @@
   .s-b{padding:4px 8px;border-radius:8px;font-size:11px;font-weight:bold;display:inline-block;margin-top:5px}.s-p{background:#ffc107;color:#000}.s-a{background:#28a745;color:#fff}.s-s{background:#dc3545;color:#fff}
   .a-t{display:flex;gap:10px;margin-bottom:15px}.a-tab{flex:1;padding:10px;text-align:center;background:#eee;border-radius:8px;cursor:pointer;font-weight:bold}.a-tab.active{background:var(--p);color:white}
   .hidden{display:none!important}
-  @media print { body * { visibility: hidden; } #invoice-print-area, #invoice-print-area * { visibility: visible; } #invoice-print-area { position: absolute; left: 0; top: 0; width: 100%; } .b { display: none !important; } .o-h { display: none !important; } }
+  
+  /* تنسيقات الطباعة: تخفي كل الصفحة وتطبع الفاتورة فقط */
+  @media print { 
+    body * { visibility: hidden; } 
+    #temp-print-area, #temp-print-area * { visibility: visible; } 
+    #temp-print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white; } 
+  }
 </style>
 </head>
 <body>
@@ -156,7 +162,13 @@
   <div class="s" id="st-detail"><div class="c" id="detail-c"></div></div>
 
   <div class="s" id="st-trader-cart">
-    <div class="o-h"><h2>🧾 سلة التاجر</h2><div><button class="r-b" onclick="clearTraderCart()">🗑️ تفريغ</button></div></div>
+    <div class="o-h">
+      <h2>🧾 سلة التاجر</h2>
+      <div style="display:flex; gap:10px;">
+        <button class="r-b" onclick="show('st-home')"><i class="fa-solid fa-house"></i> الرئيسية</button>
+        <button class="r-b" onclick="clearTraderCart()"><i class="fa-solid fa-trash"></i> تفريغ</button>
+      </div>
+    </div>
     <div class="c">
       <label>اسم السوبر ماركت</label><input id="tc-name" type="text" placeholder="اسم السوبر ماركت">
       <label>رقم الهاتف</label><input id="tc-phone" type="tel" placeholder="07xxxxxxxxx">
@@ -470,7 +482,6 @@
         h += '</div></div>';
 
         let buttons = '<div style="margin-top:20px;">';
-        // ✅ الزر المعدل يستدعي دالة الطباعة المستقلة
         buttons += '<button class="b" onclick="printOrderInvoice(\'' + id + '\')" style="background:#28a745; margin-bottom:10px;"><i class="fa-solid fa-print"></i> طباعة الفاتورة / حفظ PDF</button>';
         
         if (iS) { 
@@ -485,7 +496,7 @@
       } catch(e) { d.innerHTML = 'خطأ'; } 
     };
 
-    // ═══ دالة الطباعة المستقلة (تحل مشكلة زر الطباعة) ═══
+    // ✅ دالة الطباعة المباشرة داخل الصفحة (بدون نوافذ منبثقة)
     window.printOrderInvoice = async function(id) {
       try {
         const s = await getDoc(doc(db, "orders", id));
@@ -523,18 +534,19 @@
           </div>
         `;
 
-        const win = window.open('', '_blank');
-        if (!win) { alert("يرجى السماح بالنوافذ المنبثقة لطباعة الفاتورة"); return; }
-        win.document.write(`<html dir="rtl"><head><meta charset="UTF-8"><title>فاتورة</title><style>
-          body{font-family:system-ui, sans-serif; padding:20px; direction:rtl;}
-          .d-r{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px dashed #ddd;}
-          .l{font-weight:bold;color:#666;}
-          .v{font-weight:bold;color:#333;}
-          .o-l-l{padding:8px 0;}
-        </style></head><body>${invoiceHTML}</body></html>`);
-        win.document.close();
-        win.onload = () => { win.focus(); win.print(); };
-        setTimeout(() => { try { win.focus(); win.print(); } catch(e) {} }, 500);
+        const printDiv = document.createElement('div');
+        printDiv.id = 'temp-print-area';
+        printDiv.style.cssText = 'position:absolute; top:0; left:0; width:100%; min-height:100vh; background:white; z-index:99999; padding:20px; box-sizing:border-box; direction:rtl;';
+        printDiv.innerHTML = invoiceHTML;
+        document.body.appendChild(printDiv);
+
+        window.print();
+
+        setTimeout(() => {
+          const el = document.getElementById('temp-print-area');
+          if (el) el.remove();
+        }, 1000);
+
       } catch(e) {
         alert("حدث خطأ: " + e.message);
       }
@@ -612,6 +624,7 @@
       openTraderCart();
     };
 
+    // ✅ طباعة سلة التاجر (مباشرة داخل الصفحة وبدون نوافذ منبثقة)
     window.printTraderInvoice = function() {
       const name = document.getElementById('tc-name').value || 'غير محدد';
       const phone = document.getElementById('tc-phone').value || '-';
@@ -652,12 +665,18 @@
         </div>
       `;
 
-      const win = window.open('', '_blank');
-      if (!win) { alert("يرجى السماح بالنوافذ المنبثقة"); return; }
-      win.document.write(`<html dir="rtl"><head><meta charset="UTF-8"><title>فاتورة</title><style>body{font-family:system-ui; padding:20px;} .d-r{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px dashed #ddd;} .l{font-weight:bold;color:#666;} .v{font-weight:bold;color:#333;} .o-l-l{padding:8px 0;}</style></head><body>${invoiceHTML}</body></html>`);
-      win.document.close();
-      win.onload = () => { win.focus(); win.print(); };
-      setTimeout(() => { try { win.focus(); win.print(); } catch(e) {} }, 500);
+      const printDiv = document.createElement('div');
+      printDiv.id = 'temp-print-area';
+      printDiv.style.cssText = 'position:absolute; top:0; left:0; width:100%; min-height:100vh; background:white; z-index:99999; padding:20px; box-sizing:border-box; direction:rtl;';
+      printDiv.innerHTML = invoiceHTML;
+      document.body.appendChild(printDiv);
+
+      window.print();
+
+      setTimeout(() => {
+        const el = document.getElementById('temp-print-area');
+        if (el) el.remove();
+      }, 1000);
     };
 
     window.loadMyOrd = async function() { show("st-my-orders"); const l = document.getElementById("myord-l"); l.innerHTML = '...'; try { const q = query(collection(db, "orders"), where("buyerPhone", "==", currentPhone)); const s = await getDocs(q); l.innerHTML = ''; if(s.empty) { l.innerHTML = 'فارغ'; return; } s.forEach((d) => { const o = d.data(); const iS = o.status === "تم البيع"; const sC = iS ? 'sold' : ''; const sH = iS ? '<span class="o-s s-s">✅</span>' : '<span class="o-s s-n">⏳</span>'; l.innerHTML += `<div class="t-o ${sC}"><div class="o-t">🏪 ${o.name}</div><div class="o-i">📦 ${o.items ? o.items.length : 0}</div><div class="o-i">📅 ${o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleDateString('ar-EG') : '-'}</div>${sH}</div>`; }); } catch(e) { l.innerHTML = 'خطأ'; } };
