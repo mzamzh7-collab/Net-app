@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
@@ -56,6 +55,7 @@
     body * { visibility: hidden; } 
     #temp-print-area, #temp-print-area * { visibility: visible; } 
     #temp-print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white; } 
+    .no-print { display: none !important; }
   }
 </style>
 </head>
@@ -498,7 +498,7 @@
     };
 
     // ✅ دالة الطباعة المباشرة داخل الصفحة (بدون نوافذ منبثقة)
-    window.printOrderInvoice = async function(id) {
+   window.printOrderInvoice = async function(id) {
       try {
         const s = await getDoc(doc(db, "orders", id));
         if (!s.exists()) { alert("الطلب غير موجود"); return; }
@@ -529,24 +529,24 @@
         }
 
         invoiceHTML += `
-          <div style="text-align:center; margin-top:30px; border-top:2px dashed #ddd; padding-top:10px;">
+          <div style="text-align:center; margin-top:30px; border-top:2px dashed #ddd; padding-top:10px; padding-bottom: 20px;">
             <p style="color:#999; font-size:12px;">شكراً لاستخدامكم نظام Net</p>
             <p style="color:#999; font-size:12px;">للاشتراك والاستفسار: 07710669750</p>
+          </div>
+          <div class="no-print" style="text-align:center; margin-bottom:20px;">
+            <button onclick="document.getElementById('temp-print-area').remove()" class="b b-w" style="width:48%; display:inline-flex; margin:0;">إغلاق</button>
+            <button onclick="alert('لحفظ الفاتورة كـ PDF أو طباعتها:\\n1 زر المشاركة (المربع مع السهم) أسفل الشاشة.\\n2. اختر (طباعة) أو (حفظ كـ PDF).')" class="b" style="width:48%; display:inline-flex; margin:0; background:#17a2b8;">كيف أطبع؟</button>
           </div>
         `;
 
         const printDiv = document.createElement('div');
         printDiv.id = 'temp-print-area';
-        printDiv.style.cssText = 'position:absolute; top:0; left:0; width:100%; min-height:100vh; background:white; z-index:99999; padding:20px; box-sizing:border-box; direction:rtl;';
+        printDiv.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; overflow-y:auto; background:white; z-index:99999; padding:20px; box-sizing:border-box; direction:rtl;';
         printDiv.innerHTML = invoiceHTML;
         document.body.appendChild(printDiv);
 
-        window.print();
-
-        setTimeout(() => {
-          const el = document.getElementById('temp-print-area');
-          if (el) el.remove();
-        }, 1000);
+        // محاولة الطباعة (قد يمنعها الآيفون، لذا الأزرار بالأعلى هي الحل)
+        setTimeout(() => { try { window.print(); } catch(e) {} }, 500);
 
       } catch(e) {
         alert("حدث خطأ: " + e.message);
