@@ -195,7 +195,13 @@
 
   <div class="s" id="st-admin"><h2 style="color:var(--w);margin-bottom:15px;text-align:center;">🛡️ الإدارة</h2><div class="c"><div class="a-t"><div class="a-tab active" id="tab-t" onclick="switchTab('trader')">التجار</div><div class="a-tab" id="tab-s" onclick="switchTab('supermarket')">سوبر ماركت</div></div><div id="adm-l"></div></div><button class="b b-w" style="margin-top:15px;" onclick="show('st-settings')"><i class="fa-solid fa-arrow-right"></i> رجوع</button></div>
 
-  <div class="s" id="st-inv"><h2 style="color:var(--w);margin-bottom:15px;text-align:center;">📦 مخزني</h2><div id="inv-l"></div><button class="b b-w" style="margin-top:15px;" onclick="show('st-settings')"><i class="fa-solid fa-arrow-right"></i> رجوع</button></div>
+  <div class="s" id="st-inv">
+    <h2 style="color:var(--w);margin-bottom:15px;text-align:center;">📦 مخزني</h2>
+    <!-- زر عرض سلة التاجر (تمت إضافته) -->
+    <button class="b b-w" onclick="openTraderCart()" style="margin-bottom:15px;"><i class="fa-solid fa-file-invoice"></i> عرض سلة التاجر (للطباعة)</button>
+    <div id="inv-l"></div>
+    <button class="b b-w" style="margin-top:15px;" onclick="show('st-settings')"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+  </div>
 
   <div class="s" id="st-my-orders"><h2 style="color:var(--w);margin-bottom:15px;text-align:center;">🧾 قوائمي</h2><div id="myord-l"></div><button class="b b-w" style="margin-top:15px;" onclick="show('st-settings')"><i class="fa-solid fa-arrow-right"></i> رجوع</button></div>
 
