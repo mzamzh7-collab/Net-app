@@ -1,4 +1,4 @@
-const CACHE_NAME = 'net-app-v5';
+const CACHE_NAME = 'net-app-v6';
 const ASSETS = [
   '/Net-app/',
   '/Net-app/index.html',
